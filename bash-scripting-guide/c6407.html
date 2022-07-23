@@ -1,0 +1,630 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Внешние команды, программы и утилиты</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Углубленный материал"
+     href="p3268.html">
+    <link
+     rel="PREVIOUS"
+     title="Внутренние команды"
+     href="c5358.html">
+    <link
+     rel="NEXT"
+     title="Более сложные команды"
+     href="x6646.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c5358.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x6646.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="EXTERNAL"></a>Глава 12. Внешние команды, программы и
+      утилиты</h1>
+
+      <p>Благодаря стандартизации набора команд UNIX-систем, сценарии,
+      на языке командной оболочки, могут быть легко перенесены из
+      системы в систему практически без изменений. Мощь сценариев
+      складывется из наборв системных команд и директив командной
+      оболочки с простыми программными конструкциями.</p>
+
+      <div
+       class="SECT1">
+        <h1
+         class="SECT1"><a
+         name="BASIC"></a>12.1. Базовые команды</h1>
+
+        <div
+         class="VARIABLELIST">
+          <p><strong><a
+           name="BASICCOMMANDS1"></a>Первая команда, с которой
+          сталкиваются новички</strong></p>
+
+          <dl>
+            <dt><a
+             name="LSREF"></a><strong
+             class="COMMAND">ls</strong></dt>
+
+            <dd>
+              <p>Команда вывода <span
+               class="QUOTE">&quot;списка&quot;</span> файлов. Многие
+              недооценивают всю мощь этой скромной команды. Например, с
+              ключом <tt
+               class="OPTION">-R</tt>, рекурсивный обход дерева
+              каталогов, командв <strong
+               class="COMMAND">ls</strong> выводит содержимое каталогов
+              в виде древовидной структуры. Вот еще ряд любопытных
+              ключей (опций) команды <strong
+               class="COMMAND">ls</strong>: <tt
+               class="OPTION">-S</tt> -- сортировка по размеру файлов,
+              <tt
+               class="OPTION">-t</tt> -- сортировка по времени
+              последней модификации файла и <tt
+               class="OPTION">-i</tt> -- выводит список файлов с их
+              inode (см. <a
+               href="x6646.html#IDELETE">Пример 12-3</a>).</p>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="EX40"></a>
+
+                <p><strong>Пример 12-1. Создание оглавления диска для
+                записи <span
+                 class="ABBREV">CDR</span>, с помощью команды
+                ls</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# burn-cd.sh
+# Сценарий, автоматизирующий процесс прожигания CDR.
+
+
+SPEED=2          # Если ваше &quot;железо&quot; поддерживает более высокую скорость записи -- можете увеличить этот параметр
+IMAGEFILE=cdimage.iso
+CONTENTSFILE=contents
+DEFAULTDIR=/opt  # В этом каталоге находятся файлы, которые будут записаны на CD.
+                 # Каталог должен существовать.
+
+# Используется пакет &quot;cdrecord&quot; от Joerg Schilling.
+# (http://www.fokus.gmd.de/nthp/employees/schilling/cdrecord.html)
+
+#  Если этот сценарий предполагается запускать с правами обычного пользователя,
+#+ то необходимо установить флаг suid на cdrecord
+#+ (chmod u+s /usr/bin/cdrecord, эта команда должна быть выполнена root-ом).
+
+if [ -z &quot;$1&quot; ]
+then
+  IMAGE_DIRECTORY=$DEFAULTDIR
+  # Каталог по-умолчанию, если иной каталог не задан из командной строки.
+else
+    IMAGE_DIRECTORY=$1
+fi
+
+# Создать файл &quot;table of contents&quot;.
+ls -lRF $IMAGE_DIRECTORY &gt; $IMAGE_DIRECTORY/$CONTENTSFILE
+# Ключ &quot;l&quot; -- &quot;расширенный&quot; формат вывода списка файлов.
+# Ключ &quot;R&quot; -- рекурсивный обход дерева каталогов.
+# Ключ &quot;F&quot; -- добавляет дополнительные метки к именам файлов (к именам каталогов добавдяет оконечный символ /).
+echo &quot;Создано оглавление.&quot;
+
+# Создать iso-образ.
+mkisofs -r -o $IMAGFILE $IMAGE_DIRECTORY
+echo &quot;Создан iso-образ файловой системы ISO9660 ($IMAGEFILE).&quot;
+
+# &quot;Прожигание&quot; CDR.
+cdrecord -v -isosize speed=$SPEED dev=0,0 $IMAGEFILE
+echo &quot;Запись диска.&quot;
+echo &quot;Наберитесь терпения, это может потребовать некоторого времени.&quot;
+
+exit 0
+</pre>
+              </div>
+            </dd>
+
+            <dt><a
+             name="CATREF"></a><strong
+             class="COMMAND">cat</strong>, <strong
+             class="COMMAND">tac</strong></dt>
+
+            <dd>
+              <p><strong
+               class="COMMAND">cat</strong> -- это акроним от <em
+               class="WORDASWORD">concatenate</em>, выводит содержимое
+              списка файлов на <tt
+               class="FILENAME">stdout</tt>. Для объединения файлов в
+              один файл может использоваться в комбинации с операциями
+              перенаправления (<span
+               class="TOKEN">&gt;</span> или <span
+               class="TOKEN">&gt;&gt;</span>).</p>
+<pre
+ class="PROGRAMLISTING">
+cat filename cat file.1 file.2 file.3 &gt; file.123
+</pre>
+              Ключ <tt
+               class="OPTION">-n</tt>, команды <strong
+               class="COMMAND">cat</strong>, вставляет порядковые
+              номера строк в выходном файле. Ключ <tt
+               class="OPTION">-b</tt> -- нумерут только не пустые
+              строки. Ключ <tt
+               class="OPTION">-v</tt> выводит непечатаемые символы в
+              нотации с символом <span
+               class="TOKEN">^</span>. Ключ <tt
+               class="OPTION">-s</tt> заменяет несколько пустых строк,
+              идущих подряд, одной пустой строкой.<br>
+              <br>
+
+              <p>см. также <a
+               href="x7050.html#LNUM">Пример 12-21</a> and <a
+               href="x7050.html#ROT13">Пример 12-17</a>.</p>
+
+              <p><strong
+               class="COMMAND">tac</strong> -- выводит содержимое
+              файлов в обратном порядке, от последней строки к
+              первой.</p>
+            </dd>
+
+            <dt><strong
+             class="COMMAND">rev</strong></dt>
+
+            <dd>
+              <p>выводит все строки файла задом наперед на <tt
+               class="FILENAME">stdout</tt>. Это не то же самое, что
+              <strong
+               class="COMMAND">tac</strong>. Команда <strong
+               class="COMMAND">rev</strong> сохраняет порядок
+              следования строк, но переворачивает каждую строку задом
+              наперед.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>cat file1.txt</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">Это строка 1.
+ Это строка 2.</tt>
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>tac file1.txt</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">Это строка 2.
+ Это строка 1.</tt>
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>rev file1.txt</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">.1 акортс отЭ
+ .2 акортс отЭ</tt>
+             
+</pre>
+              <br>
+              <br>
+            </dd>
+
+            <dt><strong
+             class="COMMAND">cp</strong></dt>
+
+            <dd>
+              <p>Команда копирования файлов. <tt
+               class="USERINPUT"><strong>cp file1 file2</strong></tt>
+              скопирует <tt
+               class="FILENAME">file1</tt> в <tt
+               class="FILENAME">file2</tt>, перезаписав <tt
+               class="FILENAME">file2</tt> если он уже существовал (см.
+              <a
+               href="x6646.html#EX42">Пример 12-5</a>).</p>
+
+              <div
+               class="TIP">
+                <table
+                 class="TIP"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/tip.gif"
+                     hspace="5"
+                     alt="Tip"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>С флагами <tt
+                       class="OPTION">-a</tt> и <tt
+                       class="OPTION">-r</tt>, или <tt
+                       class="OPTION">-R</tt> выполняет копирование
+                      дерева каталогов.</p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </dd>
+
+            <dt><strong
+             class="COMMAND">mv</strong></dt>
+
+            <dd>
+              <p>Команда <span
+               class="emphasis"><em
+               class="EMPHASIS">перемещения</em></span> файла.
+              Эквивалентна комбинации команд <strong
+               class="COMMAND">cp</strong> и <strong
+               class="COMMAND">rm</strong>. Может использоваться для
+              перемещения большого количества файлов или для
+              переименования каталогов. Примеры использования команды
+              <strong
+               class="COMMAND">mv</strong> вы найдете в <a
+               href="x4462.html#RFE">Пример 9-17</a> и <a
+               href="a14477.html#RN">Пример A-3</a>.</p>
+
+              <div
+               class="NOTE">
+                <table
+                 class="NOTE"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/note.gif"
+                     hspace="5"
+                     alt="Note"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>При использовании в неинтерактивных сценариях,
+                      команде <strong
+                       class="COMMAND">mv</strong> следует передавать
+                      ключ <tt
+                       class="OPTION">-f</tt>, чтобы подавить запрос
+                      подтверждения на перемещение.</p>
+
+                      <p>Если в качестве каталога назначения указан
+                      существующий каталог, то перемещаемый каталог
+                      становится подкаталогом каталога назначения..</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class=
+"USERINPUT"><strong>mv source_directory target_directory</strong></tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ls -lF target_directory</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">total 1
+ drwxrwxr-x    2 bozo  bozo      1024 May 28 19:20 source_directory/</tt>
+             
+</pre>
+                      <br>
+                      <br>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </dd>
+
+            <dt><strong
+             class="COMMAND">rm</strong></dt>
+
+            <dd>
+              <p>Удаляет (remove) файл(ы). Ключ <tt
+               class="OPTION">-f</tt> позволяет удалять даже файлы
+              ТОЛЬКО-ДЛЯ-ЧТЕНИЯ и подавляет запрос подтверждения на
+              удаление.</p>
+
+              <div
+               class="WARNING">
+                <table
+                 class="WARNING"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/warning.gif"
+                     hspace="5"
+                     alt="Warning"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>С ключом <tt
+                       class="OPTION">-r</tt>, удаляет все файлы в
+                      подкаталогах.</p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </dd>
+
+            <dt><strong
+             class="COMMAND">rmdir</strong></dt>
+
+            <dd>
+              <p>Удаляет каталог. Удаляемый каталог не должен содержать
+              файлов, включая <a
+               name="DOTFILESREF"></a> <span
+               class="QUOTE">&quot;скрытые файлы&quot;</span>, <a
+               name="AEN6567"
+               href="#FTN.AEN6567"><span
+               class="footnote">[1]</span></a> иначе каталог не будет
+              удален.</p>
+            </dd>
+
+            <dt><strong
+             class="COMMAND">mkdir</strong></dt>
+
+            <dd>
+              <p>Создает новый каталог. <tt
+               class="USERINPUT"><strong>mkdir -p
+              project/programs/December</strong></tt> создает каталог с
+              заданным именем в требуемом каталоге. Ключ <tt
+               class="REPLACEABLE"><em>-p</em></tt> позволяет создавать
+              промежуточные родительские каталоги.</p>
+            </dd>
+
+            <dt><a
+             name="CHMODREF"></a><strong
+             class="COMMAND">chmod</strong></dt>
+
+            <dd>
+              <p>Изменяет атрибуты существующего файла (см. <a
+               href="c5358.html#EX44">Пример 11-10</a>).</p>
+<pre
+ class="PROGRAMLISTING">
+chmod +x filename
+# Делает файл &quot;filename&quot; доступным для исполнения всем пользователям.
+
+chmod u+s filename
+# Устанавливается бит &quot;suid&quot; для &quot;filename&quot;.
+# В результате, любой пользователь сможет запустить &quot;filename&quot; с привилегиями владельца файла.
+# (Это не относится к файлам-сценариям на языке командной оболочки.)
+</pre>
+              <br>
+              <br>
+<pre
+ class="PROGRAMLISTING">
+chmod 644 filename
+# Выдает право на запись/чтение владельцу файла &quot;filename&quot;, и право на чтение
+# всем остальным
+# (восьмеричное число).
+</pre>
+              <br>
+              <br>
+<pre
+ class="PROGRAMLISTING">
+chmod 1777 directory-name
+# Выдает право на чтение, запись и исполнение файлов в каталоге,
+# дополнительно устанавливает &quot;sticky bit&quot;.
+# Это означает, что удалять файлы в этом каталоге могут только владельцы файлов,
+# владелец каталога и, само собой разумеется, root.
+</pre>
+              <br>
+              <br>
+            </dd>
+
+            <dt><strong
+             class="COMMAND">chattr</strong></dt>
+
+            <dd>
+              <p>Изменяет атрибуты файла. Эта команда подобна команде
+              <strong
+               class="COMMAND">chmod</strong>, за исключением
+              синтаксиса вызова, и работает исключительно в файловой
+              системе <span
+               class="emphasis"><em
+               class="EMPHASIS">ext2</em></span>.</p>
+            </dd>
+
+            <dt><strong
+             class="COMMAND">ln</strong></dt>
+
+            <dd>
+              <p>Создает ссылку на существующий файл. Чаще всего
+              используется с ключом <tt
+               class="OPTION">-s</tt>, что означает символическую, или
+              <span
+               class="QUOTE">&quot;мягкую&quot;</span> (symbolic или
+              <span
+               class="QUOTE">&quot;soft&quot;</span>) ссылку. Позволяет
+              задавать несколько имен одному и тому же файлу и
+              превосходная альтернатива &quot;псевдонимам&quot;
+              (алиасам) (см. <a
+               href="x1716.html#EX18">Пример 4-6</a>).</p>
+
+              <p><tt
+               class="USERINPUT"><strong>ln -s oldfile
+              newfile</strong></tt> создает ссылку, с именем <tt
+               class="FILENAME">newfile</tt>, на существующий файл <tt
+               class="FILENAME">oldfile</tt>, .</p>
+            </dd>
+
+            <dt><strong
+             class="COMMAND">man</strong>, <strong
+             class="COMMAND">info</strong></dt>
+
+            <dd>
+              <p>Команды доступа к справочным и информационным
+              страницам по системным командам и установленным
+              программам и утилитам. Как правило, страницы <span
+               class="emphasis"><em
+               class="EMPHASIS">info</em></span> содержат более
+              подробную информацию, чем <span
+               class="emphasis"><em
+               class="EMPHASIS">man</em></span>.</p>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN6567"
+         href="c6407.html#AEN6567"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Скрытыми считаются файлы, имена которых начинаются с
+          точки, например, <tt
+           class="FILENAME">~/.Xdefaults</tt>. Такие файлы не выводятся
+          простой командой <strong
+           class="COMMAND">ls</strong>, и не могут быть удалены
+          командой <strong
+           class="COMMAND">rm -rf *</strong>. Как правило, скрытыми
+          делаются конфигурационные файлы в домашнем каталоге
+          пользователя.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c5358.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x6646.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Внутренние команды</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p3268.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Более сложные команды</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

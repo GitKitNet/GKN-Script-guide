@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Файлы</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Материал повышенной сложности"
+     href="p11889.html">
+    <link
+     rel="PREVIOUS"
+     title="Массивы"
+     href="c12790.html">
+    <link
+     rel="NEXT"
+     title="/dev и /proc"
+     href="c12942.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c12790.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c12942.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="FILES"></a>Глава 26. Файлы</h1>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="FILESREF1"></a>сценарии начальной загрузки</strong></p>
+
+        <dl>
+          <dd>
+            <p>Эти файлы содержат объявления псевдонимов и <a
+             href="x1716.html#ENVREF">переменных окружения</a>, которые
+            становятся доступны Bash после загрузки и инициализации
+            системы.</p>
+          </dd>
+
+          <dt><tt
+           class="FILENAME">/etc/profile</tt></dt>
+
+          <dd>
+            <p>Настройки системы по-умолчанию, главным образом
+            настраивается окружение командной оболочки (все
+            Bourne-подобные оболочки, не только Bash <a
+             name="AEN12906"
+             href="#FTN.AEN12906"><span
+             class="footnote">[1]</span></a>)</p>
+          </dd>
+
+          <dt><tt
+           class="FILENAME">/etc/bashrc</tt></dt>
+
+          <dd>
+            <p>функции и <a
+             href="c12683.html#ALIASREF">псевдонимы</a> Bash</p>
+          </dd>
+
+          <dt><tt
+           class="FILENAME"><tt
+           class="VARNAME">$HOME</tt>/.bash_profile</tt></dt>
+
+          <dd>
+            <p>пользовательские настройки окружения Bash, находится в
+            домашнем каталоге у каждого пользователя (локальная копия
+            файла <tt
+             class="FILENAME">/etc/profile</tt>)</p>
+          </dd>
+
+          <dt><tt
+           class="FILENAME"><tt
+           class="VARNAME">$HOME</tt>/.bashrc</tt></dt>
+
+          <dd>
+            <p>пользовательский файл инициализации Bash, находится в
+            домашнем каталоге у каждого пользователя (локальная копия
+            файла <tt
+             class="FILENAME">/etc/bashrc</tt>). См. <a
+             href="a15124.html">Приложение G</a>пример файла <tt
+             class="FILENAME">.bashrc</tt>.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="LOGOUTFILEREF1"></a>Сценарий выхода из системы
+        (logout)</strong></p>
+
+        <dl>
+          <dt><tt
+           class="FILENAME"><tt
+           class="VARNAME">$HOME</tt>/.bash_logout</tt></dt>
+
+          <dd>
+            <p>Этот сценарий отрабатывает, когда пользователь выходит
+            из системы.</p>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN12906"
+         href="c12891.html#AEN12906"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Это не относится к таким оболочкам, как <strong
+           class="COMMAND">csh</strong>, <strong
+           class="COMMAND">tcsh</strong> и другим, которые не являются
+          производными от классической Bourne shell (<strong
+           class="COMMAND">sh</strong>).</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c12790.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c12942.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Массивы</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p11889.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">/dev и /proc</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

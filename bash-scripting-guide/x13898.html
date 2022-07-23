@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Проблемы переносимости</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Разное"
+     href="c13505.html">
+    <link
+     rel="PREVIOUS"
+     title="Проблемы безопасности"
+     href="x13884.html">
+    <link
+     rel="NEXT"
+     title="Сценарии командной оболочки под Windows"
+     href="x13930.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x13884.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 33. Разное</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x13930.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="PORTABILITYISSUES"></a>33.9. Проблемы переносимости</h1>
+
+      <p>Эта книга делает упор на создании сценариев для командной
+      оболочки Bash, для операционной системы GNU/Linux. Тем не менее,
+      многие рекомендации, приводимые здесь, могут быть вполне
+      применимы и для других командных оболочек, таких как <strong
+       class="COMMAND">sh</strong> и <strong
+       class="COMMAND">ksh</strong>.</p>
+
+      <p>Многие версии командных оболочек стремятся следовать стандарту
+      POSIX 1003.2. Вызывая Bash с ключом <tt
+       class="OPTION">--posix</tt>, или вставляя <strong
+       class="COMMAND">set -o posix</strong> в начало сценария, вы
+      можете заставить Bash очень близко следовать этому стандарту. Но,
+      даже без этого ключа, большинство сценариев, написанных для Bash,
+      будут работать под управлением <strong
+       class="COMMAND">ksh</strong>, и наоборот, т.к. Chet Ramey
+      перенес многие особенности, присущие <strong
+       class="COMMAND">ksh</strong>, в последние версии Bash.</p>
+
+      <p>В коммерческих версиях UNIX, сценарии, использующие GNU-версии
+      стандартных утилит и команд, могут оказаться неработоспособными.
+      Однако, с течением времени, таких проблем остается все меньше и
+      меньше, поскольку утилиты GNU, в большинстве своем, заместили
+      свои проприетарные аналоги в UNIX. После того, как <a
+       href=
+      "http://linux.oreillynet.com/pub/a/linux/2002/02/28/caldera.html"
+       target="_top">Caldera дала разрешение на публикацию исходного
+      кода</a> некоторых версий оригинальных утилит UNIX, этот процесс
+      значительно ускорился.</p>
+
+      <p>Bash имеет некоторые особенности, недоступные в традиционном
+      Bourne shell. Среди них:</p>
+
+      <ul>
+        <li>
+          <p>Некоторые дополнительные <a
+           href="c13228.html#INVOCATIONOPTIONSREF">ключи вызова</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="c11441.html#COMMANDSUBREF">Подстановка команд</a>, с
+          использованием нотации <strong
+           class="COMMAND">$( )</strong></p>
+        </li>
+
+        <li>
+          <p>Некоторые <a
+           href="x4171.html#STRINGMANIP">операции над строками</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="c12434.html#PROCESSSUBREF">Подстановка
+          процессов</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="c5358.html#BUILTINREF">встроенные команды</a> Bash</p>
+        </li>
+      </ul>
+      <br>
+      <br>
+
+      <p>Более подробный список характерных особенностей Bash, вы
+      найдете в <a
+       href="ftp://ftp.cwru.edu/pub/bash/FAQ"
+       target="_top">Bash F.A.Q.</a>.</p>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x13884.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x13930.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Проблемы безопасности</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c13505.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Сценарии командной оболочки под Windows</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

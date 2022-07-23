@@ -1,0 +1,807 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Пример файла .bashrc</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="PREVIOUS"
+     title="История команд"
+     href="a15070.html">
+    <link
+     rel="NEXT"
+     title=
+    "Преобразование пакетных (*.bat) файлов DOS в сценарии командной оболочки"
+     href="a15138.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="a15070.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="a15138.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="APPENDIX">
+      <h1><a
+       name="SAMPLE-BASHRC"></a>Приложение G. Пример файла <tt
+       class="FILENAME">.bashrc</tt></h1>
+
+      <p>Файл <tt
+       class="FILENAME">~/.bashrc</tt> определяет поведение командной
+      оболочки. Внимательное изучение этого примера поможет вам
+      значительно продвинуться в понимании Bash.</p>
+
+      <p><a
+       href="mailto:emmanuel.rouat@wanadoo.fr"
+       target="_top">Emmanuel Rouat</a> представил следующий, очень
+      сложный, файл <tt
+       class="FILENAME">.bashrc</tt>, написанный для операционной
+      системы Linux. Предложения и замечания приветствуются.</p>
+
+      <p>Внимательно изучите этот файл. Отдельные участки этого файла
+      вы свободно можете использовать в своем собственном <tt
+       class="FILENAME">.bashrc</tt> или, даже в своих сценариях!</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="BASHRC"></a>
+
+        <p><strong>Пример G-1. Пример файла <tt
+         class="FILENAME">.bashrc</tt></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#===============================================================
+#
+# ЛИЧНЫЙ ФАЙЛ $HOME/.bashrc для bash-2.05a (или выше)
+#
+# Время последней модификации: Втр Апр 15 20:32:34 CEST 2003
+#
+# Этот файл содержит настройки интерактивной командной оболочки.
+# Здесь размещены определения псевдонимов, функций
+# и других элементов Bash, таких как prompt (приглашение к вводу).
+#
+# Изначально, этот файл был создан в операционной системе Solaris,
+# но позднее был переделан под Redhat
+# --&gt; Модифицирован под Linux.
+# Большая часть кода, который находится здесь, была взята из
+# Usenet (или Интернет).
+# Этот файл содержит слишком много определений -- помните, это всего лишь пример.
+#
+#
+#===============================================================
+
+# --&gt; Комментарии, добавленные автором HOWTO.
+# --&gt; И дополнены автором сценария Emmanuel Rouat :-)
+
+#-----------------------------------
+# Глобальные определения
+#-----------------------------------
+
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc   # --&gt; Прочитать настройки из /etc/bashrc, если таковой имеется.
+fi
+
+#-------------------------------------------------------------
+# Настройка переменной $DISPLAY (если еще не установлена)
+# Это срабатывает под linux - в вашем случае все может быть по другому....
+# Проблема в том, что различные типы терминалов
+# дают разные ответы на запрос &#39;who am i&#39;......
+# я не нашел &#39;универсального&#39; метода
+#-------------------------------------------------------------
+
+function get_xserver ()
+{
+    case $TERM in
+        xterm )
+            XSERVER=$(who am i | awk &#39;{print $NF}&#39; | tr -d &#39;)&#39;&#39;(&#39; )
+            XSERVER=${XSERVER%%:*}
+            ;;
+        aterm | rxvt)
+        # добавьте здесь свой код.....
+            ;;
+    esac
+}
+
+if [ -z ${DISPLAY:=&quot;&quot;} ]; then
+    get_xserver
+    if [[ -z ${XSERVER}  || ${XSERVER} == $(hostname) || ${XSERVER} == &quot;unix&quot; ]]; then
+        DISPLAY=&quot;:0.0&quot;          # для локального хоста
+    else
+        DISPLAY=${XSERVER}:0.0  # для удаленного хоста
+    fi
+fi
+
+export DISPLAY
+
+#---------------
+# Некоторые настройки
+#---------------
+
+ulimit -S -c 0          # Запрет на создание файлов coredump
+set -o notify
+set -o noclobber
+set -o ignoreeof
+set -o nounset
+#set -o xtrace          # полезно для отладки
+
+# Разрешающие настройки:
+shopt -s cdspell
+shopt -s cdable_vars
+shopt -s checkhash
+shopt -s checkwinsize
+shopt -s mailwarn
+shopt -s sourcepath
+shopt -s no_empty_cmd_completion  # только для bash&gt;=2.04
+shopt -s cmdhist
+shopt -s histappend histreedit histverify
+shopt -s extglob
+
+# Запрещающие настройки:
+shopt -u mailwarn
+unset MAILCHECK         # Я не желаю, чтобы командная оболочка сообщала мне о прибытии почты
+
+
+export TIMEFORMAT=$&#39;\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n&#39;
+export HISTIGNORE=&quot;&amp;:bg:fg:ll:h&quot;
+export HOSTFILE=$HOME/.hosts    # Поместить список удаленных хостов в файл ~/.hosts
+
+
+
+#-----------------------
+# Greeting, motd etc...
+#-----------------------
+
+# Для начала определить некоторые цвета:
+red=&#39;\e[0;31m&#39;
+RED=&#39;\e[1;31m&#39;
+blue=&#39;\e[0;34m&#39;
+BLUE=&#39;\e[1;34m&#39;
+cyan=&#39;\e[0;36m&#39;
+CYAN=&#39;\e[1;36m&#39;
+NC=&#39;\e[0m&#39;              # No Color (нет цвета)
+# --&gt; Прекрасно. Имеет тот же эффект, что и &quot;ansi.sys&quot; в DOS.
+
+# Лучше выглядит на черном фоне.....
+echo -e &quot;${CYAN}This is BASH ${RED}${BASH_VERSION%.*}${CYAN} - DISPLAY on ${RED}$DISPLAY${NC}\n&quot;
+date
+if [ -x /usr/games/fortune ]; then
+    /usr/games/fortune -s     # сделает наш день более интересным.... :-)
+fi
+
+function _exit()        # функция, запускающаяся при выходе из оболочки
+{
+    echo -e &quot;${RED}Аста ла виста, бэби ${NC}&quot;
+}
+trap _exit EXIT
+
+#---------------
+# Prompt
+#---------------
+
+if [[ &quot;${DISPLAY#$HOST}&quot; != &quot;:0.0&quot; &amp;&amp;  &quot;${DISPLAY}&quot; != &quot;:0&quot; ]]; then
+    HILIT=${red}   # на удаленной системе: prompt будет частично красным
+else
+    HILIT=${cyan}  # на локальной системе: prompt будет частично циановым
+fi
+
+#  --&gt; Замените \W на \w в функциях ниже
+#+ --&gt; чтобы видеть в оболочке полный путь к текущему каталогу.
+
+function fastprompt()
+{
+    unset PROMPT_COMMAND
+    case $TERM in
+        *term | rxvt )
+            PS1=&quot;${HILIT}[\h]$NC \W &gt; \[\033]0;\${TERM} [\u@\h] \w\007\]&quot; ;;
+        linux )
+            PS1=&quot;${HILIT}[\h]$NC \W &gt; &quot; ;;
+        *)
+            PS1=&quot;[\h] \W &gt; &quot; ;;
+    esac
+}
+
+function powerprompt()
+{
+    _powerprompt()
+    {
+        LOAD=$(uptime|sed -e &quot;s/.*: \([^,]*\).*/\1/&quot; -e &quot;s/ //g&quot;)
+    }
+
+    PROMPT_COMMAND=_powerprompt
+    case $TERM in
+        *term | rxvt  )
+            PS1=&quot;${HILIT}[\A \$LOAD]$NC\n[\h \#] \W &gt; \[\033]0;\${TERM} [\u@\h] \w\007\]&quot; ;;
+        linux )
+            PS1=&quot;${HILIT}[\A - \$LOAD]$NC\n[\h \#] \w &gt; &quot; ;;
+        * )
+            PS1=&quot;[\A - \$LOAD]\n[\h \#] \w &gt; &quot; ;;
+    esac
+}
+
+powerprompt     # это prompt по-умолчанию - может работать довольно медленно
+                # Если это так, то используйте fastprompt....
+
+#===============================================================
+#
+# ПСЕВДОНИМЫ И ФУНКЦИИ
+#
+# Возможно некоторые из функций, приведенных здесь, окажутся для вас слишком большими,
+# но на моей рабочей станции установлено 512Mb ОЗУ, так что.....
+# Если пожелаете уменьшить размер этого файла, то можете оформить эти функции
+# в виде отдельных сценариев.
+#
+# Большинство функций были взяты, почти без переделки, из примеров
+# к bash-2.04.
+#
+#===============================================================
+
+#-------------------
+# Псевдонимы
+#-------------------
+
+alias rm=&#39;rm -i&#39;
+alias cp=&#39;cp -i&#39;
+alias mv=&#39;mv -i&#39;
+# -&gt; Предотвращает случайное удаление файлов.
+alias mkdir=&#39;mkdir -p&#39;
+
+alias h=&#39;history&#39;
+alias j=&#39;jobs -l&#39;
+alias r=&#39;rlogin&#39;
+alias which=&#39;type -all&#39;
+alias ..=&#39;cd ..&#39;
+alias path=&#39;echo -e ${PATH//:/\\n}&#39;
+alias print=&#39;/usr/bin/lp -o nobanner -d $LPDEST&#39;   # Предполагается, что LPDEST определен
+alias pjet=&#39;enscript -h -G -fCourier9 -d $LPDEST&#39;  # Печать через enscript
+alias background=&#39;xv -root -quit -max -rmode 5&#39;    # Положить картинку в качестве фона
+alias du=&#39;du -kh&#39;
+alias df=&#39;df -kTh&#39;
+
+# Различные варианты &#39;ls&#39; (предполагается, что установлена GNU-версия ls)
+alias la=&#39;ls -Al&#39;               # показать скрытые файлы
+alias ls=&#39;ls -hF --color&#39;       # выделить различные типы файлов цветом
+alias lx=&#39;ls -lXB&#39;              # сортировка по расширению
+alias lk=&#39;ls -lSr&#39;              # сортировка по размеру
+alias lc=&#39;ls -lcr&#39;              # сортировка по времени изменения
+alias lu=&#39;ls -lur&#39;              # сортировка по времени последнего обращения
+alias lr=&#39;ls -lR&#39;               # рекурсивный обход подкаталогов
+alias lt=&#39;ls -ltr&#39;              # сортировка по дате
+alias lm=&#39;ls -al |more&#39;         # вывод через &#39;more&#39;
+alias tree=&#39;tree -Csu&#39;          # альтернатива &#39;ls&#39;
+
+# подготовка &#39;less&#39;
+alias more=&#39;less&#39;
+export PAGER=less
+export LESSCHARSET=&#39;latin1&#39;
+export LESSOPEN=&#39;|/usr/bin/lesspipe.sh %s 2&gt;&amp;-&#39; # если существует lesspipe.sh
+export LESS=&#39;-i -N -w  -z-4 -g -e -M -X -F -R -P%t?f%f \
+:stdin .?pb%pb\%:?lbLine %lb:?bbByte %bb:-...&#39;
+
+# проверка правописания - настоятельно рекомендую :-)
+alias xs=&#39;cd&#39;
+alias vf=&#39;cd&#39;
+alias moer=&#39;more&#39;
+alias moew=&#39;more&#39;
+alias kk=&#39;ll&#39;
+
+#----------------
+# добавим немножко &quot;приятностей&quot;
+#----------------
+
+function xtitle ()
+{
+    case &quot;$TERM&quot; in
+        *term | rxvt)
+            echo -n -e &quot;\033]0;$*\007&quot; ;;
+        *)
+            ;;
+    esac
+}
+
+# псевдонимы...
+alias top=&#39;xtitle Processes on $HOST &amp;&amp; top&#39;
+alias make=&#39;xtitle Making $(basename $PWD) ; make&#39;
+alias ncftp=&quot;xtitle ncFTP ; ncftp&quot;
+
+# .. и функции
+function man ()
+{
+    for i ; do
+        xtitle The $(basename $1|tr -d .[:digit:]) manual
+        command man -F -a &quot;$i&quot;
+    done
+}
+
+function ll(){ ls -l &quot;$@&quot;| egrep &quot;^d&quot; ; ls -lXB &quot;$@&quot; 2&gt;&amp;-| egrep -v &quot;^d|total &quot;; }
+function te()  # &quot;обертка&quot; вокруг xemacs/gnuserv
+{
+    if [ &quot;$(gnuclient -batch -eval t 2&gt;&amp;-)&quot; == &quot;t&quot; ]; then
+        gnuclient -q &quot;$@&quot;;
+    else
+        ( xemacs &quot;$@&quot; &amp;);
+    fi
+}
+
+#-----------------------------------
+# Функции для работы с файлами и строками:
+#-----------------------------------
+
+# Поиск файла по шаблону:
+function ff() { find . -type f -iname &#39;*&#39;$*&#39;*&#39; -ls ; }
+# Поиск файла по шаблону в $1 и запуск команды в $2 с ним:
+function fe() { find . -type f -iname &#39;*&#39;$1&#39;*&#39; -exec &quot;${2:-file}&quot; {} \;  ; }
+# поиск строки по файлам:
+function fstr()
+{
+    OPTIND=1
+    local case=&quot;&quot;
+    local usage=&quot;fstr: поиск строки в файлах.
+Порядок использования: fstr [-i] \&quot;шаблон\&quot; [\&quot;шаблон_имени_файла\&quot;] &quot;
+    while getopts :it opt
+    do
+        case &quot;$opt&quot; in
+        i) case=&quot;-i &quot; ;;
+        *) echo &quot;$usage&quot;; return;;
+        esac
+    done
+    shift $(( $OPTIND - 1 ))
+    if [ &quot;$#&quot; -lt 1 ]; then
+        echo &quot;$usage&quot;
+        return;
+    fi
+    local SMSO=$(tput smso)
+    local RMSO=$(tput rmso)
+    find . -type f -name &quot;${2:-*}&quot; -print0 | xargs -0 grep -sn ${case} &quot;$1&quot; 2&gt;&amp;- | \
+sed &quot;s/$1/${SMSO}\0${RMSO}/gI&quot; | more
+}
+
+function cuttail() # удалить последние n строк в файле, по-умолчанию 10
+{
+    nlines=${2:-10}
+    sed -n -e :a -e &quot;1,${nlines}!{P;N;D;};N;ba&quot; $1
+}
+
+function lowercase()  # перевести имя файла в нижний регистр
+{
+    for file ; do
+        filename=${file##*/}
+        case &quot;$filename&quot; in
+        */*) dirname==${file%/*} ;;
+        *) dirname=.;;
+        esac
+        nf=$(echo $filename | tr A-Z a-z)
+        newname=&quot;${dirname}/${nf}&quot;
+        if [ &quot;$nf&quot; != &quot;$filename&quot; ]; then
+            mv &quot;$file&quot; &quot;$newname&quot;
+            echo &quot;lowercase: $file --&gt; $newname&quot;
+        else
+            echo &quot;lowercase: имя файла $file не было изменено.&quot;
+        fi
+    done
+}
+
+function swap()         # меняет 2 файла местами
+{
+    local TMPFILE=tmp.$$
+    mv &quot;$1&quot; $TMPFILE
+    mv &quot;$2&quot; &quot;$1&quot;
+    mv $TMPFILE &quot;$2&quot;
+}
+
+
+#-----------------------------------
+# Функции для работы с процессами/системой:
+#-----------------------------------
+
+function my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,bsdtime,command ; }
+function pp() { my_ps f | awk &#39;!/awk/ &amp;&amp; $0~var&#39; var=${1:-&quot;.*&quot;} ; }
+
+# Эта функция является грубым аналогом &#39;killall&#39; в linux
+# но не эквивалентна (насколько я знаю) &#39;killall&#39; в Solaris
+function killps()   # &quot;Прибить&quot; процесс по его имени
+{
+    local pid pname sig=&quot;-TERM&quot;   # сигнал, рассылаемый по-умолчанию
+    if [ &quot;$#&quot; -lt 1 ] || [ &quot;$#&quot; -gt 2 ]; then
+        echo &quot;Порядок использования: killps [-SIGNAL] шаблон_имени_процесса&quot;
+        return;
+    fi
+    if [ $# = 2 ]; then sig=$1 ; fi
+    for pid in $(my_ps| awk &#39;!/awk/ &amp;&amp; $0~pat { print $1 }&#39; pat=${!#} ) ; do
+        pname=$(my_ps | awk &#39;$1~var { print $5 }&#39; var=$pid )
+        if ask &quot;Послать сигнал $sig процессу $pid &lt;$pname&gt;?&quot;
+            then kill $sig $pid
+        fi
+    done
+}
+
+function my_ip() # IP адрес
+{
+    MY_IP=$(/sbin/ifconfig ppp0 | awk &#39;/inet/ { print $2 } &#39; | sed -e s/addr://)
+    MY_ISP=$(/sbin/ifconfig ppp0 | awk &#39;/P-t-P/ { print $3 } &#39; | sed -e s/P-t-P://)
+}
+
+function ii()   # Дополнительные сведения о системе
+{
+    echo -e &quot;\nВы находитесь на ${RED}$HOST&quot;
+    echo -e &quot;\nДополнительная информация:$NC &quot; ; uname -a
+    echo -e &quot;\n${RED}В системе работают пользователи:$NC &quot; ; w -h
+    echo -e &quot;\n${RED}Дата:$NC &quot; ; date
+    echo -e &quot;\n${RED}Время, прошедшее с момента последней перезагрузки :$NC &quot; ; uptime
+    echo -e &quot;\n${RED}Память :$NC &quot; ; free
+    my_ip 2&gt;&amp;- ;
+    echo -e &quot;\n${RED}IP адрес:$NC&quot; ; echo ${MY_IP:-&quot;Соединение не установлено&quot;}
+    echo -e &quot;\n${RED}Адрес провайдера (ISP):$NC&quot; ; echo ${MY_ISP:-&quot;Соединение не установлено&quot;}
+    echo
+}
+
+# Разные утилиты:
+
+function repeat()       # повторить команду n раз
+{
+    local i max
+    max=$1; shift;
+    for ((i=1; i &lt;= max ; i++)); do  # --&gt; C-подобный синтаксис
+        eval &quot;$@&quot;;
+    done
+}
+
+function ask()
+{
+    echo -n &quot;$@&quot; &#39;[y/n] &#39; ; read ans
+    case &quot;$ans&quot; in
+        y*|Y*) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+#=========================================================================
+#
+# ПРОГРАММНЫЕ ДОПОЛНЕНИЯ - ТОЛЬКО НАЧИНАЯ С ВЕРСИИ BASH-2.04
+# Большая часть дополнений взята из докуентации к bash 2.05  и из
+# пакета &#39;Bash completion&#39; (http://www.caliban.org/bash/index.shtml#completion)
+# автор -- Ian McDonalds
+# Фактически, у вас должен стоять bash-2.05a
+#
+#=========================================================================
+
+if [ &quot;${BASH_VERSION%.*}&quot; \&lt; &quot;2.05&quot; ]; then
+    echo &quot;Вам необходимо обновиться до версии 2.05&quot;
+    return
+fi
+
+shopt -s extglob        # необходимо
+set +o nounset          # иначе некоторые дополнения не будут работать
+
+complete -A hostname   rsh rcp telnet rlogin r ftp ping disk
+complete -A export     printenv
+complete -A variable   export local readonly unset
+complete -A enabled    builtin
+complete -A alias      alias unalias
+complete -A function   function
+complete -A user       su mail finger
+
+complete -A helptopic  help
+complete -A shopt      shopt
+complete -A stopped -P &#39;%&#39; bg
+complete -A job -P &#39;%&#39;     fg jobs disown
+
+complete -A directory  mkdir rmdir
+complete -A directory   -o default cd
+
+# Архивация
+complete -f -o default -X &#39;*.+(zip|ZIP)&#39;  zip
+complete -f -o default -X &#39;!*.+(zip|ZIP)&#39; unzip
+complete -f -o default -X &#39;*.+(z|Z)&#39;      compress
+complete -f -o default -X &#39;!*.+(z|Z)&#39;     uncompress
+complete -f -o default -X &#39;*.+(gz|GZ)&#39;    gzip
+complete -f -o default -X &#39;!*.+(gz|GZ)&#39;   gunzip
+complete -f -o default -X &#39;*.+(bz2|BZ2)&#39;  bzip2
+complete -f -o default -X &#39;!*.+(bz2|BZ2)&#39; bunzip2
+# Postscript,pdf,dvi.....
+complete -f -o default -X &#39;!*.ps&#39;  gs ghostview ps2pdf ps2ascii
+complete -f -o default -X &#39;!*.dvi&#39; dvips dvipdf xdvi dviselect dvitype
+complete -f -o default -X &#39;!*.pdf&#39; acroread pdf2ps
+complete -f -o default -X &#39;!*.+(pdf|ps)&#39; gv
+complete -f -o default -X &#39;!*.texi*&#39; makeinfo texi2dvi texi2html texi2pdf
+complete -f -o default -X &#39;!*.tex&#39; tex latex slitex
+complete -f -o default -X &#39;!*.lyx&#39; lyx
+complete -f -o default -X &#39;!*.+(htm*|HTM*)&#39; lynx html2ps
+# Multimedia
+complete -f -o default -X &#39;!*.+(jp*g|gif|xpm|png|bmp)&#39; xv gimp
+complete -f -o default -X &#39;!*.+(mp3|MP3)&#39; mpg123 mpg321
+complete -f -o default -X &#39;!*.+(ogg|OGG)&#39; ogg123
+
+
+
+complete -f -o default -X &#39;!*.pl&#39;  perl perl5
+
+# Эти &#39;универсальные&#39; дополнения работают тогда, когда команды вызываются
+# с, так называемыми, &#39;длинными ключами&#39;, например: &#39;ls --all&#39; вместо &#39;ls -a&#39;
+
+_get_longopts ()
+{
+    $1 --help | sed  -e &#39;/--/!d&#39; -e &#39;s/.*--\([^[:space:].,]*\).*/--\1/&#39;| \
+grep ^&quot;$2&quot; |sort -u ;
+}
+
+_longopts_func ()
+{
+    case &quot;${2:-*}&quot; in
+        -*)     ;;
+        *)      return ;;
+    esac
+
+    case &quot;$1&quot; in
+        \~*)    eval cmd=&quot;$1&quot; ;;
+        *)      cmd=&quot;$1&quot; ;;
+    esac
+    COMPREPLY=( $(_get_longopts ${1} ${2} ) )
+}
+complete  -o default -F _longopts_func configure bash
+complete  -o default -F _longopts_func wget id info a2ps ls recode
+
+
+_make_targets ()
+{
+    local mdef makef gcmd cur prev i
+
+    COMPREPLY=()
+    cur=${COMP_WORDS[COMP_CWORD]}
+    prev=${COMP_WORDS[COMP_CWORD-1]}
+
+    # Если аргумент prev это -f, то вернуть возможные варианты имен файлов.
+    # будем великодушны и вернем несколько вариантов
+    # `makefile Makefile *.mk&#39;
+    case &quot;$prev&quot; in
+        -*f)    COMPREPLY=( $(compgen -f $cur ) ); return 0;;
+    esac
+
+    # Если запрошены возможные ключи, то вернуть ключи posix
+    case &quot;$cur&quot; in
+        -)      COMPREPLY=(-e -f -i -k -n -p -q -r -S -s -t); return 0;;
+    esac
+
+    # попробовать передать make `makefile&#39; перед тем как попробовать передать `Makefile&#39;
+    if [ -f makefile ]; then
+        mdef=makefile
+    elif [ -f Makefile ]; then
+        mdef=Makefile
+    else
+        mdef=*.mk
+    fi
+
+    # прежде чем просмотреть &quot;цели&quot;, убедиться, что имя makefile было задано
+    # ключом -f
+    for (( i=0; i &lt; ${#COMP_WORDS[@]}; i++ )); do
+        if [[ ${COMP_WORDS[i]} == -*f ]]; then
+            eval makef=${COMP_WORDS[i+1]}
+            break
+        fi
+    done
+
+        [ -z &quot;$makef&quot; ] &amp;&amp; makef=$mdef
+
+    # Если задан шаблон поиска, то ограничиться
+    # этим шаблоном
+    if [ -n &quot;$2&quot; ]; then gcmd=&#39;grep &quot;^$2&quot;&#39; ; else gcmd=cat ; fi
+
+    # если мы не желаем использовать *.mk, то необходимо убрать cat и использовать
+    # test -f $makef с перенаправлением ввода
+    COMPREPLY=( $(cat $makef 2&gt;/dev/null | awk &#39;BEGIN {FS=&quot;:&quot;} /^[^.#   ][^=]*:/ {print $1}&#39; | tr -s &#39; &#39; &#39;\012&#39; | sort -u | eval $gcmd ) )
+}
+
+complete -F _make_targets -X &#39;+($*|*.[cho])&#39; make gmake pmake
+
+
+# cvs(1) completion
+_cvs ()
+{
+    local cur prev
+    COMPREPLY=()
+    cur=${COMP_WORDS[COMP_CWORD]}
+    prev=${COMP_WORDS[COMP_CWORD-1]}
+
+    if [ $COMP_CWORD -eq 1 ] || [ &quot;${prev:0:1}&quot; = &quot;-&quot; ]; then
+        COMPREPLY=( $( compgen -W &#39;add admin checkout commit diff \
+        export history import log rdiff release remove rtag status \
+        tag update&#39; $cur ))
+    else
+        COMPREPLY=( $( compgen -f $cur ))
+    fi
+    return 0
+}
+complete -F _cvs cvs
+
+_killall ()
+{
+    local cur prev
+    COMPREPLY=()
+    cur=${COMP_WORDS[COMP_CWORD]}
+
+    # получить список процессов
+    COMPREPLY=( $( /usr/bin/ps -u $USER -o comm  | \
+        sed -e &#39;1,1d&#39; -e &#39;s#[]\[]##g&#39; -e &#39;s#^.*/##&#39;| \
+        awk &#39;{if ($0 ~ /^&#39;$cur&#39;/) print $0}&#39; ))
+
+    return 0
+}
+
+complete -F _killall killall killps
+
+
+# Функция обработки мета-команд
+# В настоящее время недостаточно отказоустойчива (например, mount и umount
+# обрабатываются некорректно), но все еще актуальна. Автор Ian McDonald, изменена мной.
+
+_my_command()
+{
+    local cur func cline cspec
+
+    COMPREPLY=()
+    cur=${COMP_WORDS[COMP_CWORD]}
+
+    if [ $COMP_CWORD = 1 ]; then
+        COMPREPLY=( $( compgen -c $cur ) )
+    elif complete -p ${COMP_WORDS[1]} &amp;&gt;/dev/null; then
+        cspec=$( complete -p ${COMP_WORDS[1]} )
+        if [ &quot;${cspec%%-F *}&quot; != &quot;${cspec}&quot; ]; then
+            # complete -F &lt;function&gt;
+            #
+            # COMP_CWORD and COMP_WORDS() доступны на запись,
+            # так что мы можем установить их перед тем,
+            # как передать их дальше
+
+            # уменьшить на 1 текущий номер лексемы
+            COMP_CWORD=$(( $COMP_CWORD - 1 ))
+            # получить имя функции
+            func=${cspec#*-F }
+            func=${func%% *}
+            # получить командную строку, исключив первую команду
+            cline=&quot;${COMP_LINE#$1 }&quot;
+            # разбить на лексемы и поместить в массив
+                COMP_WORDS=( $cline )
+            $func $cline
+        elif [ &quot;${cspec#*-[abcdefgjkvu]}&quot; != &quot;&quot; ]; then
+            # complete -[abcdefgjkvu]
+            #func=$( echo $cspec | sed -e &#39;s/^.*\(-[abcdefgjkvu]\).*$/\1/&#39; )
+            func=$( echo $cspec | sed -e &#39;s/^complete//&#39; -e &#39;s/[^ ]*$//&#39; )
+            COMPREPLY=( $( eval compgen $func $cur ) )
+        elif [ &quot;${cspec#*-A}&quot; != &quot;$cspec&quot; ]; then
+            # complete -A &lt;type&gt;
+            func=${cspec#*-A }
+        func=${func%% *}
+        COMPREPLY=( $( compgen -A $func $cur ) )
+        fi
+    else
+        COMPREPLY=( $( compgen -f $cur ) )
+    fi
+}
+
+
+complete -o default -F _my_command nohup exec eval trace truss strace sotruss gdb
+complete -o default -F _my_command command type which man nice
+
+# Локальные переменные:
+# mode:shell-script
+# sh-shell:bash
+# Конец:
+</pre>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="a15070.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="a15138.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">История команд</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"> </td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Преобразование пакетных (*.bat) файлов DOS в
+          сценарии командной оболочки</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

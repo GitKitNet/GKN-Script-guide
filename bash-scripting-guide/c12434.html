@@ -1,0 +1,340 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Подстановка процессов</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Материал повышенной сложности"
+     href="p11889.html">
+    <link
+     rel="PREVIOUS"
+     title="Ограниченный режим командной оболочки"
+     href="c12376.html">
+    <link
+     rel="NEXT"
+     title="Функции"
+     href="c12483.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c12376.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c12483.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="PROCESS-SUB"></a>Глава 21. Подстановка процессов</h1>
+
+      <p><a
+       name="PROCESSSUBREF"></a><tt
+       class="REPLACEABLE"><em>Подстановка процессов</em></tt> -- это
+      аналог <a
+       href="c11441.html#COMMANDSUBREF">подстановки команд</a>.
+      Операция подстановки команд записывает в переменную результат
+      выполнения некоторой команды, например, <strong
+       class="COMMAND">dir_contents=`ls -al`</strong> или <strong
+       class="COMMAND">xref=$(grep word datafile)</strong>. Операция
+      подстановки процессов передает вывод одного процесса на ввод
+      другого (другими словами, передает результат выполнения одной
+      команды -- другой).</p>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="COMMANDSPARENS1"></a>Шаблон подстановки
+        команды</strong></p>
+
+        <dl>
+          <dt>Внутри круглых скобок</dt>
+
+          <dd>
+            <p><strong
+             class="COMMAND">&gt;(command)</strong></p>
+
+            <p><strong
+             class="COMMAND">&lt;(command)</strong></p>
+
+            <p>Таким образом инициируется подстановка процессов. Здесь,
+            для передачи результата работы процесса в круглых скобках,
+            используются файлы <tt
+             class="FILENAME">/dev/fd/&lt;n&gt;</tt>. <a
+             name="AEN12454"
+             href="#FTN.AEN12454"><span
+             class="footnote">[1]</span></a></p>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Между круглой скобкой и символом <span
+                     class="QUOTE">&quot;&lt;&quot;</span> или <span
+                     class="QUOTE">&quot;&gt;&quot;</span>, не должно
+                    быть пробелов, в противном случае это вызовет
+                    сообщение об ошибке.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+        </dl>
+      </div>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo &gt;(true)</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">/dev/fd/63</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo &lt;(true)</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">/dev/fd/63</tt>
+             
+</pre>
+      Bash создает канал с двумя <a
+       href="c11620.html#FDREF">файловыми дескрипторами</a>, <tt
+       class="FILENAME">--fIn</tt> и <tt
+       class="FILENAME">fOut--</tt>. <tt
+       class="FILENAME">stdin</tt> команды <a
+       href="c5358.html#TRUEREF">true</a> присоединяется к <tt
+       class="FILENAME">fOut</tt> (dup2(fOut, 0)), затем Bash передает
+      <tt
+       class="FILENAME">/dev/fd/fIn</tt> в качестве аргумента команде
+      <strong
+       class="COMMAND">echo</strong>. В системах, где отсутствуют файлы
+      <tt
+       class="FILENAME">/dev/fd/&lt;n&gt;</tt>, Bash может использовать
+      временные файлы. (Спасибо S.C.)<br>
+      <br>
+<pre
+ class="PROGRAMLISTING">
+cat &lt;(ls -l)
+# То же самое, что и     ls -l | cat
+
+sort -k 9 &lt;(ls -l /bin) &lt;(ls -l /usr/bin) &lt;(ls -l /usr/X11R6/bin)
+# Список файлов в трех основных каталогах &#39;bin&#39;, отсортированный по именам файлов.
+# Обратите внимание: на вход &#39;sort&#39; поданы три самостоятельные команды.
+
+
+diff &lt;(command1) &lt;(command2)    # Выдаст различия в выводе команд.
+
+tar cf &gt;(bzip2 -c &gt; file.tar.bz2) $directory_name
+# Вызовет &quot;tar cf /dev/fd/?? $directory_name&quot; и затем &quot;bzip2 -c &gt; file.tar.bz2&quot;.
+#
+# Из-за особенностей, присущих некоторым системам, связанным с /dev/fd/&lt;n&gt;,
+# канал между командами не обязательно должен быть именованным.
+#
+# Это можно сделать и так.
+#
+bzip2 -c &lt; pipe &gt; file.tar.bz2&amp;
+tar cf pipe $directory_name
+rm pipe
+#        или
+exec 3&gt;&amp;1
+tar cf /dev/fd/4 $directory_name 4&gt;&amp;1 &gt;&amp;3 3&gt;&amp;- | bzip2 -c &gt; file.tar.bz2 3&gt;&amp;-
+exec 3&gt;&amp;-
+
+
+# Спасибо S.C.
+</pre>
+      <br>
+      <br>
+
+      <p>Ниже приводится еще один очень интересный пример использования
+      подстановки процессов.</p>
+<pre
+ class="PROGRAMLISTING">
+# Фрагмент сценария из дистрибутива SuSE:
+
+while read  des what mask iface; do
+# Некоторые команды ...
+done &lt; &lt;(route -n)
+
+
+# Чтобы проверить это, попробуем вставить команду, выполняющую какие либо действия.
+while read  des what mask iface; do
+  echo $des $what $mask $iface
+done &lt; &lt;(route -n)
+
+# Вывод на экран:
+# Kernel IP routing table
+# Destination Gateway Genmask Flags Metric Ref Use Iface
+# 127.0.0.0 0.0.0.0 255.0.0.0 U 0 0 0 lo
+
+
+# Как указывает S.C. -- более простой для понимания эквивалент:
+route -n |
+  while read des what mask iface; do   # Переменные берут значения с устройства вывода конвейера (канала).
+    echo $des $what $mask $iface
+  done  #  На экран выводится то же самое, что и выше.
+        #  Однако, Ulrich Gayer отметил, что ...
+        #+ этот вариант запускает цикл while в подоболочке,
+        #+ и поэтому переменные не видны за пределами цикла, после закрытия канала.
+</pre>
+      <br>
+      <br>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN12454"
+         href="c12434.html#AEN12454"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Имеет тот же эффект, что и <a
+           href="x9307.html#NAMEDPIPEREF">именованные каналы</a>
+          (временный файл), фактически, именованные каналы некогда
+          использовались в операциях подстановки процессов.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c12376.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c12483.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Ограниченный режим командной оболочки</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p11889.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Функции</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

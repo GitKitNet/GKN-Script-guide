@@ -1,0 +1,731 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Операции сравнения</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Проверка условий"
+     href="c2171.html">
+    <link
+     rel="PREVIOUS"
+     title="Операции проверки файлов"
+     href="x2389.html">
+    <link
+     rel="NEXT"
+     title="Вложенные условные операторы if/then"
+     href="x2770.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x2389.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 7. Проверка условий</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x2770.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="COMPARISON-OPS"></a>7.3. Операции сравнения</h1>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="ICOMPARISON1"></a>сравнение целых чисел</strong></p>
+
+        <dl>
+          <dt><span
+           class="TOKEN">-eq</span></dt>
+
+          <dd>
+            <p><a
+             name="EQUALREF"></a></p>
+
+            <p>равно</p>
+
+            <p><tt
+             class="USERINPUT"><strong>if [ &quot;$a&quot; -eq
+            &quot;$b&quot; ]</strong></tt></p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-ne</span></dt>
+
+          <dd>
+            <p>не равно</p>
+
+            <p><tt
+             class="USERINPUT"><strong>if [ &quot;$a&quot; -ne
+            &quot;$b&quot; ]</strong></tt></p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-gt</span></dt>
+
+          <dd>
+            <p>больше</p>
+
+            <p><tt
+             class="USERINPUT"><strong>if [ &quot;$a&quot; -gt
+            &quot;$b&quot; ]</strong></tt></p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-ge</span></dt>
+
+          <dd>
+            <p>больше или равно</p>
+
+            <p><tt
+             class="USERINPUT"><strong>if [ &quot;$a&quot; -ge
+            &quot;$b&quot; ]</strong></tt></p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-lt</span></dt>
+
+          <dd>
+            <p>меньше</p>
+
+            <p><tt
+             class="USERINPUT"><strong>if [ &quot;$a&quot; -lt
+            &quot;$b&quot; ]</strong></tt></p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-le</span></dt>
+
+          <dd>
+            <p>меньше или равно</p>
+
+            <p><tt
+             class="USERINPUT"><strong>if [ &quot;$a&quot; -le
+            &quot;$b&quot; ]</strong></tt></p>
+          </dd>
+
+          <dt><a
+           name="INTLT"></a><span
+           class="TOKEN">&lt;</span></dt>
+
+          <dd>
+            <p>меньше (внутри <a
+             href="x4862.html">двойных круглых скобок</a> )</p>
+
+            <p><tt
+             class="USERINPUT"><strong>((&quot;$a&quot; &lt;
+            &quot;$b&quot;))</strong></tt></p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">&lt;=</span></dt>
+
+          <dd>
+            <p>меньше или равно (внутри двойных круглых скобок)</p>
+
+            <p><tt
+             class="USERINPUT"><strong>((&quot;$a&quot; &lt;=
+            &quot;$b&quot;))</strong></tt></p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">&gt;</span></dt>
+
+          <dd>
+            <p>больше (внутри двойных круглых скобок)</p>
+
+            <p><tt
+             class="USERINPUT"><strong>((&quot;$a&quot; &gt;
+            &quot;$b&quot;))</strong></tt></p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">&gt;=</span></dt>
+
+          <dd>
+            <p>больше или равно (внутри двойных круглых скобок)</p>
+
+            <p><tt
+             class="USERINPUT"><strong>((&quot;$a&quot; &gt;=
+            &quot;$b&quot;))</strong></tt></p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="SCOMPARISON1"></a>сравнение строк</strong></p>
+
+        <dl>
+          <dt><span
+           class="TOKEN">=</span></dt>
+
+          <dd>
+            <p><a
+             name="EQUALSIGNREF"></a></p>
+
+            <p>равно</p>
+
+            <p><tt
+             class="USERINPUT"><strong>if [ &quot;$a&quot; =
+            &quot;$b&quot; ]</strong></tt></p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">==</span></dt>
+
+          <dd>
+            <p>равно</p>
+
+            <p><tt
+             class="USERINPUT"><strong>if [ &quot;$a&quot; ==
+            &quot;$b&quot; ]</strong></tt></p>
+
+            <p>Синоним оператора <span
+             class="TOKEN">=</span>.</p>
+<pre
+ class="PROGRAMLISTING">
+[[ $a == z* ]]    # истина, если $a начинается с символа &quot;z&quot; (сравнение по шаблону)
+[[ $a == &quot;z*&quot; ]]  # истина, если $a равна z*
+
+[ $a == z* ]      # имеют место подстановка имен файлов и разбиение на слова
+[ &quot;$a&quot; == &quot;z*&quot; ]  # истина, если $a равна z*
+
+# Спасибо S.C.
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><span
+           class="TOKEN">!=</span></dt>
+
+          <dd>
+            <p>не равно</p>
+
+            <p><tt
+             class="USERINPUT"><strong>if [ &quot;$a&quot; !=
+            &quot;$b&quot; ]</strong></tt></p>
+
+            <p>Этот оператор используется при поиске по шаблону внутри
+            <a
+             href="c2171.html#DBLBRACKETS">[[ ... ]]</a>.</p>
+          </dd>
+
+          <dt><a
+           name="LTREF"></a><span
+           class="TOKEN">&lt;</span></dt>
+
+          <dd>
+            <p>меньше, в смысле величины ASCII-кодов</p>
+
+            <p><tt
+             class="USERINPUT"><strong>if [[ &quot;$a&quot; &lt;
+            &quot;$b&quot; ]]</strong></tt></p>
+
+            <p><tt
+             class="USERINPUT"><strong>if [ &quot;$a&quot; \&lt;
+            &quot;$b&quot; ]</strong></tt></p>
+
+            <p>Обратите внимание! Символ <span
+             class="QUOTE">&quot;&lt;&quot;</span> необходимо
+            экранировать внутри <tt
+             class="USERINPUT"><strong>[ ]</strong></tt>.</p>
+          </dd>
+
+          <dt><a
+           name="GTREF"></a><span
+           class="TOKEN">&gt;</span></dt>
+
+          <dd>
+            <p>больше, в смысле величины ASCII-кодов</p>
+
+            <p><tt
+             class="USERINPUT"><strong>if [[ &quot;$a&quot; &gt;
+            &quot;$b&quot; ]]</strong></tt></p>
+
+            <p><tt
+             class="USERINPUT"><strong>if [ &quot;$a&quot; \&gt;
+            &quot;$b&quot; ]</strong></tt></p>
+
+            <p>Обратите внимание! Символ <span
+             class="QUOTE">&quot;&gt;&quot;</span> необходимо
+            экранировать внутри <tt
+             class="USERINPUT"><strong>[ ]</strong></tt>.</p>
+
+            <p>См. <a
+             href="c12790.html#BUBBLE">Пример 25-6</a> относительно
+            применения этого оператора сравнения.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-z</span></dt>
+
+          <dd>
+            <p>строка <span
+             class="QUOTE">&quot;пустая&quot;</span>, т.е. имеет
+            нулевую длину</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-n</span></dt>
+
+          <dd>
+            <p>строка не <span
+             class="QUOTE">&quot;пустая&quot;</span>.</p>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Оператор <tt
+                     class="USERINPUT"><strong>-n</strong></tt>
+                    требует, чтобы строка была заключена в кавычки
+                    внутри квадратных скобок. Как правило, проверка
+                    строк, не заключенных в кавычки, оператором <tt
+                     class="USERINPUT"><strong>! -z</strong></tt>, или
+                    просто указание строки без кавычек внутри
+                    квадратных скобок (см. <a
+                     href="x2565.html#STRTEST">Пример 7-6</a>),
+                    проходит нормально, однако это небезопасная, с
+                    точки зрения отказоустойчивости, практика. <span
+                     class="emphasis"><em
+                     class="EMPHASIS">Всегда</em></span> заключайте
+                    проверяемую строку в кавычки. <a
+                     name="AEN2722"
+                     href="#FTN.AEN2722"><span
+                     class="footnote">[1]</span></a></p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX13"></a>
+
+        <p><strong>Пример 7-5. Операции сравнения</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+a=4
+b=5
+
+#  Здесь переменные &quot;a&quot; и &quot;b&quot; могут быть как целыми числами, так и строками.
+#  Здесь наблюдается некоторое размывание границ
+#+ между целочисленными и строковыми переменными,
+#+ поскольку переменные в Bash не имеют типов.
+
+#  Bash выполняет целочисленные операции над теми переменными,
+#+ которые содержат только цифры
+#  Будьте внимательны!
+
+echo
+
+if [ &quot;$a&quot; -ne &quot;$b&quot; ]
+then
+  echo &quot;$a не равно $b&quot;
+  echo &quot;(целочисленное сравнение)&quot;
+fi
+
+echo
+
+if [ &quot;$a&quot; != &quot;$b&quot; ]
+then
+  echo &quot;$a не равно $b.&quot;
+  echo &quot;(сравнение строк)&quot;
+  #     &quot;4&quot;  != &quot;5&quot;
+  # ASCII 52 != ASCII 53
+fi
+
+# Оба варианта, &quot;-ne&quot; и &quot;!=&quot;, работают правильно.
+
+echo
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="STRTEST"></a>
+
+        <p><strong>Пример 7-6. Проверка -- является ли строка <span
+         class="emphasis"><em
+         class="EMPHASIS">пустой</em></span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# str-test.sh: Проверка пустых строк и строк, не заключенных в кавычки,
+
+# Используется конструкция   if [ ... ]
+
+
+# Если строка не инициализирована, то она не имеет никакого определенного значения.
+# Такое состояние называется &quot;null&quot; (пустая) (это не то же самое, что ноль).
+
+if [ -n $string1 ]    # $string1 не была объявлена или инициализирована.
+then
+  echo &quot;Строка \&quot;string1\&quot; не пустая.&quot;
+else
+  echo &quot;Строка \&quot;string1\&quot; пустая.&quot;
+fi
+# Неверный результат.
+# Выводится сообщение о том, что $string1 не пустая,
+#+не смотря на то, что она не была инициализирована.
+
+
+echo
+
+
+# Попробуем еще раз.
+
+if [ -n &quot;$string1&quot; ]  # На этот раз, переменная $string1 заключена в кавычки.
+then
+  echo &quot;Строка \&quot;string1\&quot; не пустая.&quot;
+else
+  echo &quot;Строка \&quot;string1\&quot; пустая.&quot;
+fi      # Внутри квадратных скобок заключайте строки в кавычки!
+
+
+echo
+
+
+if [ $string1 ]       # Опустим оператор -n.
+then
+  echo &quot;Строка \&quot;string1\&quot; не пустая.&quot;
+else
+  echo &quot;Строка \&quot;string1\&quot; пустая.&quot;
+fi
+# Все работает прекрасно.
+# Квадратные скобки -- [ ], без посторонней помощи определяют, что строка пустая.
+# Тем не менее, хорошим тоном считается заключать строки в кавычки (&quot;$string1&quot;).
+#
+# Как указывает Stephane Chazelas,
+#    if [ $string 1 ]   один аргумент &quot;]&quot;
+#    if [ &quot;$string 1&quot; ]  два аргумента, пустая &quot;$string1&quot; и &quot;]&quot;
+
+
+
+echo
+
+
+
+string1=initialized
+
+if [ $string1 ]       # Опять, попробуем строку без ничего.
+then
+  echo &quot;Строка \&quot;string1\&quot; не пустая.&quot;
+else
+  echo &quot;Строка \&quot;string1\&quot; пустая.&quot;
+fi
+# И снова получим верный результат.
+# И опять-таки, лучше поместить строку в кавычки (&quot;$string1&quot;), поскольку...
+
+
+string1=&quot;a = b&quot;
+
+if [ $string1 ]       # И снова, попробуем строку без ничего..
+then
+  echo &quot;Строка \&quot;string1\&quot; не пустая.&quot;
+else
+  echo &quot;Строка \&quot;string1\&quot; пустая.&quot;
+fi
+# Строка без кавычек дает неверный результат!
+
+exit 0
+# Спвсибо Florian Wisser, за предупреждение.
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX14"></a>
+
+        <p><strong>Пример 7-7. zmost</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+#Просмотр gz-файлов с помощью утилиты &#39;most&#39;
+
+NOARGS=65
+NOTFOUND=66
+NOTGZIP=67
+
+if [ $# -eq 0 ] # то же, что и:  if [ -z &quot;$1&quot; ]
+# $1 должен существовать, но может быть пустым:  zmost &quot;&quot; arg2 arg3
+then
+  echo &quot;Порядок использования: `basename $0` filename&quot; &gt;&amp;2
+  # Сообщение об ошибке на stderr.
+  exit $NOARGS
+  # Код возврата 65 (код ошибки).
+fi
+
+filename=$1
+
+if [ ! -f &quot;$filename&quot; ]   # Кавычки необходимы на тот случай, если имя файла содержит пробелы.
+then
+  echo &quot;Файл $filename не найден!&quot; &gt;&amp;2
+  # Сообщение об ошибке на stderr.
+  exit $NOTFOUND
+fi
+
+if [ ${filename##*.} != &quot;gz&quot; ]
+# Квадратные скобки нужны для выполнения подстановки значения переменной
+then
+  echo &quot;Файл $1 не является gz-файлом!&quot;
+  exit $NOTGZIP
+fi
+
+zcat $1 | most
+
+# Используется утилита &#39;most&#39; (очень похожа на &#39;less&#39;).
+# Последние версии &#39;most&#39; могут просматривать сжатые файлы.
+# Можно вставить &#39;more&#39; или &#39;less&#39;, если пожелаете.
+
+
+exit $?   # Сценарий возвращает код возврата, полученный по конвейеру.
+# На самом деле команда &quot;exit $?&quot; не является обязательной,
+# так как работа скрипта завершится здесь в любом случае,
+</pre>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="CCOMPARISON1"></a>построение сложных условий
+        проверки</strong></p>
+
+        <dl>
+          <dt><span
+           class="TOKEN">-a</span></dt>
+
+          <dd>
+            <p>логическое И (and)</p>
+
+            <p><tt
+             class="REPLACEABLE"><em>exp1 -a exp2</em></tt> возвращает
+            true, если <span
+             class="emphasis"><em
+             class="EMPHASIS">оба</em></span> выражения, и exp1, и exp2
+            истинны.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-o</span></dt>
+
+          <dd>
+            <p>логическое ИЛИ (or)</p>
+
+            <p><tt
+             class="REPLACEABLE"><em>exp1 -o exp2</em></tt> возвращает
+            true, если хотябы одно из выражений, exp1 <span
+             class="emphasis"><em
+             class="EMPHASIS">или</em></span> exp2 истинно.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <p>Они похожи на операторы Bash <strong
+       class="COMMAND">&amp;&amp;</strong> и <strong
+       class="COMMAND">||</strong>, употребляемые в <a
+       href="c2171.html#DBLBRACKETS">двойных квадратных
+      скобках</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+[[ condition1 &amp;&amp; condition2 ]]
+</pre>
+      Операторы <strong
+       class="COMMAND">-o</strong> и <strong
+       class="COMMAND">-a</strong> употребляются совместно с командой
+      <strong
+       class="COMMAND">test</strong> или внутри одинарных квадратных
+      скобок. 
+<pre
+ class="PROGRAMLISTING">
+if [ &quot;$exp1&quot; -a &quot;$exp2&quot; ]
+</pre>
+      <br>
+      <br>
+
+      <p>Чтобы увидеть эти операторы в действии, смотрите <a
+       href="c2792.html#ANDOR">Пример 8-3</a> и <a
+       href="c12790.html#TWODIM">Пример 25-11</a>.</p>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN2722"
+         href="x2565.html#AEN2722"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Как указывает S.C., даже заключение строки в кавычки, при
+          построении сложных условий проверки, может оказаться
+          недостаточным. <tt
+           class="USERINPUT"><strong>[ -n &quot;$string&quot; -o
+          &quot;$a&quot; = &quot;$b&quot; ]</strong></tt> в некоторых
+          версиях Bash такая проверка может вызвать сообщение об
+          ошибке, если строка <tt
+           class="VARNAME">$string</tt> пустая. Безопаснее, в смысле
+          отказоустойчивости, было бы добавить какой-либо символ к,
+          возможно пустой, строке: <tt
+           class="USERINPUT"><strong>[ &quot;x$string&quot; != x -o
+          &quot;x$a&quot; = &quot;x$b&quot; ]</strong></tt> (символ
+          <span
+           class="QUOTE">&quot;x&quot;</span> не учитывается).</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x2389.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x2770.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Операции проверки файлов</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c2171.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Вложенные условные операторы if/then</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

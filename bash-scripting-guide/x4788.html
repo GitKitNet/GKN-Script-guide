@@ -1,0 +1,317 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Косвенные ссылки на переменные</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="К вопросу о переменных"
+     href="c3270.html">
+    <link
+     rel="PREVIOUS"
+     title="Объявление переменных: declare и typeset"
+     href="x4704.html">
+    <link
+     rel="NEXT"
+     title="$RANDOM: генерация псевдослучайных целых чисел"
+     href="x4812.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x4704.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 9. К вопросу о переменных</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x4812.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="IVR"></a>9.5. Косвенные ссылки на переменные</h1>
+
+      <p><a
+       name="IVRREF"></a></p>
+
+      <p>Предположим, что значение одной переменной -- есть имя второй
+      переменной. Возможно ли получить значение второй переменной через
+      обращение к первой? Например, Пусть <tt
+       class="REPLACEABLE"><em>a=letter_of_alphabet</em></tt> и <tt
+       class="REPLACEABLE"><em>letter_of_alphabet=z</em></tt>, тогда
+      вопрос будет звучать так: &quot;Возможно ли получить значение <tt
+       class="REPLACEABLE"><em>z</em></tt>, обратившись к переменной
+      <tt
+       class="REPLACEABLE"><em>a</em></tt>?&quot;. В действительности
+      это возможно и это называется <span
+       class="emphasis"><em
+       class="EMPHASIS">косвенной ссылкой</em></span>. Для этого
+      необходимо прибегнуть к несколько необычной нотации <tt
+       class="REPLACEABLE"><em>eval var1=\$$var2</em></tt>.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="INDREF"></a>
+
+        <p><strong>Пример 9-21. Косвенные ссылки</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Косвенные ссылки на переменные.
+
+a=letter_of_alphabet
+letter_of_alphabet=z
+
+echo
+
+# Прямое обращение к переменной.
+echo &quot;a = $a&quot;
+
+# Косвенное обращение к переменной.
+eval a=\$$a
+echo &quot;А теперь a = $a&quot;
+
+echo
+
+
+# Теперь попробуем изменить переменную, на которую делается ссылка.
+
+t=table_cell_3
+table_cell_3=24
+echo &quot;\&quot;table_cell_3\&quot; = $table_cell_3&quot;
+echo -n &quot;разыменование (получение ссылки) \&quot;t\&quot; = &quot;; eval echo \$$t
+# В данном, простом, случае,
+#   eval t=\$$t; echo &quot;\&quot;t\&quot; = $t&quot;
+# дает тот же результат (почему?).
+
+echo
+
+t=table_cell_3
+NEW_VAL=387
+table_cell_3=$NEW_VAL
+echo &quot;Значение переменной \&quot;table_cell_3\&quot; изменено на $NEW_VAL.&quot;
+echo &quot;Теперь \&quot;table_cell_3\&quot; = $table_cell_3&quot;
+echo -n &quot;разыменование (получение ссылки) \&quot;t\&quot; = &quot;; eval echo \$$t
+# инструкция &quot;eval&quot; принимает два аргумента &quot;echo&quot; и &quot;\$$t&quot; (назначает равным $table_cell_3)
+echo
+
+# (Спасибо S.C. за разъяснения.)
+
+
+# Еще один способ -- нотация ${!t}, будет обсуждаться в разделе &quot;Bash, версия 2&quot;.
+# Так же, см. пример &quot;ex78.sh&quot;.
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="COLTOTALER2"></a>
+
+        <p><strong>Пример 9-22. Передача косвенных ссылок в <tt
+         class="REPLACEABLE"><em>awk</em></tt></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Другая версия сценария &quot;column totaler&quot;
+# который суммирует заданную колонку (чисел) в заданном файле.
+# Здесь используются косвенные ссылки.
+
+ARGS=2
+E_WRONGARGS=65
+
+if [ $# -ne &quot;$ARGS&quot; ] # Проверка количества входных аргументов.
+then
+   echo &quot;Порядок использования: `basename $0` filename column-number&quot;
+   exit $E_WRONGARGS
+fi
+
+filename=$1
+column_number=$2
+
+#===== До этой строки идентично первоначальному варианту сценария =====#
+
+
+# Мнгострочные скрипты awk вызываются конструкцией   awk &#39; ..... &#39;
+
+
+# Начало awk-сценария.
+# ------------------------------------------------
+awk &quot;
+
+{ total += \$${column_number} # косвенная ссылка
+}
+END {
+     print total
+     }
+
+     &quot; &quot;$filename&quot;
+# ------------------------------------------------
+# Конец awk-сценария.
+
+# Косвенные ссылки делают возможным бесконфликтное
+# обращение к переменным shell внутри вложенных сценариев awk.
+# Спасибо Stephane Chazelas.
+
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="CAUTION">
+        <table
+         class="CAUTION"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/caution.gif"
+             hspace="5"
+             alt="Caution"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Такой метод обращения к переменным имеет свои
+              особенности. Если переменная, на которую делается ссылка,
+              меняет свое значение, то переменная которая ссылается,
+              должна быть должным образом разыменована, т.е. олжна быть
+              выполнена операция получения ссылки, как это делается в
+              примере выше. <a
+               name="IVR2"></a>К счастью, нотация <tt
+               class="REPLACEABLE"><em>${!variable}</em></tt>,
+              введенная в Bash, начиная с <a
+               href="c13936.html#BASH2REF">версии 2</a> (см. <a
+               href="c13936.html#EX78">Пример 34-2</a>) позволяет
+              выполнять косвенные ссылки более интуитивно понятным
+              образом.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x4704.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x4812.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Объявление переменных: <strong
+           class="COMMAND">declare</strong> и <strong
+           class="COMMAND">typeset</strong></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c3270.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">$RANDOM: генерация псевдослучайных целых
+          чисел</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

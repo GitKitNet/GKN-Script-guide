@@ -1,0 +1,278 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Ограниченный режим командной оболочки</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Материал повышенной сложности"
+     href="p11889.html">
+    <link
+     rel="PREVIOUS"
+     title="Подоболочки, или Subshells"
+     href="c12330.html">
+    <link
+     rel="NEXT"
+     title="Подстановка процессов"
+     href="c12434.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c12330.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c12434.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="RESTRICTED-SH"></a>Глава 20. Ограниченный режим командной
+      оболочки</h1>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="DISABLEDCOMMREF"></a>Команды, запрещенные в ограниченном
+        режиме командной оболочки</strong></p>
+
+        <dl>
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p>Запуск сценария или его части в <span
+               class="emphasis"><em
+               class="EMPHASIS">ограниченном</em></span> режиме,
+              приводит к наложению ограничений на использование
+              некоторых команд. Эта мера предназначена для ограничения
+              привилегий пользователя, запустившего сценарий, и
+              минимизации возможного ущерба системе, который может
+              нанести сценарий.</p>
+            </div>
+          </dd>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p>В ограниченном режиме запрещена команда <tt
+               class="REPLACEABLE"><em>cd</em></tt> -- смена текщего
+              каталога.</p>
+            </div>
+          </dd>
+
+          <dd>
+            <p>Запрещено изменять <a
+             href="x1716.html#ENVREF">переменные окружения</a> <tt
+             class="REPLACEABLE"><em>$PATH</em></tt>, <tt
+             class="REPLACEABLE"><em>$SHELL</em></tt>, <tt
+             class="REPLACEABLE"><em>$BASH_ENV</em></tt> и <tt
+             class="REPLACEABLE"><em>$ENV</em></tt>.</p>
+          </dd>
+
+          <dd>
+            <p>Заперщен доступ к переменной <tt
+             class="REPLACEABLE"><em>$SHELLOPTS</em></tt>.</p>
+          </dd>
+
+          <dd>
+            <p>Запрещено перенаправление вывода.</p>
+          </dd>
+
+          <dd>
+            <p>Запрещен вызов утилит, в названии которых присутствует
+            хотя бы один символ &quot;слэш&quot; (<span
+             class="TOKEN">/</span>).</p>
+          </dd>
+
+          <dd>
+            <p>Запрещен вызов команды <span
+             class="emphasis"><em
+             class="EMPHASIS">exec</em></span> для запуска другого
+            процесса.</p>
+          </dd>
+
+          <dd>
+            <p>Запрещен ряд других команд, которые могут использовать
+            сценарий для выполнения непредусмотренных действий.</p>
+          </dd>
+
+          <dd>
+            <p>Запрещен выход из ограниченного режима.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="RESTRICTED"></a>
+
+        <p><strong>Пример 20-1. Запуск сценария в ограниченном
+        режиме</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Если sha-bang задать в таком виде: &quot;#!/bin/bash -r&quot;
+# то это приведет к включению ограниченного режима с момента запуска скрипта.
+
+echo
+
+echo &quot;Смена каталога.&quot;
+cd /usr/local
+echo &quot;Текущий каталог: `pwd`&quot;
+echo &quot;Переход в домашний каталог.&quot;
+cd
+echo &quot;Текущий каталог: `pwd`&quot;
+echo
+
+# До сих пор сценарий исполнялся в обычном, неограниченном режиме.
+
+set -r
+# set --restricted    имеет тот же эффект.
+echo &quot;==&gt; Переход в ограниченный режим. &lt;==&quot;
+
+echo
+echo
+
+echo &quot;Попытка сменить текущий каталог в ограниченном режиме.&quot;
+cd ..
+echo &quot;Текущий каталог остался прежним: `pwd`&quot;
+
+echo
+echo
+
+echo &quot;\$SHELL = $SHELL&quot;
+echo &quot;Попытка смены командного интерпретатора в ограниченном режиме.&quot;
+SHELL=&quot;/bin/ash&quot;
+echo
+echo &quot;\$SHELL= $SHELL&quot;
+
+echo
+echo
+
+echo &quot;Попытка перенаправления вывода в ограниченном режиме.&quot;
+ls -l /usr/bin &gt; bin.files
+ls -l bin.files    # Попробуем найти файл, который пытались создать.
+
+echo
+
+exit 0
+</pre>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c12330.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c12434.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Подоболочки, или Subshells</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p11889.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Подстановка процессов</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

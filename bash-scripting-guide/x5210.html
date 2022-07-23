@@ -1,0 +1,696 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Операторы выбора</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Циклы и ветвления"
+     href="c4875.html">
+    <link
+     rel="PREVIOUS"
+     title="Управление ходом выполнения цикла"
+     href="x5153.html">
+    <link
+     rel="NEXT"
+     title="Внутренние команды"
+     href="c5358.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x5153.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 10. Циклы и ветвления</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c5358.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="TESTBRANCH"></a>10.4. Операторы выбора</h1>
+
+      <p>Инструкции <strong
+       class="COMMAND">case</strong> и <strong
+       class="COMMAND">select</strong> технически не являются циклами,
+      поскольку не предусматривают многократное исполнение блока кода.
+      Однако, они, как и циклы, управляют ходом исполнения программы, в
+      зависимости от начальных или конечных условий.</p>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="CASEESAC1"></a></strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">case (in) / esac</strong></dt>
+
+          <dd>
+            <p>Конструкция <strong
+             class="COMMAND">case</strong> эквивалентна конструкции
+            <strong
+             class="COMMAND">switch</strong> в языке C/C++. Она
+            позволяет выполнять тот или иной участок кода, в
+            зависимости от результатов проверки условий. Она является,
+            своего рода, краткой формой записи большого количества
+            операторов <span
+             class="TOKEN">if/then/else</span> и может быть неплохим
+            инструментом при создании разного рода меню.</p>
+
+            <p><strong
+             class="COMMAND">case</strong> &quot;$<tt
+             class="REPLACEABLE"><em>variable</em></tt>&quot; in<br>
+            <br>
+              &quot;$<tt
+             class="REPLACEABLE"><em>condition1</em></tt>&quot; )<br>
+              <tt
+             class="REPLACEABLE"><em>command</em></tt>...<br>
+              ;;<br>
+            <br>
+              &quot;$<tt
+             class="REPLACEABLE"><em>condition2</em></tt>&quot; )<br>
+              <tt
+             class="REPLACEABLE"><em>command</em></tt>...<br>
+              ;;<br>
+            <br>
+             esac</p>
+            <br>
+            <br>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <ul>
+                      <li>
+                        <p>Заключать переменные в кавычки
+                        необязательно, поскольку здесь не производится
+                        разбиения на отдельные слова.</p>
+                      </li>
+
+                      <li>
+                        <p>Каждая строка с условием должна завершаться
+                        правой (закрывающей) круглой скобкой <span
+                         class="TOKEN">)</span>.</p>
+                      </li>
+
+                      <li>
+                        <p>Каждый блок команд, отрабатывающих по
+                        заданному условию, должен завершаться <span
+                         class="emphasis"><em
+                         class="EMPHASIS">двумя</em></span> символами
+                        точка-с-запятой <span
+                         class="TOKEN">;;</span>.</p>
+                      </li>
+
+                      <li>
+                        <p>Блок <strong
+                         class="COMMAND">case</strong> должен
+                        завершаться ключевым словом <strong
+                         class="COMMAND">esac</strong> (<em
+                         class="WORDASWORD">case</em> записанное в
+                        обратном порядке).</p>
+                      </li>
+                    </ul>
+                    <br>
+                    <br>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX29"></a>
+
+              <p><strong>Пример 10-24. Использование case</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+echo; echo &quot;Нажмите клавишу и затем клавишу Return.&quot;
+read Keypress
+
+case &quot;$Keypress&quot; in
+  [a-z]   ) echo &quot;буква в нижнем регистре&quot;;;
+  [A-Z]   ) echo &quot;Буква в верхнем регистре&quot;;;
+  [0-9]   ) echo &quot;Цифра&quot;;;
+  *       ) echo &quot;Знак пунктуации, пробел или что-то другое&quot;;;
+esac  # Допускается указыватль диапазоны символов в [квадратных скобках].
+
+# Упражнение:
+# --------
+# Сейчас сценарий считывает нажатую клавишу и завершается.
+# Измените его так, чтобы сценарий продолжал отвечать на нажатия клавиш,
+# но завершался бы только после ввода символа &quot;X&quot;.
+# Подсказка: заключите все в цикл &quot;while&quot;.
+
+exit 0
+</pre>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX30"></a>
+
+              <p><strong>Пример 10-25. Создание меню с помощью
+              case</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Грубый пример базы данных
+
+clear # Очистка экрана
+
+echo &quot;          Список&quot;
+echo &quot;          ------&quot;
+echo &quot;Выберите интересующую Вас персону:&quot;
+echo
+echo &quot;[E]vans, Roland&quot;
+echo &quot;[J]ones, Mildred&quot;
+echo &quot;[S]mith, Julie&quot;
+echo &quot;[Z]ane, Morris&quot;
+echo
+
+read person
+
+case &quot;$person&quot; in
+# Обратите внимание: переменная взята в кавычки.
+
+  &quot;E&quot; | &quot;e&quot; )
+  # Пользователь может ввести как заглавную, так и строчную букву.
+  echo
+  echo &quot;Roland Evans&quot;
+  echo &quot;4321 Floppy Dr.&quot;
+  echo &quot;Hardscrabble, CO 80753&quot;
+  echo &quot;(303) 734-9874&quot;
+  echo &quot;(303) 734-9892 fax&quot;
+  echo &quot;revans@zzy.net&quot;
+  echo &quot;Старый друг и партнер по бизнесу&quot;
+  ;;
+# Обратите внимание: блок кода, анализирующий конкретный выбор, завершается
+# двумя символами &quot;точка-с-запятой&quot;.
+
+  &quot;J&quot; | &quot;j&quot; )
+  echo
+  echo &quot;Mildred Jones&quot;
+  echo &quot;249 E. 7th St., Apt. 19&quot;
+  echo &quot;New York, NY 10009&quot;
+  echo &quot;(212) 533-2814&quot;
+  echo &quot;(212) 533-9972 fax&quot;
+  echo &quot;milliej@loisaida.com&quot;
+  echo &quot;Подружка&quot;
+  echo &quot;День рождения: 11 февраля&quot;
+  ;;
+
+# Информация о Smith и Zane будет добавлена позднее.
+
+          * )
+   # Выбор по-умолчанию.
+   # &quot;Пустой&quot; ввод тоже обрабатывается здесь.
+   echo
+   echo &quot;Нет данных.&quot;
+  ;;
+
+esac
+
+echo
+
+#  Упражнение:
+#  --------
+#  Измените этот сценарий таким образом, чтобы он не завершал работу
+#+ после вывода информации о персоне, а переходил на ожидание нового
+#+ ввода от пользователя.
+
+exit 0
+</pre>
+            </div>
+
+            <p>Очень хороший пример использования <strong
+             class="COMMAND">case</strong> для анализа аргументов,
+            переданных из командной строки.</p>
+<pre
+ class="PROGRAMLISTING">
+#! /bin/bash
+
+case &quot;$1&quot; in
+&quot;&quot;) echo &quot;Порядок использования: ${0##*/} &lt;filename&gt;&quot;; exit 65;;  # Параметры командной строки отсутствуют,
+                                                  # или первый параметр -- &quot;пустой&quot;.
+# Обратите внимание на ${0##*/} это подстановка параметра ${var##pattern}. В результате получается $0.
+
+-*) FILENAME=./$1;;   # Если имя файла (аргумент $1) начинается с &quot;-&quot;,
+                      # то заменить его на ./$1
+                      # тогда параметр не будет восприниматься как ключ команды.
+
+* ) FILENAME=$1;;     # В противном случае -- $1.
+esac
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="CASECMD"></a>
+
+              <p><strong>Пример 10-26. Оператор case допускает
+              использовать подстановку команд вместо анализируемой
+              переменной</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Подстановка команд в &quot;case&quot;.
+
+case $( arch ) in # команда &quot;arch&quot; возвращает строку, описывающую аппаратную апхитектуру.
+i386 ) echo &quot;Машина на базе процессора 80386&quot;;;
+i486 ) echo &quot;Машина на базе процессора 80486&quot;;;
+i586 ) echo &quot;Машина на базе процессора Pentium&quot;;;
+i686 ) echo &quot;Машина на базе процессора Pentium2 или выше&quot;;;
+*    ) echo &quot;Машина на другом типе процессора&quot;;;
+esac
+
+exit 0
+</pre>
+            </div>
+
+            <p>Оператор <strong
+             class="COMMAND">case</strong> допускает использование
+            шаблонных конструкций.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="MATCHSTRING"></a>
+
+              <p><strong>Пример 10-27. Простой пример сравнения
+              строк</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# match-string.sh: простое сравнение строк
+
+match_string ()
+{
+  MATCH=0
+  NOMATCH=90
+  PARAMS=2     # Функция требует два входных аргумента.
+  BAD_PARAMS=91
+
+  [ $# -eq $PARAMS ] || return $BAD_PARAMS
+
+  case &quot;$1&quot; in
+  &quot;$2&quot;) return $MATCH;;
+  *   ) return $NOMATCH;;
+  esac
+
+}
+
+
+a=one
+b=two
+c=three
+d=two
+
+
+match_string $a     # неверное число аргументов
+echo $?             # 91
+
+match_string $a $b  # не равны
+echo $?             # 90
+
+match_string $b $d  # равны
+echo $?             # 0
+
+
+exit 0
+</pre>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="ISALPHA"></a>
+
+              <p><strong>Пример 10-28. Проверка ввода</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# isalpha.sh: Использование &quot;case&quot; для анализа строк.
+
+SUCCESS=0
+FAILURE=-1
+
+isalpha ()  # Проверка - является ли первый символ строки символом алфавита.
+{
+if [ -z &quot;$1&quot; ]                # Вызов функции без входного аргумента?
+then
+  return $FAILURE
+fi
+
+case &quot;$1&quot; in
+[a-zA-Z]*) return $SUCCESS;;  # Первый символ - буква?
+*        ) return $FAILURE;;
+esac
+}             # Сравните с функцией &quot;isalpha ()&quot; в языке C.
+
+
+isalpha2 ()   # Проверка - состоит ли вся строка только из символов алфавита.
+{
+  [ $# -eq 1 ] || return $FAILURE
+
+  case $1 in
+  *[!a-zA-Z]*|&quot;&quot;) return $FAILURE;;
+               *) return $SUCCESS;;
+  esac
+}
+
+isdigit ()    # Проверка - состоит ли вся строка только из цифр.
+{             # Другими словами - является ли строка целым числом.
+  [ $# -eq 1 ] || return $FAILURE
+
+  case $1 in
+  *[!0-9]*|&quot;&quot;) return $FAILURE;;
+            *) return $SUCCESS;;
+  esac
+}
+
+
+
+check_var ()  # Интерфейс к isalpha
+{
+if isalpha &quot;$@&quot;
+then
+  echo &quot;\&quot;$*\&quot; начинается с алфавитного символа.&quot;
+  if isalpha2 &quot;$@&quot;
+  then        # Дальнейшая проверка не имеет смысла, если первй символ не буква.
+    echo &quot;\&quot;$*\&quot; содержит только алфавитные символы.&quot;
+  else
+    echo &quot;\&quot;$*\&quot; содержит по меньшей мере один не алфавитный символ.&quot;
+  fi
+else
+  echo &quot;\&quot;$*\&quot; начинсется с не алфавитного символа .&quot;
+              #  Если функция вызвана без входного параметра,
+              #+ то считается, что строка содержит &quot;не алфавитной&quot; символ.
+fi
+
+echo
+
+}
+
+digit_check ()  # Интерфейс к isdigit ().
+{
+if isdigit &quot;$@&quot;
+then
+  echo &quot;\&quot;$*\&quot; содержит только цифры [0 - 9].&quot;
+else
+  echo &quot;\&quot;$*\&quot; содержит по меньшей мере один не цифровой символ.&quot;
+fi
+
+echo
+
+}
+
+a=23skidoo
+b=H3llo
+c=-What?
+d=What?
+e=`echo $b`   # Подстановка команды.
+f=AbcDef
+g=27234
+h=27a34
+i=27.34
+
+check_var $a
+check_var $b
+check_var $c
+check_var $d
+check_var $e
+check_var $f
+check_var     # Вызов без параметра, что произойдет?
+#
+digit_check $g
+digit_check $h
+digit_check $i
+
+
+exit 0        # Сценарий дополнен S.C.
+
+# Упражнение:
+# --------
+#  Напишите функцию &#39;isfloat ()&#39;, которая проверяла бы вещественные числа.
+#  Подсказка: Эта функция подобна функции &#39;isdigit ()&#39;,
+#+ надо лишь добавить анализ наличия десятичной точки.
+</pre>
+            </div>
+          </dd>
+
+          <dt><a
+           name="SELECTREF"></a><strong
+           class="COMMAND">select</strong></dt>
+
+          <dd>
+            <p>Оператор <strong
+             class="COMMAND">select</strong> был заимствован из Korn
+            Shell, и является еще одним инструментом, используемым при
+            создании меню.</p>
+
+            <p><strong
+             class="COMMAND">select</strong> <tt
+             class="REPLACEABLE"><em>variable</em></tt> [in <tt
+             class="REPLACEABLE"><em>list</em></tt>]<br>
+             do<br>
+              <tt
+             class="REPLACEABLE"><em>command</em></tt>...<br>
+              break<br>
+             done</p>
+            <br>
+            <br>
+
+            <p>Этот оператор предлагает пользователю выбрать один из
+            представленных вариантов. Примечательно, что <strong
+             class="COMMAND">select</strong> по-умолчанию использует в
+            качестве приглашения к вводу (prompt) -- <tt
+             class="VARNAME">PS3</tt> (<tt
+             class="PROMPT">#?</tt> ), который легко изменить.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX31"></a>
+
+              <p><strong>Пример 10-29. Создание меню с помощью
+              select</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+PS3=&#39;Выберите ваш любимый овощ: &#39; # строка приглашения к вводу (prompt)
+
+echo
+
+select vegetable in &quot;бобы&quot; &quot;морковь&quot; &quot;картофель&quot; &quot;лук&quot; &quot;брюква&quot;
+do
+  echo
+  echo &quot;Вы предпочитаете $vegetable.&quot;
+  echo &quot;;-))&quot;
+  echo
+  break  # если &#39;break&#39; убрать, то получится бесконечный цикл.
+done
+
+exit 0
+</pre>
+            </div>
+
+            <p>Если в операторе <strong
+             class="COMMAND">select</strong> список <tt
+             class="USERINPUT"><strong>in <tt
+             class="REPLACEABLE"><em>list</em></tt></strong></tt> не
+            задан, то в качестве списка будет использоваться список
+            аргументов (<tt
+             class="VARNAME">$@</tt>), передаваемый сценарию или
+            функции.</p>
+
+            <p>Сравните это с поведением оператора цикла</p>
+
+            <p><strong
+             class="COMMAND">for</strong> <tt
+             class="REPLACEABLE"><em>variable</em></tt> [in <tt
+             class="REPLACEABLE"><em>list</em></tt>]</p>
+            в котором не задан список аргументов.<br>
+            <br>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX32"></a>
+
+              <p><strong>Пример 10-30. Создание меню с помощью select в
+              функции</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+PS3=&#39;Выберите ваш любимый овощ: &#39;
+
+echo
+
+choice_of()
+{
+select vegetable
+# список выбора [in list] отсутствует, поэтому &#39;select&#39; использует входные аргументы функции.
+do
+  echo
+  echo &quot;Вы предпочитаете $vegetable.&quot;
+  echo &quot;;-))&quot;
+  echo
+  break
+done
+}
+
+choice_of бобы рис морковь редис томат шпинат
+#         $1   $2  $3      $4    $5    $6
+#         передача списка выбора в функцию choice_of()
+
+exit 0
+</pre>
+            </div>
+
+            <p>См. так же <a
+             href="c13936.html#RESISTOR">Пример 34-3</a>.</p>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x5153.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c5358.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Управление ходом выполнения цикла</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c4875.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Внутренние команды</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

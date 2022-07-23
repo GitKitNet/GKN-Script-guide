@@ -1,0 +1,3365 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Команды системного администрирования</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Углубленный материал"
+     href="p3268.html">
+    <link
+     rel="PREVIOUS"
+     title="Прочие команды"
+     href="x9307.html">
+    <link
+     rel="NEXT"
+     title="Подстановка команд"
+     href="c11441.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x9307.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c11441.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="SYSTEM"></a>Глава 13. Команды системного
+      администрирования</h1>
+
+      <p>Примеры использования большинства этих команд вы найдете в
+      сценариях начальной загрузки и остановки системы, в каталогах <tt
+       class="FILENAME">/etc/rc.d</tt>. Они, обычно, вызываются
+      пользователем root и используются для администрирования системы
+      или восстановления файловой системы. Эти команды должны
+      использоваться с большой осторожностью, так как некоторые из них
+      могут разрушить систему, при неправильном использовании.</p>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="USERSGROUPS1"></a>Пользователи и группы</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">users</strong></dt>
+
+          <dd>
+            <p>Выведет список всех зарегистрировавшихся пользователей.
+            Она, до некоторой степени, является эквивалентом команды
+            <strong
+             class="COMMAND">who -q</strong>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">groups</strong></dt>
+
+          <dd>
+            <p>Выводит список групп, в состав которых входит текущий
+            пользователь. Эта команда соответствует внутренней
+            переменной <a
+             href="c3270.html#GROUPSREF">$GROUPS</a>, но выводит
+            названия групп, а не их числовые идентификаторы.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>groups</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">bozita cdrom cdwriter audio xgrp</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $GROUPS</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">501</tt>
+</pre>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">chown</strong>, <strong
+           class="COMMAND">chgrp</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">chown</strong> изменяет владельца файла
+            или файлов. Эта команда полезна в случаях, когда <tt
+             class="REPLACEABLE"><em>root</em></tt> хочет передать
+            монопольное право на файл от одного пользователя другому.
+            Обычный пользователь не в состоянии изменить владельца
+            файла, за исключением своих собственных файлов.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">root#</tt> <tt
+ class="USERINPUT"><strong>chown bozo *.txt</strong></tt>
+
+             
+</pre>
+            <br>
+            <br>
+
+            <p>Команда <strong
+             class="COMMAND">chgrp</strong> изменяет группу, которой
+            принадлежит файл или файлы. Чтобы изменить группу, вы
+            должны быть владельцем файла (при этом должны входить в
+            состав указываемой группы) или привилегированным
+            пользователем (<tt
+             class="REPLACEABLE"><em>root</em></tt>).</p>
+<pre
+ class="PROGRAMLISTING">
+chgrp --recursive dunderheads *.data
+#  Группа &quot;dunderheads&quot; станет владельцем всех файлов &quot;*.data&quot;
+#+ во всех подкаталогах текущей директории ($PWD) (благодаря ключу &quot;--recursive&quot;).
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">useradd</strong>, <strong
+           class="COMMAND">userdel</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">useradd</strong> добавляет учетную запись
+            нового пользователя в систему и создает домашний каталог
+            для данного пользователя. Противоположная, по смыслу,
+            команда <strong
+             class="COMMAND">userdel</strong> удаляет учетную запись
+            пользователя из системы. <a
+             name="AEN9791"
+             href="#FTN.AEN9791"><span
+             class="footnote">[1]</span></a> и удалит соответствующие
+            файлы.</p>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Команда <strong
+                     class="COMMAND">adduser</strong> является
+                    синонимом для <strong
+                     class="COMMAND">useradd</strong> и, как правило,
+                    является обычной символической ссылкой на <strong
+                     class="COMMAND">useradd</strong>.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><a
+           name="IDREF"></a><strong
+           class="COMMAND">id</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">id</strong> выводит идентификатор
+            пользователя (реальный и эффективный) и идентификаторы
+            групп, в состав которых входит пользователь. По сути --
+            выводит содержимое переменных <a
+             href="c3270.html#UIDREF">$UID</a>, <a
+             href="c3270.html#EUIDREF">$EUID</a> и <a
+             href="c3270.html#GROUPSREF">$GROUPS</a>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>id</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">uid=501(bozo) gid=501(bozo) groups=501(bozo),22(cdrom),80(cdwriter),81(audio)</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $UID</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">501</tt>
+</pre>
+
+            <p>См. также <a
+             href="c3270.html#AMIROOT">Пример 9-5</a>.</p>
+          </dd>
+
+          <dt><a
+           name="WHOREF"></a><strong
+           class="COMMAND">who</strong></dt>
+
+          <dd>
+            <p>Выводит список пользователей, работающих в настоящий
+            момент в системе.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>who</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">bozo  tty1     Apr 27 17:45
+ bozo  pts/0    Apr 27 17:46
+ bozo  pts/1    Apr 27 17:47
+ bozo  pts/2    Apr 27 17:49</tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <p>С ключом <tt
+             class="OPTION">-m</tt> -- выводит информацию только о
+            текущем пользователе. Если число аргументов, передаваемых
+            команде, равно двум, то это эквивалентно вызову <strong
+             class="COMMAND">who -m</strong>, например <strong
+             class="COMMAND">who am i</strong> или <strong
+             class="COMMAND">who The Man</strong>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>who -m</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">localhost.localdomain!bozo  pts/2    Apr 27 17:49</tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <p><a
+             name="WHOAMIREF"></a><strong
+             class="COMMAND">whoami</strong> -- похожа на <strong
+             class="COMMAND">who -m</strong>, но выводит только имя
+            пользователя.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>whoami</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">bozo</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">w</strong></dt>
+
+          <dd>
+            <p>Выводит информацию о системе, список пользователей,
+            подключенных к системе и процессы, связанные с
+            пользователями. Это расширенная версия команды <strong
+             class="COMMAND">who</strong>. Вывод от команды <strong
+             class="COMMAND">w</strong> может быть передан по конвейеру
+            команде <strong
+             class="COMMAND">grep</strong>, с целью поиска требуемого
+            пользователя и/или процесса.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>w | grep startx</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">bozo  tty1     -                 4:22pm  6:41   4.47s  0.45s  startx</tt>
+</pre>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">logname</strong></dt>
+
+          <dd>
+            <p>Выводит имя текущего пользователя (из файла <tt
+             class="FILENAME">/var/run/utmp</tt>). Это довольно близкий
+            эквивалент команды <a
+             href="c9708.html#WHOAMIREF">whoami</a>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>logname</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">bozo</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>whoami</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">bozo</tt>
+</pre>
+
+            <p>Однако...</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>su</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">Password: ......</tt>
+
+<tt
+ class="PROMPT">bash#</tt> <tt
+ class="USERINPUT"><strong>whoami</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">root</tt>
+<tt
+ class="PROMPT">bash#</tt> <tt
+ class="USERINPUT"><strong>logname</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">bozo</tt>
+</pre>
+          </dd>
+
+          <dt><a
+           name="SUREF"></a><strong
+           class="COMMAND">su</strong></dt>
+
+          <dd>
+            <p>Команда предназначена для запуска программы или сценария
+            от имени другого пользователя. <strong
+             class="COMMAND">su rjones</strong> -- запускает командную
+            оболочку от имени пользователя <span
+             class="emphasis"><em
+             class="EMPHASIS">rjones</em></span>. Запуск команды
+            <strong
+             class="COMMAND">su</strong> без параметров означает запуск
+            командной оболочки от имени привилегированного пользователя
+            <span
+             class="emphasis"><em
+             class="EMPHASIS">root</em></span>. См. <a
+             href="a14477.html#FIFO">Пример A-17</a>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">sudo</strong></dt>
+
+          <dd>
+            <p>Исполняет заданную команду от имени пользователя root
+            (или другого пользователя).</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Доступ к &quot;секретным&quot; файлам.
+sudo cp /root/secretfile /home/bozo/secret
+</pre>
+            <br>
+            <br>
+
+            <p>Имена пользователей, которым разрешено использовать
+            команду <strong
+             class="COMMAND">sudo</strong>, хранятся в файле <tt
+             class="FILENAME">/etc/sudoers</tt>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">passwd</strong></dt>
+
+          <dd>
+            <p>Устанавливает или изменяет пароль пользователя.</p>
+
+            <p>Команда <strong
+             class="COMMAND">passwd</strong> может использоваться в
+            сценариях, но это плохая практика.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+#  set-new-password.sh: Плохая идея.
+#  Этот сценарий должен запускаться пользователем root,
+#+ а еще лучше -- не запускать его вообще.
+
+ROOT_UID=0         # $UID root = 0.
+E_WRONG_USER=65    # Не root?
+
+if [ &quot;$UID&quot; -ne &quot;$ROOT_UID&quot; ]
+then
+  echo; echo &quot;Только root может запускать этот сценарий.&quot;; echo
+  exit $E_WRONG_USER
+else
+  echo; echo &quot;Вам не следовало бы запускать этот сценарий.&quot;
+fi
+
+
+username=bozo
+NEWPASSWORD=security_violation
+
+echo &quot;$NEWPASSWORD&quot; | passwd --stdin &quot;$username&quot;
+#  Ключ &#39;--stdin&#39; указывает &#39;passwd&#39;
+#+ получить новый пароль со stdin (или из конвейера).
+
+echo; echo &quot;Пароль пользователя $username изменен!&quot;
+
+# Использование команды &#39;passwd&#39; в сценариях -- опасно.
+
+exit 0
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">ac</strong></dt>
+
+          <dd>
+            <p>Выводит время работы пользователей, основываясь на
+            записях в файле <tt
+             class="FILENAME">/var/log/wtmp</tt>. Это одна из утилит
+            пакета GNU acct.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ac</strong></tt>
+ <tt
+ class="COMPUTEROUTPUT">       total       68.08</tt>
+</pre>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">last</strong></dt>
+
+          <dd>
+            <p>Выводит информацию о <span
+             class="emphasis"><em
+             class="EMPHASIS">последних</em></span> входах/выходах
+            пользователей в ситему, основываясь на записях в файле <tt
+             class="FILENAME">/var/log/wtmp</tt>. Эта команда может
+            отображать информацию об удаленных (в смысле -- с
+            удаленного терминала) соединениях.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">newgrp</strong></dt>
+
+          <dd>
+            <p>Позволяет сменить активную группу пользователя.
+            Пользователь остается в системе и текущий каталог не
+            изменяется, но права доступа к файлам вычисляются в
+            соответствии с новыми реальным и эффективным
+            идентификаторами группы. Эта команда используется довольно
+            редко, так как пользователь, обычно, является членом
+            нескольких групп.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="TERMINALSSYS1"></a>Терминалы</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">tty</strong></dt>
+
+          <dd>
+            <p>Выводит имя терминала текущего пользователя. Обратите
+            внимание: каждое отдельное окно xterm считается отдельным
+            терминалом.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>tty</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">/dev/pts/1</tt>
+</pre>
+          </dd>
+
+          <dt><a
+           name="STTYREF"></a><strong
+           class="COMMAND">stty</strong></dt>
+
+          <dd>
+            <p>Выводит и/или изменяет настройки терминала. Эта сложная
+            команда используется в сценариях для управления поведением
+            терминала.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="ERASE"></a>
+
+              <p><strong>Пример 13-1. Установка символа
+              &quot;забоя&quot;</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# erase.sh: Использование команды &quot;stty&quot; для смены клавиши &quot;забоя&quot; при чтении ввода.
+
+echo -n &quot;Как Вас зовут? &quot;
+read name                      # Попробуйте стереть последние символы при вводе.
+                               # Все работает.
+echo &quot;Вас зовут $name.&quot;
+
+stty erase &#39;#&#39;                 # Теперь, чтобы стереть символ нужно использовать клавишу &quot;#&quot;.
+echo -n &quot;Как Вас зовут? &quot;
+read name                      # Попробуйте стереть последние символы при вводе с помощью &quot;#&quot;.
+echo &quot;Вас зовут $name.&quot;
+
+exit 0
+</pre>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="SECRETPW"></a>
+
+              <p><strong>Пример 13-2. невидимый пароль: Отключение
+              эхо-вывода на терминал</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+echo
+echo -n &quot;Введите пароль &quot;
+read passwd
+echo &quot;Вы ввели пароль: $passwd&quot;
+echo -n &quot;Если кто-нибудь в это время заглядывал Вам через плечо, &quot;
+echo &quot;то теперь он знает Ваш пароль.&quot;
+
+echo &amp;&amp; echo  # Две пустых строки через &quot;and list&quot;.
+
+stty -echo    # Отключить эхо-вывод.
+
+echo -n &quot;Введите пароль еще раз &quot;
+read passwd
+echo
+echo &quot;Вы ввели пароль: $passwd&quot;
+echo
+
+stty echo     # Восстановить эхо-вывод.
+
+exit 0
+</pre>
+            </div>
+
+            <p>Перехват нажатия на клавиши с помощью <strong
+             class="COMMAND">stty</strong>.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="KEYPRESS"></a>
+
+              <p><strong>Пример 13-3.</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# keypress.sh: Определение нажатых клавиш.
+
+echo
+
+old_tty_settings=$(stty -g)   # Сохранить прежние настройки.
+stty -icanon
+Keypress=$(head -c1)          # или $(dd bs=1 count=1 2&gt; /dev/null)
+                              # для других, не GNU, систем
+
+echo
+echo &quot;Была нажата клавиша \&quot;&quot;$Keypress&quot;\&quot;.&quot;
+echo
+
+stty &quot;$old_tty_settings&quot;      # Восстановить прежние настройки.
+
+# Спасибо, Stephane Chazelas.
+
+exit 0
+</pre>
+            </div>
+
+            <p>См. также <a
+             href="c3270.html#TIMEOUT">Пример 9-3</a>.</p>
+
+            <table
+             class="SIDEBAR"
+             border="1"
+             cellpadding="5">
+              <tr>
+                <td>
+                  <div
+                   class="SIDEBAR">
+                    <a
+                     name="AEN10028"></a>
+
+                    <p><strong>терминалы и их режимы
+                    работы</strong></p>
+
+                    <p>Как правило, терминалы работают в <span
+                     class="emphasis"><em
+                     class="EMPHASIS">каноническом</em></span> режиме.
+                    Когда пользователь нажимает какую-либо клавишу, то
+                    соответствующий ей символ не сразу передается
+                    программе, исполняемой в окне терминала. Этот
+                    символ поступает сначала в локальный буфер
+                    терминала. Когда пользователь нажимает клавишу
+                    <strong
+                     class="KEYCAP">ENTER</strong>, то тогда все
+                    содержимое буфера передается программе.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>stty -a</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">speed 9600 baud; rows 36; columns 96; line = 0;
+intr = ^C; quit = ^\; erase = ^H; kill = ^U; eof = ^D; eol = &lt;undef&gt;; eol2 = &lt;undef&gt;;
+start = ^Q; stop = ^S; susp = ^Z; rprnt = ^R; werase = ^W; lnext = ^V; flush = ^O;
+...
+isig icanon iexten echo echoe echok -echonl -noflsh -xcase -tostop -echoprt</tt>
+               
+</pre>
+                    <br>
+                    <br>
+
+                    <p>В каноническом режиме можно использовать символы
+                    редактирования во время ввода.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>cat &gt; filexxx</strong></tt>
+<tt
+ class=
+"USERINPUT"><strong>wha&lt;ctl-W&gt;I&lt;ctl-H&gt;foo bar&lt;ctl-U&gt;hello world&lt;ENTER&gt;</strong></tt>
+<tt
+ class="USERINPUT"><strong>&lt;ctl-D&gt;</strong></tt>
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>cat filexxx</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">hello world</tt>
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>bash$ wc -c &lt; file</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">13</tt>
+               
+</pre>
+                    Процесс в терминале получит только 13 символов (12
+                    алфавитных символов и символ перевода строки), хотя
+                    пользователь нажал 26 клавиш. <br>
+                    <br>
+
+                    <p>В неканоническом (<span
+                     class="QUOTE">&quot;сыром&quot;</span>) режиме,
+                    каждая нажатая клавиша (включая специальные символы
+                    редактирования, такие как <strong
+                     class="KEYCAP">ctl-H</strong>) сразу же передается
+                    исполняющемуся в терминале процессу.</p>
+
+                    <p>Под управлением Bash, базовый терминальный
+                    редактор заменяется более сложным терминальным
+                    редактором Bash. Например, если вы нажмете
+                    комбинацию клавиш <strong
+                     class="KEYCAP">ctl-A</strong> в командной строке
+                    Bash, то вы не увидите символов <strong
+                     class="KEYCAP">^A</strong>, которые выводит
+                    терминал, вместо этого Bash получит символ <strong
+                     class="KEYCAP">\1</strong>, проанализирует его и
+                    переместит курсор в начало строки.</p>
+
+                    <p><span
+                     class="emphasis"><em
+                     class="EMPHASIS">Stephane Chazelas</em></span></p>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">tset</strong></dt>
+
+          <dd>
+            <p>Выводит или изменяет настройки терминала. Это более
+            слабая версия <strong
+             class="COMMAND">stty</strong>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>tset -r</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">Terminal type is xterm-xfree86.
+Kill is control-U (^U).
+Interrupt is control-C (^C).</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">setserial</strong></dt>
+
+          <dd>
+            <p>Настройка параметров последовательного порта. Эта
+            команда должна запускаться пользователем, обладающим
+            привилегиями root. Эту команду можно встретить в сценариях
+            настройки системы.</p>
+<pre
+ class="PROGRAMLISTING">
+# Взято из /etc/pcmcia/serial :
+
+IRQ=`setserial /dev/$DEVICE | sed -e &#39;s/.*IRQ: //&#39;`
+setserial /dev/$DEVICE irq 0 ; setserial /dev/$DEVICE irq $IRQ
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">getty</strong>, <strong
+           class="COMMAND">agetty</strong></dt>
+
+          <dd>
+            <p>Программа <strong
+             class="COMMAND">getty</strong> или <strong
+             class="COMMAND">agetty</strong> запускается процессом init
+            и обслуживает процедуру входа пользователя в систему. Эти
+            команды не используются в сценариях.</p>
+          </dd>
+
+          <dt><a
+           name="MESGREF"></a><strong
+           class="COMMAND">mesg</strong></dt>
+
+          <dd>
+            <p>Разрешает или запрещает доступ к терминалу текущего
+            пользователя командой <a
+             href="x8707.html#WRITEREF">write</a>.</p>
+
+            <div
+             class="TIP">
+              <table
+               class="TIP"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/tip.gif"
+                   hspace="5"
+                   alt="Tip"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Наверное это очень неприятно, когда, во время
+                    работы над текстовым файлом, в окне терминала,
+                    прямо среди текста, вдруг появляется предложение
+                    заказать пиццу. Поэтому, при работе в
+                    многопользовательской системе, вам наверняка
+                    захочется отключить доступ к своему терминалу.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">wall</strong></dt>
+
+          <dd>
+            <p>Имя этой команды -- аббревиатура от <span
+             class="QUOTE">&quot;<a
+             href="x8707.html#WRITEREF">write</a> all&quot;</span>,
+            т.е., передать сообщение всем пользователям на все
+            терминалы в сети. Это, в первую очередь, инструмет
+            администратора, который можно использовать, например, для
+            оповещения всех пользователей о предстоящей, в ближайшее
+            время, перезагрузке системы (см. <a
+             href="c11785.html#EX70">Пример 17-2</a>).</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class=
+"USERINPUT"><strong>wall System going down for maintenance in 5 minutes!</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">Broadcast message from bozo (pts/1) Sun Jul  8 13:53:27 2001...
+
+ System going down for maintenance in 5 minutes!</tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Если доступ к терминалу был закрыт командой
+                    <strong
+                     class="COMMAND">mesg</strong>, то сообщение на
+                    этом терминале выводиться не будет.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">dmesg</strong></dt>
+
+          <dd>
+            <p>Выводит все сообщения, выдаваемые системой во время
+            загрузки на <tt
+             class="FILENAME">stdout</tt>. Очень полезная утилита для
+            отладочных целей. Вывод <strong
+             class="COMMAND">dmesg</strong> может анализироваться с
+            помощью <a
+             href="x7050.html#GREPREF">grep</a>, <a
+             href="a14586.html#SEDREF">sed</a> или <a
+             href="x14802.html#AWKREF">awk</a> внутри сценария.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>dmesg | grep hda</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">Kernel command line: ro root=/dev/hda2
+ hda: IBM-DLGA-23080, ATA DISK drive
+ hda: 6015744 sectors (3080 MB) w/96KiB Cache, CHS=746/128/63
+ hda: hda1 hda2 hda3 &lt; hda5 hda6 hda7 &gt; hda4</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="STATISTICSSYS1"></a>Информационные и статистические
+        утилиты</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">uname</strong></dt>
+
+          <dd>
+            <p>Выводит на <tt
+             class="FILENAME">stdout</tt> имя системы. С ключом <tt
+             class="OPTION">-a</tt>, выводит подробную информацию,
+            содержащую имя системы, имя узла (то есть имя, под которым
+            система известна в сети), версию операционной системы,
+            наименование модификации операционной системы, аппаратную
+            архитектуру (см. <a
+             href="x6646.html#EX41">Пример 12-4</a>).</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>uname -a</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">Linux localhost.localdomain 2.2.15-2.5.0 #1 Sat Feb 5 00:13:43 EST 2000 i686 unknown</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>uname -s</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">Linux</tt>
+</pre>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">arch</strong></dt>
+
+          <dd>
+            <p>Выводит тип аппаратной платформы компьютерв.
+            Эквивалентна команде <strong
+             class="COMMAND">uname -m</strong>. См. <a
+             href="x5210.html#CASECMD">Пример 10-26</a>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>arch</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">i686</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>uname -m</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">i686</tt>
+</pre>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">lastcomm</strong></dt>
+
+          <dd>
+            <p>Выводит информацию, о ранее выполненных командах, из
+            файла <tt
+             class="FILENAME">/var/account/pacct</tt>. Дополнительно
+            могут указываться команда и пользователь. Это одна из
+            утилит пакета GNU acct.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">lastlog</strong></dt>
+
+          <dd>
+            <p>Выводит список всех пользователей, с указанием времени
+            последнего входа в систему. Данные берутся из файла <tt
+             class="FILENAME">/var/log/lastlog</tt>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>lastlog</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">root          tty1                      Fri Dec  7 18:43:21 -0700 2001
+ bin                                     **Never logged in**
+ daemon                                  **Never logged in**
+ ...
+ bozo          tty1                      Sat Dec  8 21:14:29 -0700 2001</tt>
+
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>lastlog | grep root</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">root          tty1                      Fri Dec  7 18:43:21 -0700 2001</tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Исполнение этой команды будет завершаться
+                    неудачей, если пользователь, вызвавший утилиту, не
+                    имеет прав на чтение файла <tt
+                     class="FILENAME">/var/log/lastlog</tt>.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">lsof</strong></dt>
+
+          <dd>
+            <p>Выводит детальный список открытых, в настоящий момент
+            времени, файлов в виде таблицы. В таблице указаны --
+            владелец файла, размер файла, тип файла, процесс, открывший
+            файл, и многое другое. Само собой разумеется, что вывод
+            команды <strong
+             class="COMMAND">lsof</strong> может быть обработан, в
+            конвейере, с помощью утилит <a
+             href="x7050.html#GREPREF">grep</a> и/или <a
+             href="x14802.html#AWKREF">awk</a>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>lsof</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">COMMAND    PID    USER   FD   TYPE     DEVICE    SIZE     NODE NAME
+ init         1    root  mem    REG        3,5   30748    30303 /sbin/init
+ init         1    root  mem    REG        3,5   73120     8069 /lib/ld-2.1.3.so
+ init         1    root  mem    REG        3,5  931668     8075 /lib/libc-2.1.3.so
+ cardmgr    213    root  mem    REG        3,5   36956    30357 /sbin/cardmgr
+ ...</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">strace</strong></dt>
+
+          <dd>
+            <p>Диагностическая и отладочная утилита, предназначенная
+            для трассировки системных вызовов и сигналов. В простейшем
+            случае, запускается как: <strong
+             class="COMMAND">strace COMMAND</strong>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>strace df</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">execve(&quot;/bin/df&quot;, [&quot;df&quot;], [/* 45 vars */]) = 0
+ uname({sys=&quot;Linux&quot;, node=&quot;bozo.localdomain&quot;, ...}) = 0
+ brk(0)                                  = 0x804f5e4
+ ...</tt>
+           
+</pre>
+            <br>
+            <br>
+
+            <p>Эквивалентна команде <strong
+             class="COMMAND">truss</strong>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">nmap</strong></dt>
+
+          <dd>
+            <p>Сканер сетевых портов. Эта утилита сканирует сервер в
+            поисках открытых портов и сервисов. Это очень важный
+            инструмент, используемый для поиска уязвимостей при
+            настройке системы.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+SERVER=$HOST                           # localhost.localdomain (127.0.0.1).
+PORT_NUMBER=25                         # порт службы SMTP.
+
+nmap $SERVER | grep -w &quot;$PORT_NUMBER&quot;  # Проверить -- открыт ли данный порт?
+#              grep -w -- поиск только целых слов,
+#+             так, например, порт 1025 будет пропущен.
+
+exit 0
+
+# 25/tcp     open        smtp
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><a
+           name="FREEREF"></a><strong
+           class="COMMAND">free</strong></dt>
+
+          <dd>
+            <p>Показывает информацию об использовании памяти, в
+            табличной форме. Вывод команды может быть проанализирован с
+            помощью <a
+             href="x7050.html#GREPREF">grep</a>, <a
+             href="x14802.html#AWKREF">awk</a> или <strong
+             class="COMMAND">Perl</strong>. Команда <strong
+             class="COMMAND">procinfo</strong> тоже выводит эту
+            информацию, среди всего прочего.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <strong
+ class="COMMAND">free</strong>
+ <tt
+ class=
+"COMPUTEROUTPUT">               total       used       free     shared    buffers     cached
+   Mem:         30504      28624       1880      15820       1608       16376
+   -/+ buffers/cache:      10640      19864
+   Swap:        68540       3128      65412</tt>
+</pre>
+
+            <p>Показать размер неиспользуемой памяти RAM:</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <strong
+ class="COMMAND">free | grep Mem | awk &#39;{ print $4 }&#39;</strong>
+<tt
+ class="COMPUTEROUTPUT">1880</tt>
+</pre>
+          </dd>
+
+          <dt><a
+           name="PROCINFOREF"></a><strong
+           class="COMMAND">procinfo</strong></dt>
+
+          <dd>
+            <p>Извлекает и выводит информацию из <a
+             href="c12942.html#DEVPROCREF">файловой системы <tt
+             class="FILENAME">/proc</tt></a>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>procinfo | grep Bootup</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">Bootup: Wed Mar 21 15:15:50 2001    Load average: 0.04 0.21 0.34 3/47 6829</tt>
+</pre>
+          </dd>
+
+          <dt><a
+           name="LSDEVREF"></a><strong
+           class="COMMAND">lsdev</strong></dt>
+
+          <dd>
+            <p>Список аппаратных устройств в системе.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>lsdev</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">Device            DMA   IRQ  I/O Ports
+ ------------------------------------------------
+ cascade             4     2
+ dma                          0080-008f
+ dma1                         0000-001f
+ dma2                         00c0-00df
+ fpu                          00f0-00ff
+ ide0                     14  01f0-01f7 03f6-03f6
+ ...</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><a
+           name="DUREF"></a><strong
+           class="COMMAND">du</strong></dt>
+
+          <dd>
+            <p>Выводит сведения о занимаемом дисковом пространстве в
+            каталоге и вложенных подкаталогах. Если каталог не указан,
+            то по-умолчанию выводятся сведения о текущем каталоге.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <strong
+ class="COMMAND">du -ach</strong>
+<tt
+ class="COMPUTEROUTPUT">1.0k    ./wi.sh
+ 1.0k    ./tst.sh
+ 1.0k    ./random.file
+ 6.0k    .
+ 6.0k    total</tt>
+</pre>
+          </dd>
+
+          <dt><a
+           name="DFREF"></a><strong
+           class="COMMAND">df</strong></dt>
+
+          <dd>
+            <p>Выводит в табличной форме сведения о смонтированных
+            файловых системах.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <strong
+ class="COMMAND">df</strong>
+<tt
+ class=
+"COMPUTEROUTPUT">Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/hda5               273262     92607    166547  36% /
+/dev/hda8               222525    123951     87085  59% /home
+/dev/hda7              1408796   1075744    261488  80% /usr</tt>
+</pre>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">stat</strong></dt>
+
+          <dd>
+            <p>Дает подробную информацию о заданном файле (каталоге или
+            файле устройства) или наборе файлов.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>stat test.cru</strong></tt>
+ <tt
+ class="COMPUTEROUTPUT"> File: &quot;test.cru&quot;
+   Size: 49970        Allocated Blocks: 100          Filetype: Regular File
+   Mode: (0664/-rw-rw-r--)         Uid: (  501/ bozo)  Gid: (  501/ bozo)
+ Device:  3,8   Inode: 18185     Links: 1
+ Access: Sat Jun  2 16:40:24 2001
+ Modify: Sat Jun  2 16:40:24 2001
+ Change: Sat Jun  2 16:40:24 2001</tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <p>Если заданный файл отсутствует, то <strong
+             class="COMMAND">stat</strong> вернет сообщение об
+            ошибке.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>stat nonexistent-file</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">nonexistent-file: No such file or directory</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><a
+           name="VMSTATREF"></a><strong
+           class="COMMAND">vmstat</strong></dt>
+
+          <dd>
+            <p>Выводит информацию о виртуальной памяти.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>vmstat</strong></tt>
+ <tt
+ class=
+"COMPUTEROUTPUT">  procs                      memory    swap          io system         cpu
+ r  b  w   swpd   free   buff  cache  si  so    bi    bo   in    cs  us  sy id
+ 0  0  0      0  11040   2636  38952   0   0    33     7  271    88   8   3 89</tt>
+           
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">netstat</strong></dt>
+
+          <dd>
+            <p>Показывает сведения о сетевой подсистеме, такие как:
+            таблицы маршрутизации и активные соединения. Эта утилита
+            получает сведения из <tt
+             class="FILENAME">/proc/net</tt> (<a
+             href="c12942.html">Глава 27</a>). См. <a
+             href="x12987.html#CONSTAT">Пример 27-2</a>.</p>
+
+            <p><strong
+             class="COMMAND">netstat -r</strong> -- эквивалентна
+            команде <a
+             href="c9708.html#ROUTEREF">route</a>.</p>
+          </dd>
+
+          <dt><a
+           name="UPTIMEREF"></a><strong
+           class="COMMAND">uptime</strong></dt>
+
+          <dd>
+            <p>Показывает количество времени, прошедшего с момента
+            последней перезагрузки системы.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>uptime</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">10:28pm  up  1:57,  3 users,  load average: 0.17, 0.34, 0.27</tt>
+</pre>
+          </dd>
+
+          <dt><a
+           name="HNAMEREF"></a><strong
+           class="COMMAND">hostname</strong></dt>
+
+          <dd>
+            <p>Выводит имя узла (сетевое имя системы). С помощью этой
+            команды устанавливается сетевое имя системы в сценарии <tt
+             class="FILENAME">/etc/rc.d/rc.sysinit</tt>. Эквивалентна
+            команде <strong
+             class="COMMAND">uname -n</strong> и внутренней переменной
+            <a
+             href="c3270.html#HOSTNAMEREF">$HOSTNAME</a>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>hostname</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">localhost.localdomain</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $HOSTNAME</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">localhost.localdomain</tt>
+</pre>
+          </dd>
+
+          <dt><a
+           name="HOSTIDREF"></a><strong
+           class="COMMAND">hostid</strong></dt>
+
+          <dd>
+            <p>Выводит 32-битный шестнадцатиричный идентификатор
+            системы.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>hostid</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">7f0100</tt>
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Эта команда генерирует <span
+                     class="QUOTE">&quot;уникальный&quot;</span>
+                    числовой идентификатор системы. Некоторые
+                    программные продукты используют этот идентификатор
+                    в процедуре регистрации. К сожалению, при генерации
+                    идентификатора, <strong
+                     class="COMMAND">hostid</strong> использует только
+                    IP адрес системы, переводя его в шестнадцатиричное
+                    представление и переставляя местами пары байт.</p>
+
+                    <p>Обычно, IP адрес системы можно найти в файле <tt
+                     class="FILENAME">/etc/hosts</tt>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>cat /etc/hosts</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">127.0.0.1               localhost.localdomain localhost</tt>
+</pre>
+                    <br>
+                    <br>
+
+                    <p>Переставив местами байты, попарно, в начальном
+                    адресе <tt
+                     class="USERINPUT"><strong>127.0.0.1</strong></tt>,
+                    мы получим <tt
+                     class="USERINPUT"><strong>0.127.1.0</strong></tt>,
+                    в шестнадцатиричном представлении это будет <tt
+                     class="USERINPUT"><strong>007f0100</strong></tt>,
+                    что в точности совпадает с приведенным выше
+                    результатом выполнения <strong
+                     class="COMMAND">hostid</strong>. Наверняка можно
+                    найти несколько миллионов компьютеров с таким же
+                    <span
+                     class="QUOTE">&quot;уникальным&quot;</span>
+                    идентификатором.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">sar</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">sar</strong> (system activity report)
+            выводит очень подробную статистику о функционировании
+            операционной системы. Эту команду можно найти в отдельных
+            коммерческих дистрибутивах UNIX-систем. Она, как правило,
+            не входит в базовый комплект пакетов Linux-систем. Она
+            входит в состав пакета <a
+             href="http://perso.wanadoo.fr/sebastien.godard/"
+             target="_top">sysstat utilities</a>, автор: <a
+             href="mailto:sebastien.godard@wanadoo.fr"
+             target="_top">Sebastien Godard</a>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>sar</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">Linux 2.4.7-10 (localhost.localdomain)         12/31/2001
+
+ 10:30:01 AM       CPU     %user     %nice   %system     %idle
+ 10:40:00 AM       all      1.39      0.00      0.77     97.84
+ 10:50:00 AM       all     76.83      0.00      1.45     21.72
+ 11:00:00 AM       all      1.32      0.00      0.69     97.99
+ 11:10:00 AM       all      1.17      0.00      0.30     98.53
+ 11:20:00 AM       all      0.51      0.00      0.30     99.19
+ 06:30:00 PM       all    100.00      0.00    100.01      0.00
+ Average:          all      1.39      0.00      0.66     97.95</tt>
+          
+</pre>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">readelf</strong></dt>
+
+          <dd>
+            <p>Показывает сведения о заданном бинарном файле формата
+            <span
+             class="emphasis"><em
+             class="EMPHASIS">elf</em></span>. Входит в состав пакета
+            <span
+             class="emphasis"><em
+             class="EMPHASIS">binutils</em></span>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>readelf -h /bin/bash</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">ELF Header:
+   Magic:   7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00
+   Class:                             ELF32
+   Data:                              2&#39;s complement, little endian
+   Version:                           1 (current)
+   OS/ABI:                            UNIX - System V
+   ABI Version:                       0
+   Type:                              EXEC (Executable file)
+   . . .</tt>
+</pre>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">size</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">size [/path/to/binary]</strong> выведет
+            информацию о размерах различных сегментов в исполняемых или
+            библиотечных файлах. В основном используется
+            программистами.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>size /bin/bash</strong></tt>
+ <tt
+ class="COMPUTEROUTPUT">  text    data     bss     dec     hex filename
+  495971   22496   17392  535859   82d33 /bin/bash</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="SYSLOG1"></a>Системный журнал</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">logger</strong></dt>
+
+          <dd>
+            <p>Добавляет в системный журнал (<tt
+             class="FILENAME">/var/log/messages</tt>) сообщение от
+            пользователя. Для добавления сообщения пользователь не
+            должен обладать привилегиями суперпользователя.</p>
+<pre
+ class="PROGRAMLISTING">
+logger Experiencing instability in network connection at 23:10, 05/21.
+# Теперь попробуйте дать команду &#39;tail /var/log/messages&#39;.
+</pre>
+            <br>
+            <br>
+
+            <p>Встраивая вызов <strong
+             class="COMMAND">logger</strong> в сценарии, вы получаете
+            возможность заносить отладочную информацию в системный
+            журнал <tt
+             class="FILENAME">/var/log/messages</tt>.</p>
+<pre
+ class="PROGRAMLISTING">
+logger -t $0 -i Logging at line &quot;$LINENO&quot;.
+# Ключ &quot;-t&quot; задает тэг записи в журнале.
+# Ключ &quot;-i&quot; -- записывает ID процесса.
+
+# tail /var/log/message
+# ...
+# Jul  7 20:48:58 localhost ./test.sh[1712]: Logging at line 3.
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">logrotate</strong></dt>
+
+          <dd>
+            <p>Эта утилита производит манипуляции над системным
+            журналом: ротация, сжатие, удаление и/или отправляет его по
+            электронной почте, по мере необходимости. Как правило,
+            утилита <strong
+             class="COMMAND">logrotate</strong> вызывается демоном <a
+             href="c9708.html#CRONREF">crond</a> ежедневно.</p>
+
+            <p>Добавляя соответствующие строки в <tt
+             class="FILENAME">/etc/logrotate.conf</tt>, можно заставить
+            <strong
+             class="COMMAND">logrotate</strong> обрабатывать не только
+            системный журнал, но и ваш личный.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="JOBCONTROLSYS1"></a>Управление заданиями</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">ps</strong></dt>
+
+          <dd>
+            <p><tt
+             class="REPLACEABLE"><em>P</em></tt>rocess <tt
+             class="REPLACEABLE"><em>S</em></tt>tatistics: Список
+            исполняющихся в данный момент процессов. Обычно вызывается
+            с ключами <tt
+             class="OPTION">ax</tt>, вывод команды может быть обработан
+            командами <a
+             href="x7050.html#GREPREF">grep</a> или <a
+             href="a14586.html#SEDREF">sed</a>, с целью поиска
+            требуемого процесса (см. <a
+             href="c5358.html#EX44">Пример 11-10</a> и <a
+             href="x12987.html#PIDID">Пример 27-1</a>).</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ps ax | grep sendmail</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">295 ?     S      0:00 sendmail: accepting connections on port 25</tt>
+</pre>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">pstree</strong></dt>
+
+          <dd>
+            <p>Список исполняющихся процессов в виде <span
+             class="QUOTE">&quot;дерева&quot;</span>. С ключом <tt
+             class="OPTION">-p</tt> -- вместе с именами процессов
+            отображает их PID.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">top</strong></dt>
+
+          <dd>
+            <p>Выводит список наиболее активных процессов. С ключом <tt
+             class="OPTION">-b</tt> -- отображение ведется в обычном
+            текстовом режиме, что дает возможность анализа вывода от
+            команды внутри сценария.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>top -b</strong></tt>
+ <tt
+ class=
+"COMPUTEROUTPUT"> 8:30pm  up 3 min,  3 users,  load average: 0.49, 0.32, 0.13
+ 45 processes: 44 sleeping, 1 running, 0 zombie, 0 stopped
+ CPU states: 13.6% user,  7.3% system,  0.0% nice, 78.9% idle
+ Mem:    78396K av,   65468K used,   12928K free,       0K shrd,    2352K buff
+ Swap:  157208K av,       0K used,  157208K free                   37244K cached
+
+   PID USER     PRI  NI  SIZE  RSS SHARE STAT %CPU %MEM   TIME COMMAND
+   848 bozo      17   0   996  996   800 R     5.6  1.2   0:00 top
+     1 root       8   0   512  512   444 S     0.0  0.6   0:04 init
+     2 root       9   0     0    0     0 SW    0.0  0.0   0:00 keventd
+   ...</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">nice</strong></dt>
+
+          <dd>
+            <p>Запускает фоновый процесс с заданным приоритетом.
+            Приоритеты могут задаваться числом из диапазона от 19
+            (низший приоритет) до -20 (высший приоритет). Но только
+            <span
+             class="emphasis"><em
+             class="EMPHASIS">root</em></span> может указать значение
+            приоритета меньше нуля (отрицательные значения). См. так же
+            команды <strong
+             class="COMMAND">renice</strong>, <strong
+             class="COMMAND">snice</strong> и <strong
+             class="COMMAND">skill</strong>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">nohup</strong></dt>
+
+          <dd>
+            <p>Запуск команд в режиме игнорирования сигналов прерывания
+            и завершения, что предотвращает завершение работы команды
+            даже если пользователь, запустивший ее, вышел из системы.
+            Если после команды не указан символ <span
+             class="TOKEN">&amp;</span>, то она будет исполняться как
+            процесс &quot;переднего плана&quot;. Если вы собираетесь
+            использовать <strong
+             class="COMMAND">nohup</strong> в сценариях, то вам
+            потребуется использовать его в связке с командой <a
+             href="c5358.html#WAITREF">wait</a>, чтобы не породить
+            процесс &quot;зомби&quot;.</p>
+          </dd>
+
+          <dt><a
+           name="PIDOFREF"></a><strong
+           class="COMMAND">pidof</strong></dt>
+
+          <dd>
+            <p>Возвращает идентификатор процесса <span
+             class="emphasis"><em
+             class="EMPHASIS">(pid)</em></span> по его имени. Поскольку
+            многие команды управления процессами, такие как <a
+             href="c5358.html#KILLREF">kill</a> и <strong
+             class="COMMAND">renice</strong>, требуют указать <span
+             class="emphasis"><em
+             class="EMPHASIS">pid</em></span> процесса, а не его имя,
+            то <strong
+             class="COMMAND">pidof</strong> может сослужить неплохую
+            службу при идентификации процесса по его имени. Эта коменда
+            может рассматриваться как приблизительный эквивалент
+            внутренней переменной <a
+             href="c3270.html#PPIDREF">$PPID</a>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>pidof xclock</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">880</tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="KILLPROCESS"></a>
+
+              <p><strong>Пример 13-4. Использование команды pidof при
+              остановке процесса</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# kill-process.sh
+
+NOPROCESS=2
+
+process=xxxyyyzzz  # Несуществующий процесс.
+# Только в демонстрационных целях...
+# ... чтобы не уничтожить этим сценарием какой-нибудь процесс.
+#
+# Если с помощью этого сценария вы задумаете разрыватть связь с Internet, то
+#     process=pppd
+
+t=`pidof $process`       # Поиск pid (process id) процесса $process.
+# pid требует команда &#39;kill&#39; (невозможно остановить процесс, указав его имя).
+
+if [ -z &quot;$t&quot; ]           # Если процесс с таким именем не найден, то &#39;pidof&#39; вернет null.
+then
+  echo &quot;Процесс $process не найден.&quot;
+  exit $NOPROCESS
+fi
+
+kill $t                  # В некоторых случаях может потребоваться &#39;kill -9&#39;.
+
+# Здесь нужно проверить -- был ли уничтожен процесс.
+# Возможно так: &quot; t=`pidof $process` &quot;.
+
+
+# Этот сценарий мог бы быть заменен командой
+#    kill $(pidof -x process_name)
+# но это было бы не так поучительно.
+
+exit 0
+</pre>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">fuser</strong></dt>
+
+          <dd>
+            <p>Возвращает идентификаторы процессов, использующих
+            указанный файл(ы) или каталог. С ключом <tt
+             class="OPTION">-k</tt>, завершает найденные процессы.
+            Может с успехом использоваться для защиты системы, особенно
+            в сценариях разграничения доступа к системным службам.</p>
+          </dd>
+
+          <dt><a
+           name="CRONREF"></a><strong
+           class="COMMAND">crond</strong></dt>
+
+          <dd>
+            <p>Планировщик заданий. С его помощью выполняются такие
+            задачи, как очистка и удаление устаревших файлов системных
+            журналов, обновление базы данных <span
+             class="DATABASE">slocate</span>. Это суперпользовательская
+            версия команды <a
+             href="x6837.html#ATREF">at</a> (хотя любой пользователь
+            может создать собственную таблицу <tt
+             class="FILENAME">crontab</tt>). Эта утилита запускается
+            как фоновый процесс-<a
+             href="x8707.html#DAEMONREF">daemon</a> и выполняет
+            задания, находящиеся в файле <tt
+             class="FILENAME">/etc/crontab</tt>.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="RUNCONTROLSYS1"></a>Команды управления процессами и
+        загрузкой</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">init</strong></dt>
+
+          <dd>
+            <p><strong
+             class="COMMAND">init</strong> -- <a
+             href="c5358.html#FORKREF">предок (родитель)</a> всех
+            процессов в системе. Вызывается на последнем этапе загрузки
+            системы и определяет уровень загрузки (runlevel) из файла
+            <tt
+             class="FILENAME">/etc/inittab</tt>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">telinit</strong></dt>
+
+          <dd>
+            <p>Символическая ссылка на <strong
+             class="COMMAND">init</strong> -- инструмент для смены
+            уровня загрузки (runlevel), как правило используется при
+            обслуживании системы или восстановлении файловой системы.
+            Может быть вызвана только суперпользователем. Эта команда
+            может быть очень опасна, при неумелом обращении -- прежде
+            чем использовать ее, убедитесь в том, что вы совершенно
+            точно понимаете что делаете!</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">runlevel</strong></dt>
+
+          <dd>
+            <p>Выводит предыдущий и текущий уровни загрузки (runlevel).
+            Уровень загрузки может иметь одно из 6 значений: <tt
+             class="LITERAL">0</tt> -- остановка системы, <tt
+             class="LITERAL">1</tt> -- однопользовательский режим, <tt
+             class="LITERAL">2</tt> или <tt
+             class="LITERAL">3</tt> -- многопользовательский режим, <tt
+             class="LITERAL">5</tt> -- многопользовательский режим и
+            запуск X Window, <tt
+             class="LITERAL">6</tt> -- перезагрузка. Уровни загрузки
+            определяются из файла <tt
+             class="FILENAME">/var/run/utmp</tt>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">halt</strong>, <strong
+           class="COMMAND">shutdown</strong>, <strong
+           class="COMMAND">reboot</strong></dt>
+
+          <dd>
+            <p>Набор команд для остановки системы, обычно перед
+            выключением питания.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="NETWORKSYS1"></a>Команды для работы с сетью</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">ifconfig</strong></dt>
+
+          <dd>
+            <p>Утилита конфигурирования и запуска сетевых интерфейсов.
+            Чаще всего используется в сценариях начальной загрузки
+            системы, для настройки и запуска сетевых интерфейсов или
+            для их остановки перед остановкой или перезагрузкой.</p>
+<pre
+ class="PROGRAMLISTING">
+# Фрагменты кода из /etc/rc.d/init.d/network
+
+# ...
+
+# Проверка сетевой полсистемы.
+[ ${NETWORKING} = &quot;no&quot; ] &amp;&amp; exit 0
+
+[ -x /sbin/ifconfig ] || exit 0
+
+# ...
+
+for i in $interfaces ; do
+  if ifconfig $i 2&gt;/dev/null | grep -q &quot;UP&quot; &gt;/dev/null 2&gt;&amp;1 ; then
+    action &quot;Останавливается $i: &quot; ./ifdown $i boot
+  fi
+# Ключ &quot;-q&quot;, характерный для GNU-версии &quot;grep&quot;, означает &quot;quiet&quot; (&quot;молча&quot;), т.е. подавляет вывод.
+# Поэтому нет необходимости переадресовывать вывод на /dev/null.
+
+# ...
+
+echo &quot;В настоящее время активны устройства:&quot;
+echo `/sbin/ifconfig | grep ^[a-z] | awk &#39;{print $1}&#39;`
+#                            ^^^^^  скобки необходимы для предотвращения подстановки имен файлов (globbing).
+#  Следующий код делает то же самое.
+#    echo $(/sbin/ifconfig | awk &#39;/^[a-z]/ { print $1 })&#39;
+#    echo $(/sbin/ifconfig | sed -e &#39;s/ .*//&#39;)
+#  Спасибо S.C. за комментарии.
+</pre>
+            См. также <a
+             href="c13099.html#ONLINE">Пример 29-6</a>.<br>
+            <br>
+          </dd>
+
+          <dt><a
+           name="ROUTEREF"></a><strong
+           class="COMMAND">route</strong></dt>
+
+          <dd>
+            <p>Выводит сведения о таблице маршрутизации ядра или вносит
+            туда изменения.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>route</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+ pm3-67.bozosisp *               255.255.255.255 UH       40 0          0 ppp0
+ 127.0.0.0       *               255.0.0.0       U        40 0          0 lo
+ default         pm3-67.bozosisp 0.0.0.0         UG       40 0          0 ppp0</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">chkconfig</strong></dt>
+
+          <dd>
+            <p>Проверка сетевой конфигурации. Обслуживает список,
+            запускаемых на этапе загрузки, сетевых сервисов, список
+            сервисов хранится в каталогах <tt
+             class="FILENAME">/etc/rc?.d</tt> (строго говоря, chkconfig
+            работает не только с сетевыми сервисами, а с сервисами
+            вообще, не зависимо от того сетевые это службы или нет.
+            прим. перев.).</p>
+
+            <p>Изначально эта утилита была перенесена в Red Hat Linux
+            из ОС IRIX, <strong
+             class="COMMAND">chkconfig</strong> входит в состав далеко
+            не всех дистрибутивов Linux.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>chkconfig --list</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">atd             0:off   1:off   2:off   3:on    4:on    5:on    6:off
+rwhod           0:off   1:off   2:off   3:off   4:off   5:off   6:off
+ ...</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">tcpdump</strong></dt>
+
+          <dd>
+            <p><span
+             class="QUOTE">&quot;Сниффер&quot;</span> (<span
+             class="QUOTE">&quot;sniffer&quot;</span>) сетевых пакетов.
+            Инструмент для перехвата и анализа сетевого трафика по
+            определенным критериям.</p>
+
+            <p>Дамп трафика ip-пакетов между двумя узлами сети -- <span
+             class="emphasis"><em
+             class="EMPHASIS">bozoville</em></span> и <span
+             class="emphasis"><em
+             class="EMPHASIS">caduceus</em></span>:</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class=
+"USERINPUT"><strong>tcpdump ip host bozoville and caduceus</strong></tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <p>Конечно же, вывод команды <strong
+             class="COMMAND">tcpdump</strong> может быть
+            проанализирован с помощью <a
+             href="x7050.html#TPCOMMANDLISTING1">команд обработки
+            текста</a>, обсуждавшихся выше.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="FILESYSTEMSYS1"></a>Команды для работы с файловыми
+        системами</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">mount</strong></dt>
+
+          <dd>
+            <p>Выполняет монтирование файловой системы, обычно на
+            устройстве со сменными носителями, такими как дискеты или
+            CDROM. Файл <tt
+             class="FILENAME">/etc/fstab</tt> содержит перечень
+            доступных для монтирования файловых систем, разделов и
+            устройств, включая опции монтирования, благодаря этому
+            файлу, монтирование может производиться автоматически или
+            вручеую. Файл <tt
+             class="FILENAME">/etc/mtab</tt> содержит список
+            смонтированных файловых систем и разделов (включая
+            виртуальные, такие как <tt
+             class="FILENAME">/proc</tt>).</p>
+
+            <p><strong
+             class="COMMAND">mount -a</strong> -- монтирует все (all)
+            файловые системы и разделы, перечисленные в <tt
+             class="FILENAME">/etc/fstab</tt>, за исключением тех,
+            которые имеют флаг <tt
+             class="OPTION">noauto</tt>. Эту команду можно встретить в
+            сценариях начальной загрузки системы из <tt
+             class="FILENAME">/etc/rc.d</tt> (<tt
+             class="FILENAME">rc.sysinit</tt> или нечто похожее).</p>
+<pre
+ class="PROGRAMLISTING">
+mount -t iso9660 /dev/cdrom /mnt/cdrom
+# Монтирование CDROM-а
+mount /mnt/cdrom
+# Более короткий и удобный вариант, если точка монтирования /mnt/cdrom описана в /etc/fstab
+</pre>
+            <br>
+            <br>
+
+            <p>Эта команда может даже смонтировать обычный файл как
+            блочное устройство. Достигается это за счет связывания
+            файла с <a
+             href="c12942.html#LOOPBACKREF">loopback-устройством</a>.
+            Эту возможность можно использовать для проверки ISO9660
+            образа компакт-диска перед его записью на болванку. <a
+             name="AEN10873"
+             href="#FTN.AEN10873"><span
+             class="footnote">[2]</span></a></p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="ISOMOUNTREF"></a>
+
+              <p><strong>Пример 13-5. Проверка образа CD</strong></p>
+<pre
+ class="PROGRAMLISTING">
+# С правами root...
+
+mkdir /mnt/cdtest  # Подготовка точки монтирования.
+
+mount -r -t iso9660 -o loop cd-image.iso /mnt/cdtest   # Монтирование образа диска.
+#             ключ &quot;-o loop&quot; эквивалентен &quot;losetup /dev/loop0&quot;
+cd /mnt/cdtest     # Теперь проверим образ диска.
+ls -alR            # Вывод списка файлов
+</pre>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">umount</strong></dt>
+
+          <dd>
+            <p>Отмонтирует смонтированную файловую систему. Перед тем
+            как физически вынуть компакт-диск или дискету из
+            устройства, это устройство должно быть отмонтировано
+            командой <strong
+             class="COMMAND">umount</strong>, иначе файловая система
+            может оказаться поврежденной (особенно это относится к
+            накопителям на гибких магнитных дисках, прим. перев.).</p>
+<pre
+ class="PROGRAMLISTING">
+umount /mnt/cdrom
+# Теперь вы можете извлечь диск из привода.
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Утилита <strong
+                     class="COMMAND">automount</strong>, если она
+                    установлена, может выполнять атоматическое
+                    монтирование/размонтирование устройств со сменными
+                    носителями, такие как дискеты и компакт-диски. На
+                    ноутбуках со сменными устройствами FDD и CDROM,
+                    такой подход может привести к возникновению
+                    определенных проблем.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">sync</strong></dt>
+
+          <dd>
+            <p>Принудительный сброс содержимого буферов на жесткий диск
+            (синхронизация содержимого буферов ввода-вывода и
+            устройства-носителя). Несмотря на то, что нет такой уж
+            острой необходимости в этой утилите, тем не менее <strong
+             class="COMMAND">sync</strong> придает уверенности
+            системным администраторам или пользователям в том, что их
+            данные будут сохранены на жестком диске, и не будут
+            потеряны в случае какого-либо сбоя. В былые дни, команда
+            <tt
+             class="USERINPUT"><strong>sync; sync</strong></tt> (дважды
+            -- для абсолютной уверенности) была упреждающей мерой перед
+            перезагрузкой системы.</p>
+
+            <p>Иногда возникает необходимость принудительной
+            синхронизации буферов ввода-вывода с содержимым на
+            магнитном носителе, как, например, при надежном удалении
+            файла (см. <a
+             href="x9307.html#BLOTOUT">Пример 12-42</a>) или когда
+            наблюдаются скачки напряжения в сети электроснабжения.</p>
+          </dd>
+
+          <dt><a
+           name="LOSETUPREF"></a><strong
+           class="COMMAND">losetup</strong></dt>
+
+          <dd>
+            <p>Устанавливает и конфигурирует <a
+             href=
+            "c12942.html#LOOPBACKREF">loopback-устройства</a>.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="CREATEFS"></a>
+
+              <p><strong>Пример 13-6. Создание файловой системы в
+              обычном файле</strong></p>
+<pre
+ class="PROGRAMLISTING">
+SIZE=1048576  # 1 Мб
+
+head -c $SIZE &lt; /dev/zero &gt; file  # Создается файл нужного размера.
+losetup /dev/loop0 file           # Файл назначается как loopback-устройство.
+mke2fs /dev/loop0                 # Создание файловой системы.
+mount -o loop /dev/loop0 /mnt     # Монтирование только что созданной файловой системы.
+
+# Спасибо S.C.
+</pre>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">mkswap</strong></dt>
+
+          <dd>
+            <p>Создание swap-раздела или swap-файла. Созданный
+            swap-раздел (файл) нужно затем подключить командой <strong
+             class="COMMAND">swapon</strong>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">swapon</strong>, <strong
+           class="COMMAND">swapoff</strong></dt>
+
+          <dd>
+            <p>Разрешает/запрещает использование swap-раздела (файла).
+            Эта команда обычно используется во время загрузки системы
+            или во время остановки.</p>
+          </dd>
+
+          <dt><a
+           name="MKE2FSREF"></a><strong
+           class="COMMAND">mke2fs</strong></dt>
+
+          <dd>
+            <p>Создает файловую систему ext2. Должна вызываться с
+            правами суперпользователя.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="ADDDRV"></a>
+
+              <p><strong>Пример 13-7. Добавление нового жесткого
+              диска</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Добавление в систему второго жесткого диска.
+# Программное конфигурирование. Предполагается, что устройство уже подключено к аппаратуре компьютера.
+# Взято из статьи автора документа.
+# &quot;Linux Gazette&quot;, выпуск #38, http://www.linuxgazette.com.
+
+ROOT_UID=0     # Этот сценарий должен запускать только root.
+E_NOTROOT=67   # Код ошибки, если сценарий запущен простым пользователем.
+
+if [ &quot;$UID&quot; -ne &quot;$ROOT_UID&quot; ]
+then
+  echo &quot;Для запуска этого сценария вы должны обладать правами root.&quot;
+  exit $E_NOTROOT
+fi
+
+# Будьте крайне осторожны!
+# Если что-то пойдет не так, то вы можете потерять текущую файловую систему.
+
+
+NEWDISK=/dev/hdb         # Предполагается, что /dev/hdb -- это новое устройство. Проверьте!
+MOUNTPOINT=/mnt/newdisk  # Или выберите иное устройство для монтирования.
+
+
+fdisk $NEWDISK
+mke2fs -cv $NEWDISK1   # Проверка на &quot;плохие&quot; блоки (bad blocks) и подробный вывод.
+#  Обратите внимание:    /dev/hdb1, *не* то же самое, что /dev/hdb!
+mkdir $MOUNTPOINT
+chmod 777 $MOUNTPOINT  # Сделать новое устройство доступным для всех пользователей.
+
+
+# Теперь проаерим...
+# mount -t ext2 /dev/hdb1 /mnt/newdisk
+# Попробуйте создать каталог.
+# Если получилось -- отмонтируйте устройство и продолжим.
+
+# Последний штрих:
+# Добавьте следующую строку в /etc/fstab.
+# /dev/hdb1  /mnt/newdisk  ext2  defaults  1 1
+
+exit 0
+</pre>
+            </div>
+
+            <p>См. также <a
+             href="c9708.html#CREATEFS">Пример 13-6</a> и <a
+             href="c13041.html#RAMDISK">Пример 28-3</a>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">tune2fs</strong></dt>
+
+          <dd>
+            <p>Настройка отдельных параметров файловой системы ext2,
+            например счетчик максимального количества монтирований без
+            проверки. Должна вызываться с привилегиями пользователя
+            root.</p>
+
+            <div
+             class="WARNING">
+              <table
+               class="WARNING"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/warning.gif"
+                   hspace="5"
+                   alt="Warning"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Очень опасная утилита. Вы можете использовать ее
+                    только на свой страх и риск, поскольку, по
+                    неосторожности, вы запросто можете разрушить
+                    файловую систему.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">dumpe2fs</strong></dt>
+
+          <dd>
+            <p>Выводит на <tt
+             class="FILENAME">stdout</tt> очень подробную информацию о
+            файловой системе. Должна вызываться с привилегиями
+            пользователя root.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">root#</tt> <strong
+ class=
+"COMMAND">dumpe2fs /dev/hda7 | grep &#39;ount count&#39;</strong>
+<tt
+ class=
+"COMPUTEROUTPUT">dumpe2fs 1.19, 13-Jul-2000 for EXT2 FS 0.5b, 95/08/09
+ Mount count:              6
+ Maximum mount count:      20</tt>
+</pre>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">hdparm</strong></dt>
+
+          <dd>
+            <p>Выводит или изменяет параметры настройки жесткого диска.
+            Должна вызываться с привилегиями пользователя root.
+            Потенциально опасна при неправильном использовании.</p>
+          </dd>
+
+          <dt><a
+           name="FDISKREF"></a><strong
+           class="COMMAND">fdisk</strong></dt>
+
+          <dd>
+            <p>Создание или изменение таблицы разделов на устройствах
+            хранения информации, обычно -- жестких дисках. Должна
+            вызываться с привилегиями пользователя root.</p>
+
+            <div
+             class="WARNING">
+              <table
+               class="WARNING"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/warning.gif"
+                   hspace="5"
+                   alt="Warning"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Пользуйтесь этой утилитой с особой
+                    осторожностью, т.к. при неправильном использовании
+                    можно легко разрушить существующую файловую
+                    систему.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><a
+           name="FSCKREF"></a><strong
+           class="COMMAND">fsck</strong>, <strong
+           class="COMMAND">e2fsck</strong>, <strong
+           class="COMMAND">debugfs</strong></dt>
+
+          <dd>
+            <p>Набор команд для проверки, восстановления и отладки
+            файловой системы.</p>
+
+            <p><strong
+             class="COMMAND">fsck</strong>: интерфейсная утилита для
+            проверки файловых систем в UNIX (может вызывать другие
+            утилиты проверки).</p>
+
+            <p><strong
+             class="COMMAND">e2fsck</strong>: проверка файловой системы
+            ext2.</p>
+
+            <p><strong
+             class="COMMAND">debugfs</strong>: отладчик файловой
+            системы ext2. Одно из применений этой универсальной (и
+            опасной) утилиты -- это восстановление удаленных файлов.
+            Только для опытных пользователей!</p>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Все эти утилиты должны вызываться с привилегиями
+                    пользователя root. При неправильном использовании,
+                    любая из них может разрушить файловую систему.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">badblocks</strong></dt>
+
+          <dd>
+            <p>Выполняет поиск плохих блоков (физические повреждения
+            носителей) на устройствах хранения информации. Эта команда
+            может использоваться для поиска плохих блоков при
+            форматировании вновь устанавливаемых жестких дисков или для
+            проверки устройств резервного копирования. <a
+             name="AEN11062"
+             href="#FTN.AEN11062"><span
+             class="footnote">[3]</span></a> Например, <strong
+             class="COMMAND">badblocks /dev/fd0</strong>, проверит
+            дискету на наличие поврежденных блоков.</p>
+
+            <p>Утилита <strong
+             class="COMMAND">badblocks</strong> может быть вызвана в
+            деструктивном (проверка осуществляется путем записи
+            некоторого шаблона в каждый блок, а затем производится
+            попытка чтения этого блока) или в недеструктивном
+            (неразрушающем -- только чтение) режиме.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">mkbootdisk</strong></dt>
+
+          <dd>
+            <p>Создание загрузочной дискеты, которая может быть
+            использована для загрузки системы, если, например, была
+            повреждена MBR (master boot record -- главная загрузочная
+            запись). Команда <strong
+             class="COMMAND">mkbootdisk</strong> -- это сценарий на
+            языке командной оболочки Bash, автор: Erik Troan,
+            располагается в каталоге <tt
+             class="FILENAME">/sbin</tt>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">chroot</strong></dt>
+
+          <dd>
+            <p>CHange ROOT -- смена корневого каталога. Обычно, команды
+            и утилиты ориентируются в файловой системе посредством
+            переменной <a
+             href="c3270.html#PATHREF">$PATH</a>, относительно
+            корневого каталога <tt
+             class="FILENAME">/</tt>. Команда <strong
+             class="COMMAND">chroot</strong> изменяет корневой каталог
+            по-умолчанию на другой (рабочий каталог также изменяется).
+            Эта утилита, как правило, используется с целью защиты
+            системы, например, с ее помощью можно ограничить доступ к
+            разделам файловой системы для пользователей, подключающихся
+            к системе с помощью <a
+             href="x8707.html#TELNETREF">telnet</a> (это называется --
+            <span
+             class="QUOTE">&quot;поместить пользователя в chroot
+            окружение&quot;</span>). Обратите внимание: после
+            выполнения команды <strong
+             class="COMMAND">chroot</strong> изменяется путь к
+            исполняемым файлам системы.</p>
+
+            <p>Команда <tt
+             class="USERINPUT"><strong>chroot /opt</strong></tt>
+            приведет к тому, что все обращения к каталогу <tt
+             class="FILENAME">/usr/bin</tt> будут переводиться на
+            каталог <tt
+             class="FILENAME">/opt/usr/bin</tt>. Аналогично, <tt
+             class="USERINPUT"><strong>chroot /aaa/bbb
+            /bin/ls</strong></tt> будет пытаться вызвать команду
+            <strong
+             class="COMMAND">ls</strong> из каталога <tt
+             class="FILENAME">/aaa/bbb/bin</tt>, при этом, корневым
+            каталогом для ls станет каталог /aaa/bbb. Поместив строчку
+            <strong
+             class="COMMAND">alias XX &#39;chroot /aaa/bbb
+            ls&#39;</strong> в пользовательский <tt
+             class="FILENAME">~/.bashrc</tt>, можно эффективно
+            ограничить доступ команде <span
+             class="QUOTE">&quot;XX&quot;</span>, запускаемой
+            пользователем, к разделам файловой системы.</p>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>При изменении корневого каталога, вам наверняка
+                    потребуется скопировать системные утилиты и
+                    разделяемые библиотеки в новый корневой каталог,
+                    поскольку после смены корневого каталога,
+                    директории с системными утилитами могут оказаться
+                    за пределами нового корневого каталога.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">lockfile</strong></dt>
+
+          <dd>
+            <p>Эта утилита входит в состав пакета <strong
+             class="COMMAND">procmail</strong> (<a
+             href="http://www.procmail.org"
+             target="_top">www.procmail.org</a>). Она создает <span
+             class="emphasis"><em
+             class="EMPHASIS">lock file</em></span>, файл-семафор (или,
+            если угодно, файл блокировки), который управляет доступом к
+            заданному файлу, устройству или ресурсу. Lock file служит
+            признаком того, что данный файл, устройство или ресурс
+            <span
+             class="QUOTE">&quot;занят&quot;</span> некоторым
+            процессом, и ограничивает (или вообще запрещает) доступ к
+            ресурсу другим процессам.</p>
+
+            <p>Файлы блокировок широко применяются для защиты системных
+            почтовых каталогов от одновременной записи несколькими
+            пользователями, для индикации занятости порта модема, и
+            т.п. Сценарии могут использовать файлы блокировок для того,
+            чтобы выяснить -- запущен ли тот или иной процесс. Обратите
+            внимание: если в сценарии будет предпринята попытка создать
+            файл блокировки, когда он уже существует, то такой сценарий
+            скорее всего зависнет.</p>
+
+            <p>Как правило, файлы блокировки создаются в каталоге <tt
+             class="FILENAME">/var/lock</tt>. Проверка наличия файла
+            блокировки может быть проверена примерно таким
+            образом:.</p>
+<pre
+ class="PROGRAMLISTING">
+appname=xyzip
+# Приложение &quot;xyzip&quot; создает файл блокировки &quot;/var/lock/xyzip.lock&quot;.
+
+if [ -e &quot;/var/lock/$appname.lock ]
+then
+  ...
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">mknod</strong></dt>
+
+          <dd>
+            <p>Создает специальный файл для блочного или символьного
+            устройства (может потребоваться при установке новых
+            устройств в компьютер).</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">tmpwatch</strong></dt>
+
+          <dd>
+            <p>Автоматически удаляет файлы, к которым не было обращений
+            в течение заданного периода времени. Обычно вызывается
+            демоном <a
+             href="c9708.html#CRONREF">crond</a> для удаления
+            устаревших файлов системного журнала.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">MAKEDEV</strong></dt>
+
+          <dd>
+            <p>Утилита предназначена для создания файлов-устройств.
+            Должна запускаться с привилегиями пользователя root, в
+            каталоге <tt
+             class="FILENAME">/dev</tt>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">root#</tt> <strong
+ class="COMMAND">./MAKEDEV</strong>
+</pre>
+            Это своего рода расширенная версия утилиты <strong
+             class="COMMAND">mknod</strong>.<br>
+            <br>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="PERIPHSYS1"></a>Команды резервного
+        копирования</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">dump</strong>, <strong
+           class="COMMAND">restore</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">dump</strong> создает резервные копии
+            целых файловых систем, обычно используется в крупных
+            системах и сетях. <a
+             name="AEN11188"
+             href="#FTN.AEN11188"><span
+             class="footnote">[4]</span></a> Она считывает дисковые
+            разделы и сохраняет их в файле, в двоичном формате.
+            Созданные таким образом файлы, могут быть сохранены на
+            каком-либо носителе -- на жестком диске или магнитной
+            ленте. Команда <strong
+             class="COMMAND">restore</strong> -- <span
+             class="QUOTE">&quot;разворачивает&quot;</span> файлы,
+            созданные утилитой <strong
+             class="COMMAND">dump</strong>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">fdformat</strong></dt>
+
+          <dd>
+            <p>Выполняет низкоуровневое форматирование дискет.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="SYSRESOURCES1"></a>Команды управления системными
+        ресурсами</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">ulimit</strong></dt>
+
+          <dd>
+            <p>Устанавливает <span
+             class="emphasis"><em
+             class="EMPHASIS">верхний предел</em></span> для системных
+            ресурсов. Как правило вызывается с ключом <tt
+             class="OPTION">-f</tt>, что означает наложение ограничений
+            на размер файлов (<strong
+             class="COMMAND">ulimit -f 1000</strong> ограничит размер
+            вновь создаваемых файлов одним мегабайтом). Ключ <tt
+             class="OPTION">-c</tt> ограничивает размер файлов coredump
+            (<strong
+             class="COMMAND">ulimit -c 0</strong> запретит создание
+            coredump-файлов). Обычно, все ограничения прописываются в
+            файле <tt
+             class="FILENAME">/etc/profile</tt> и/или <tt
+             class="FILENAME">~/.bash_profile</tt> (см. <a
+             href="c12891.html">Глава 26</a>).</p>
+
+            <div
+             class="IMPORTANT">
+              <table
+               class="IMPORTANT"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/important.gif"
+                   hspace="5"
+                   alt="Important"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Грамотное использование <strong
+                     class="COMMAND">ulimit</strong> поможет избежать
+                    нападений, целью которых является исчерпание
+                    системных ресурсов, известных под названием <span
+                     class="emphasis"><em
+                     class="EMPHASIS">fork bomb</em></span>.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+while 1     #  Бесконечный цикл.
+do
+  $0 &amp;      #  Этот сценарий вызывает сам себя . . .
+            #+ порождая дочерние процессы бесконечное число раз . . .
+            #+ точнее -- до тех пор, пока не иссякнут системные ресурсы.
+done        #  Это печально известный сценарий <span
+ class="QUOTE">&quot;sorcerer&#39;s appentice&quot;</span>.
+
+exit 0      #  Сценарий никогда не завершит свою работу.
+</pre>
+                    <br>
+                    <br>
+
+                    <p>Команда <strong
+                     class="COMMAND">ulimit -Hu XX</strong> (где <span
+                     class="emphasis"><em
+                     class="EMPHASIS">XX</em></span> -- это верхний
+                    предел количества процессов, которые может
+                    запустить пользователь одновременно) в <tt
+                     class="FILENAME">/etc/profile</tt> вызовет
+                    аварийное завершение этого сценария, когда
+                    количество процессов превысит установленный
+                    предел.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">umask</strong></dt>
+
+          <dd>
+            <p>Установка маски режима создания файлов. Накладывает
+            ограничения на атрибуты по-умлчанию для создаваемых файлов.
+            Маска представляет собой восьмеричное значение и определяет
+            запрещенные атрибуты файла. Например, <strong
+             class="COMMAND">umask 022</strong> удаляет права на запись
+            для группы и прочих пользователей (у файлов, создававшихся
+            с режимом 777, он оказывается равным 755; а режим 666
+            преобразуется в 644, т.е. 777 NAND 022 = 755, 666 NAND 022
+            = 644). <a
+             name="AEN11247"
+             href="#FTN.AEN11247"><span
+             class="footnote">[5]</span></a> Конечно же, впоследствие,
+            пользователь может откорректировать права доступа к своему
+            файлу с помощью команды <a
+             href="c6407.html#CHMODREF">chmod</a>. Как правило,
+            значение <strong
+             class="COMMAND">umask</strong> устанавливается в файле <tt
+             class="FILENAME">/etc/profile</tt> и/или <tt
+             class="FILENAME">~/.bash_profile</tt> (см. <a
+             href="c12891.html">Глава 26</a>).</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">rdev</strong></dt>
+
+          <dd>
+            <p>Выводит или изменяет корневое устройство, размер
+            RAM-диска или видео режим. Функциональные возможности
+            утилиты <strong
+             class="COMMAND">rdev</strong> вообще повторяются
+            загрузчиком <strong
+             class="COMMAND">lilo</strong>, но <strong
+             class="COMMAND">rdev</strong> по прежнему остается
+            востребованной, например, при установке электронного диска
+            (RAM-диск). Это еще одна потенциально опасная, при неумелом
+            использовании, утилита.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="MODULESSYS1"></a>Команды для работы с модулями
+        ядра</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">lsmod</strong></dt>
+
+          <dd>
+            <p>Выводит список загруженных модулей.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>lsmod</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">Module                  Size  Used by
+ autofs                  9456   2 (autoclean)
+ opl3                   11376   0
+ serial_cs               5456   0 (unused)
+ sb                     34752   0
+ uart401                 6384   0 [sb]
+ sound                  58368   0 [opl3 sb uart401]
+ soundlow                 464   0 [sound]
+ soundcore               2800   6 [sb sound]
+ ds                      6448   2 [serial_cs]
+ i82365                 22928   2
+ pcmcia_core            45984   0 [serial_cs ds i82365]</tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Команда <strong
+                     class="COMMAND">cat /proc/modules</strong> выведет
+                    на экран эту же информацию.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">insmod</strong></dt>
+
+          <dd>
+            <p>Принудительная загрузка модуля ядра (старайтесь вместо
+            <strong
+             class="COMMAND">insmod</strong> использовать команду
+            <strong
+             class="COMMAND">modprobe</strong>). Должна вызываться с
+            привилегиями пользователя root.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">rmmod</strong></dt>
+
+          <dd>
+            <p>Выгружает модуль ядра. Должна вызываться с привилегиями
+            пользователя root.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">modprobe</strong></dt>
+
+          <dd>
+            <p>Загрузчик модулей, который обычно вызывается из
+            сценариев начальной загрузки системы. Должна вызываться с
+            привилегиями пользователя root.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">depmod</strong></dt>
+
+          <dd>
+            <p>Создает файл зависимостей между модулями, обычно
+            вызывается из сценариев начальной загрузки системы.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="MISCSYS1"></a>Прочие команды</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">env</strong></dt>
+
+          <dd>
+            <p>Запускает указанную программу или сценарий с
+            модифицированными <a
+             href="x1716.html#ENVREF">переменными окружения</a> (не
+            изменяя среду системы в целом, изменения касаются только
+            окружения запускаемой программы/сценария). Посредством <tt
+             class="OPTION">[varname=xxx]</tt>, устанавливает значение
+            переменной окружения <tt
+             class="VARNAME">varname</tt>, которая будет доступна из
+            запускаемой программы/сценария. Без параметров -- просто
+            выводит список переменных окружения с их значениями.</p>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>В Bash, и других производных от Bourne shell,
+                    имеется возможность установки переменных окружения
+                    и запуска программы (или сценария) одной командной
+                    строкой.</p>
+<pre
+ class="PROGRAMLISTING">
+var1=value1 var2=value2 commandXXX
+# $var1 и $var2 -- будут определены только в окружении для &#39;commandXXX&#39;.
+</pre>
+                    <br>
+                    <br>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div
+             class="TIP">
+              <table
+               class="TIP"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/tip.gif"
+                   hspace="5"
+                   alt="Tip"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>В первой строке сценария (<span
+                     class="QUOTE">&quot;sha-bang&quot;</span>) можно
+                    указать команду <strong
+                     class="COMMAND">env</strong>, если путь к
+                    командному интерпретатору не известен.</p>
+<pre
+ class="PROGRAMLISTING">
+#! /usr/bin/env perl
+
+print &quot;Этот сценарий, на языке программирования Perl, будет запущен,\n&quot;;
+print &quot;даже если я не знаю где в системе находится Perl.\n&quot;;
+
+# Прекрасно подходит для написания кросс-платформенных сценариев,
+# когда Perl может находиться совсем не там, где вы ожидаете.
+# Спасибо S.C.
+</pre>
+                    <br>
+                    <br>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">ldd</strong></dt>
+
+          <dd>
+            <p>Выводит список разделяемых библиотек, необходимых для
+            исполняемого файла.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ldd /bin/ls</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">libc.so.6 =&gt; /lib/libc.so.6 (0x4000c000)
+/lib/ld-linux.so.2 =&gt; /lib/ld-linux.so.2 (0x80000000)</tt>
+</pre>
+          </dd>
+
+          <dt><a
+           name="WATCHREF"></a><strong
+           class="COMMAND">watch</strong></dt>
+
+          <dd>
+            <p>Периодически запускает указанную программу с заданным
+            интервалом времени.</p>
+
+            <p>По-умолчанию интервал между запусками принимается равным
+            2 секундам, но может быть изменен ключом <tt
+             class="OPTION">-n</tt>.</p>
+<pre
+ class="PROGRAMLISTING">
+watch -n 5 tail /var/log/messages
+# Выводит последние 10 строк из системного журнала, /var/log/messages, каждые пять секунд.
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">strip</strong></dt>
+
+          <dd>
+            <p>Удаляет отладочную информацию из исполняемого файла. Это
+            значительно уменьщает размер исполняемого файла, но при
+            этом делает отладку программы невозможной.</p>
+
+            <p>Эту команду часто можно встретить в <a
+             href="x7794.html#MAKEFILEREF">Makefile</a>-ах, и редко --
+            в сценариях на языке командной оболочки.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">nm</strong></dt>
+
+          <dd>
+            <p>Выводит список символов (используемых в целях отладки),
+            содержащихся в откомпилированном двоичном файле.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">rdist</strong></dt>
+
+          <dd>
+            <p>Позволяет на заданных машинах хранить идентичные копии
+            файлов. По умолчанию, rdist просматривает только те файлы,
+            версия которых на удаленных машинах более старая, чем на
+            локальной машине. Это делается сравнением последнего
+            времени модификации и размера файла на локальной машине и
+            на удаленных.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <p>А теперь, используя полученные нами знания, попробуем
+      разобраться с одним из системных сценариев. Один из самых
+      коротких и простых -- это <strong
+       class="COMMAND">killall</strong>, который вызывается для
+      остановки процессов при перезагрузке или выключении
+      компьютера.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX55"></a>
+
+        <p><strong>Пример 13-8. Сценарий killall, из каталога <tt
+         class="FILENAME">/etc/rc.d/init.d</tt></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/sh
+
+# --&gt; Комментарии, начинающиеся с &quot;# --&gt;&quot;, добавлены автором документа.
+
+# --&gt; Этот сценарий является частью пакета &#39;rc&#39;-сценариев
+# --&gt; Автор: Miquel van Smoorenburg, &lt;miquels@drinkel.nl.mugnet.org&gt;
+
+# --&gt; Этот сценарий характерен для дистрибутива Red Hat
+# --&gt; (в других дистрибутивах может отсутствовать).
+
+# Остановить все ненужные сервисы которые еще работают (собственно,
+# их уже не должно быть, это лишь формальная проверка, на всякий случай)
+
+for i in /var/lock/subsys/*; do
+        # --&gt; Стандартный заголовок цикла for/in, но, поскольку &quot;do&quot;
+                                # --&gt; находится в той же самой строке, что и for,
+        # --&gt; необходимо разделить их символом &quot;;&quot;.
+        # Проверяется наличие сценария.
+        [ ! -f $i ] &amp;&amp; continue
+        # --&gt; Очень интересное использование &quot;И-списка&quot;, эквивалентно:
+        # --&gt; if [ ! -f &quot;$i&quot; ]; then continue
+
+        # Получить имя подсистемы.
+        subsys=${i#/var/lock/subsys/}
+        # --&gt; В данном случае совпадает с именем файла.
+        # --&gt; Это точный эквивалент subsys=`basename $i`.
+
+        # --&gt;  Таким образом получается имя файла блокировки (если он присутствует,
+        # --&gt;+ то это означает, что процесс запущен).
+        # --&gt;  См. описание команды &quot;lockfile&quot; выше.
+
+
+        # Остановить службу.
+        if [ -f /etc/rc.d/init.d/$subsys.init ]; then
+            /etc/rc.d/init.d/$subsys.init stop
+        else
+            /etc/rc.d/init.d/$subsys stop
+        # --&gt; Останавливает задачу или демона
+        # --&gt; посредством встроенной команды &#39;stop&#39;.
+        fi
+done
+</pre>
+      </div>
+
+      <p>Вобщем все довольно понятно. Кроме хитрого манипулирования с
+      переменными, при определении имени подсистемы (службы), здесь нет
+      ничего нового.</p>
+
+      <div
+       class="FORMALPARA">
+        <p><strong>Упражнение 1.</strong> Просмотрите сценарий <strong
+         class="COMMAND">halt</strong> в каталоге <tt
+         class="FILENAME">/etc/rc.d/init.d</tt>. Он по размеру немного
+        больше, чем <strong
+         class="COMMAND">killall</strong>, но придерживается той же
+        концепции. Создайте копию этого сценария в своем домашнем
+        каталоге и поэкспериментируйте с ним (<span
+         class="emphasis"><em
+         class="EMPHASIS">НЕ</em></span> запускайте его с привилегиями
+        суперпользователя). Попробуйте запустить его с ключами <tt
+         class="OPTION">-vn</tt> (<tt
+         class="USERINPUT"><strong>sh -vn scriptname</strong></tt>).
+        Добавьте свои комментарии. Замените действующие команды на
+        <span
+         class="QUOTE">&quot;echo&quot;</span>.</p>
+      </div>
+
+      <div
+       class="FORMALPARA">
+        <p><strong>Упражнение 2.</strong> Просмотрите другие, более
+        сложные сценарии из <tt
+         class="FILENAME">/etc/rc.d/init.d</tt>. Попробуйте разобраться
+        в их работе. Проверьте их работу, следуя рекомендациям,
+        приведенным выше. За дополнительной информацией вы можете
+        обратиться к документу <tt
+         class="FILENAME">sysvinitfiles</tt> в каталоге <tt
+         class="FILENAME">/usr/share/doc/initscripts-?.??</tt>, который
+        входит в пакет документации к <span
+         class="QUOTE">&quot;initscripts&quot;</span>.</p>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN9791"
+         href="c9708.html#AEN9791"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Команда <strong
+           class="COMMAND">userdel</strong> завершится неудачей, если
+          удаляемый пользователь в этот момент работает с системой</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN10873"
+         href="c9708.html#AEN10873"><span
+         class="footnote">[2]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Дополнительную информацию по записи компакт-дисков, вы
+          найдете в статье Алекса Уизера (Alex Wither): <a
+           href=
+          "http://www2.linuxjournal.com/lj-issues/issue66/3335.html"
+           target="_top">Creating CDs</a>, в октябрьском выпуске
+          журнала <a
+           href="http://www.linuxjournal.com"
+           target="_top">Linux Journal</a> за 1999 год.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN11062"
+         href="c9708.html#AEN11062"><span
+         class="footnote">[3]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Утилита <a
+           href="c9708.html#MKE2FSREF">mke2fs</a>, с ключом <tt
+           class="OPTION">-c</tt>, так же производит поиск поврежденных
+          блоков.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN11188"
+         href="c9708.html#AEN11188"><span
+         class="footnote">[4]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Пользователи небольших, десктопных Linux-систем
+          предпочитают утилиты попроще, например <strong
+           class="COMMAND">tar</strong>.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN11247"
+         href="c9708.html#AEN11247"><span
+         class="footnote">[5]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>NAND -- логическая операция <span
+           class="QUOTE">&quot;И-НЕ&quot;</span>. В общих чертах она
+          напоминает вычитание.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x9307.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c11441.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Прочие команды</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p3268.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Подстановка команд</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

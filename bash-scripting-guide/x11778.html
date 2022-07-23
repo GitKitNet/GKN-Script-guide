@@ -1,0 +1,231 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Область применения</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Перенаправление ввода/вывода"
+     href="c11620.html">
+    <link
+     rel="PREVIOUS"
+     title="Перенаправление для блоков кода"
+     href="x11731.html">
+    <link
+     rel="NEXT"
+     title="Встроенные документы"
+     href="c11785.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x11731.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 16. Перенаправление ввода/вывода</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c11785.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="REDIRAPPS"></a>16.3. Область применения</h1>
+
+      <p>Как один из вариантов грамотного применения перенаправления
+      ввода/вывода, можно назвать разбор и &quot;сшивание&quot; вывода
+      от команд (см. <a
+       href="c5358.html#READREDIR">Пример 11-6</a>). Это позволяет
+      создавать файлы отчетов и журналов регистрации событий.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="LOGEVENTS"></a>
+
+        <p><strong>Пример 16-11. Регистрация событий</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# logevents.sh, автор: Stephane Chazelas.
+
+# Регистрация событий в файле.
+# Сценарий должен запускаться с привилегиями root (что бы иметь право на запись в /var/log).
+
+ROOT_UID=0     # Привилегии root имеет только пользователь с $UID = 0.
+E_NOTROOT=67   # Код завершения, если не root.
+
+
+if [ &quot;$UID&quot; -ne &quot;$ROOT_UID&quot; ]
+then
+  echo &quot;Сценарий должен запускаться с привилегиями root.&quot;
+  exit $E_NOTROOT
+fi
+
+
+FD_DEBUG1=3
+FD_DEBUG2=4
+FD_DEBUG3=5
+
+# Раскомментарьте одну из двух строк, ниже, для активизации сценария.
+# LOG_EVENTS=1
+# LOG_VARS=1
+
+
+log()  # Запись даты и времени в файл.
+{
+echo &quot;$(date)  $*&quot; &gt;&amp;7     # Добавляет в конец файла.
+                              # См. ниже.
+}
+
+
+
+case $LOG_LEVEL in
+ 1) exec 3&gt;&amp;2         4&gt; /dev/null 5&gt; /dev/null;;
+ 2) exec 3&gt;&amp;2         4&gt;&amp;2         5&gt; /dev/null;;
+ 3) exec 3&gt;&amp;2         4&gt;&amp;2         5&gt;&amp;2;;
+ *) exec 3&gt; /dev/null 4&gt; /dev/null 5&gt; /dev/null;;
+esac
+
+FD_LOGVARS=6
+if [[ $LOG_VARS ]]
+then exec 6&gt;&gt; /var/log/vars.log
+else exec 6&gt; /dev/null               # Подавить вывод.
+fi
+
+FD_LOGEVENTS=7
+if [[ $LOG_EVENTS ]]
+then
+  # then exec 7 &gt;(exec gawk &#39;{print strftime(), $0}&#39; &gt;&gt; /var/log/event.log)
+  # Строка, выше, не работает в Bash, версии 2.04.
+  exec 7&gt;&gt; /var/log/event.log        # Добавление в конец &quot;event.log&quot;.
+  log                                      # Записать дату и время.
+else exec 7&gt; /dev/null                  # Подавить вывод.
+fi
+
+echo &quot;DEBUG3: beginning&quot; &gt;&amp;${FD_DEBUG3}
+
+ls -l &gt;&amp;5 2&gt;&amp;4                       # command1 &gt;&amp;5 2&gt;&amp;4
+
+echo &quot;Done&quot;                                # command2
+
+echo &quot;sending mail&quot; &gt;&amp;${FD_LOGEVENTS}   # Написать &quot;sending mail&quot; в дескр. #7.
+
+
+exit 0
+</pre>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x11731.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c11785.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Перенаправление для блоков кода</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c11620.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Встроенные документы</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

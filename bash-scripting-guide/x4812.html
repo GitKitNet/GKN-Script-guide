@@ -1,0 +1,602 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>$RANDOM: генерация псевдослучайных целых чисел</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="К вопросу о переменных"
+     href="c3270.html">
+    <link
+     rel="PREVIOUS"
+     title="Косвенные ссылки на переменные"
+     href="x4788.html">
+    <link
+     rel="NEXT"
+     title="Двойные круглые скобки"
+     href="x4862.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x4788.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 9. К вопросу о переменных</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x4862.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="RANDOMVAR"></a>9.6. $RANDOM: генерация псевдослучайных
+      целых чисел</h1>
+
+      <p>$RANDOM -- внутренняя функция Bash (не константа), которая
+      возвращает <span
+       class="emphasis"><em
+       class="EMPHASIS">псевдослучайные</em></span> целые числа в
+      диапазоне 0 - 32767. Функция $RANDOM <tt
+       class="REPLACEABLE"><em>не</em></tt> должна использоваться для
+      генераци ключей шифрования.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX21"></a>
+
+        <p><strong>Пример 9-23. Генерация случайных чисел</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# $RANDOM возвращает различные случайные числа при каждом обращении к ней.
+# Диапазон изменения: 0 - 32767 (16-битовое целое со знаком).
+
+MAXCOUNT=10
+count=1
+
+echo
+echo &quot;$MAXCOUNT случайных чисел:&quot;
+echo &quot;-----------------&quot;
+while [ &quot;$count&quot; -le $MAXCOUNT ]      # Генерация 10 ($MAXCOUNT) случайных чисел.
+do
+  number=$RANDOM
+  echo $number
+  let &quot;count += 1&quot;  # Нарастить счетчик.
+done
+echo &quot;-----------------&quot;
+
+# Если вам нужны случайные числа не превышающие определенного числа,
+# воспользуйтесь оператором деления по модулю (остаток от деления).
+
+RANGE=500
+
+echo
+
+number=$RANDOM
+let &quot;number %= $RANGE&quot;
+echo &quot;Случайное число меньше $RANGE  ---  $number&quot;
+
+echo
+
+# Если вы желаете ограничить диапазон &quot;снизу&quot;,
+# то просто производите генерацию псевдослучайных чисел в цикле до тех пор,
+# пока не получите число большее нижней границы.
+
+FLOOR=200
+
+number=0   # инициализация
+while [ &quot;$number&quot; -le $FLOOR ]
+do
+  number=$RANDOM
+done
+echo &quot;Случайное число, большее $FLOOR ---  $number&quot;
+echo
+
+
+# Эти два способа могут быть скомбинированы.
+number=0   #initialize
+while [ &quot;$number&quot; -le $FLOOR ]
+do
+  number=$RANDOM
+  let &quot;number %= $RANGE&quot;  # Ограничение &quot;сверху&quot; числом $RANGE.
+done
+echo &quot;Случайное число в диапазоне от $FLOOR до $RANGE ---  $number&quot;
+echo
+
+
+# Генерация случайных &quot;true&quot; и &quot;false&quot; значений.
+BINARY=2
+number=$RANDOM
+T=1
+
+let &quot;number %= $BINARY&quot;
+# let &quot;number &gt;&gt;= 14&quot;    дает более равномерное распределение
+# (сдвиг вправо смещает старший бит на нулевую позицию, остальные биты обнуляются).
+if [ &quot;$number&quot; -eq $T ]
+then
+  echo &quot;TRUE&quot;
+else
+  echo &quot;FALSE&quot;
+fi
+
+echo
+
+
+# Можно имитировать бросание 2-х игровых кубиков.
+SPOTS=7   # остаток от деления на 7 дает диапазон 0 - 6.
+ZERO=0
+die1=0
+die2=0
+
+# Кубики &quot;выбрасываются&quot; раздельно.
+
+  while [ &quot;$die1&quot; -eq $ZERO ]     # Пока на &quot;кубике&quot; ноль.
+  do
+    let &quot;die1 = $RANDOM % $SPOTS&quot; # Имитировать бросок первого кубика.
+  done
+
+  while [ &quot;$die2&quot; -eq $ZERO ]
+  do
+    let &quot;die2 = $RANDOM % $SPOTS&quot; # Имитировать бросок второго кубика.
+  done
+
+let &quot;throw = $die1 + $die2&quot;
+echo &quot;Результат броска кубиков = $throw&quot;
+echo
+
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="PICKCARD"></a>
+
+        <p><strong>Пример 9-24. Выбор случайной карты из
+        колоды</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# pick-card.sh
+
+# Пример выбора случайного элемента массива.
+
+
+# Выбор случайной карты из колоды.
+
+Suites=&quot;Треф
+Бубей
+Червей
+Пик&quot;
+
+Denominations=&quot;2
+3
+4
+5
+6
+7
+8
+9
+10
+Валет
+Дама
+Король
+Туз&quot;
+
+suite=($Suites)                # Инициализация массивов.
+denomination=($Denominations)
+
+num_suites=${#suite[*]}        # Количество элементов массивов.
+num_denominations=${#denomination[*]}
+
+echo -n &quot;${denomination[$((RANDOM%num_denominations))]} &quot;
+echo ${suite[$((RANDOM%num_suites))]}
+
+
+# $bozo sh pick-cards.sh
+# Валет Треф
+
+
+# Спасибо &quot;jipe,&quot; за пояснения по работе с $RANDOM.
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p><span
+               class="emphasis"><em
+               class="EMPHASIS">Jipe</em></span> подсказал еще один
+              способ генерации случайных чисел из заданного
+              диапазона.</p>
+<pre
+ class="PROGRAMLISTING">
+#  Генерация случайных чисел в диапазоне 6 - 30.
+rnumber=$((RANDOM%25+6))
+
+#  Генерируется случайное число из диапазона 6 - 30,
+#+ но при этом число должно делиться на 3 без остатка.
+rnumber=$(((RANDOM%30/3+1)*3))
+
+#  Упражнение: Попробуйте разобраться с выражением самостоятельно.
+</pre>
+              <br>
+              <br>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p>Насколько случайны числа, возвращаемые функцией $RANDOM?
+      Лучший способ оценить &quot;случайность&quot; генерируемых чисел
+      -- это написать сценарий, который будет имитировать бросание
+      игрального кубика достаточно большое число раз, а затем выведет
+      количество выпадений каждой из граней...</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="RANDOMTEST"></a>
+
+        <p><strong>Пример 9-25. Имитация бросания кубика с помощью
+        RANDOM</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Случайные ли числа возвращает RANDOM?
+
+RANDOM=$$       # Инициализация генератора случайных чисел числом PID процесса-сценария.
+
+PIPS=6          # Кубик имеет 6 граней.
+MAXTHROWS=600   # Можете увеличить, если не знаете куда девать свое время.
+throw=0         # Счетчик бросков.
+
+zeroes=0        # Обнулить счетчики выпадения отдельных граней.
+ones=0          # т.к. неинициализированные переменные - &quot;пустые&quot;, и не равны нулю!.
+twos=0
+threes=0
+fours=0
+fives=0
+sixes=0
+
+print_result ()
+{
+echo
+echo &quot;единиц   =   $ones&quot;
+echo &quot;двоек    =   $twos&quot;
+echo &quot;троек    =   $threes&quot;
+echo &quot;четверок =   $fours&quot;
+echo &quot;пятерок  =   $fives&quot;
+echo &quot;шестерок =   $sixes&quot;
+echo
+}
+
+update_count()
+{
+case &quot;$1&quot; in
+  0) let &quot;ones += 1&quot;;;   # 0 соответствует грани &quot;1&quot;.
+  1) let &quot;twos += 1&quot;;;   # 1 соответствует грани &quot;2&quot;, и так далее
+  2) let &quot;threes += 1&quot;;;
+  3) let &quot;fours += 1&quot;;;
+  4) let &quot;fives += 1&quot;;;
+  5) let &quot;sixes += 1&quot;;;
+esac
+}
+
+echo
+
+
+while [ &quot;$throw&quot; -lt &quot;$MAXTHROWS&quot; ]
+do
+  let &quot;die1 = RANDOM % $PIPS&quot;
+  update_count $die1
+  let &quot;throw += 1&quot;
+done
+
+print_result
+
+# Количество выпадений каждой из граней должно быть примерно одинаковым, если считать RANDOM достаточно случайным.
+# Для $MAXTHROWS = 600, каждая грань должна выпасть примерно 100 раз (плюс-минус 20).
+#
+# Имейте ввиду, что RANDOM - это генератор ПСЕВДОСЛУЧАЙНЫХ чисел,
+
+# Упражнение:
+# ---------------
+# Перепишите этот сценарий так, чтобы он имитировал 1000 бросков монеты.
+# На каждом броске возможен один из двух вариантов выпадения - &quot;ОРЕЛ&quot; или &quot;РЕШКА&quot;.
+
+exit 0
+</pre>
+      </div>
+
+      <p>Как видно из последнего примера, неплохо было бы производить
+      переустановку начального числа генератора случайных чисел <tt
+       class="VARNAME">RANDOM</tt> перед тем, как начать работу с ним.
+      Если используется одно и то же начальное число, то генератор <tt
+       class="VARNAME">RANDOM</tt> будет выдавать одну и ту же
+      последовательность чисел. (Это совпадает с поведением функции <tt
+       class="REPLACEABLE"><em>random()</em></tt> в языке C.)</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="SEEDINGRANDOM"></a>
+
+        <p><strong>Пример 9-26. Переустановка RANDOM</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# seeding-random.sh: Переустановка переменной RANDOM.
+
+MAXCOUNT=25       # Длина генерируемой последовательности чисел.
+
+random_numbers ()
+{
+count=0
+while [ &quot;$count&quot; -lt &quot;$MAXCOUNT&quot; ]
+do
+  number=$RANDOM
+  echo -n &quot;$number &quot;
+  let &quot;count += 1&quot;
+done
+}
+
+echo; echo
+
+RANDOM=1          # Переустановка начального числа генератора случайных чисел RANDOM.
+random_numbers
+
+echo; echo
+
+RANDOM=1          # То же самое начальное число...
+random_numbers    # ...в результате получается та же последовательность чисел.
+                  #
+                  # В каких случаях может оказаться полезной генерация совпадающих серий?
+
+echo; echo
+
+RANDOM=2          # Еще одна попытка, но с другим начальным числом...
+random_numbers    # получим другую последовательность.
+
+echo; echo
+
+# RANDOM=$$  в качестве начального числа выбирается PID процесса-сценария.
+# Вполне допустимо взять в качестве начального числа результат работы команд &#39;time&#39; или &#39;date&#39;.
+
+# Немного воображения...
+SEED=$(head -1 /dev/urandom | od -N 1 | awk &#39;{ print $2 }&#39;)
+#  Псевдослучайное число забирается
+#+ из системного генератора псевдослучайных чисел /dev/urandom ,
+#+ затем конвертируется в восьмеричное число командой &quot;od&quot;,
+#+ и наконец &quot;awk&quot; возвращает единственное число для переменной SEED.
+RANDOM=$SEED
+random_numbers
+
+echo; echo
+
+exit 0
+</pre>
+      </div>
+
+      <p><a
+       name="URANDOMREF"></a></p>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Системный генератор <tt
+               class="FILENAME">/dev/urandom</tt> дает
+              последовательность псевдослучайных чисел с более
+              равномерным распределением, чем <tt
+               class="VARNAME">$RANDOM</tt>. Команда <tt
+               class="USERINPUT"><strong>dd if=/dev/urandom
+              of=targetfile bs=1 count=XX</strong></tt> создает файл,
+              содержащий последовательность псевдослучайных чисел.
+              Однако, эти числа требуют дополнительной обработки,
+              например с помощью команды <a
+               href="x9307.html#ODREF">od</a> (этот прием используется
+              в примере выше) или <a
+               href="x9307.html#DDREF">dd</a> (см. <a
+               href="x9307.html#BLOTOUT">Пример 12-42</a>).</p>
+
+              <p><a
+               name="AWKRANDOMREF"></a></p>
+
+              <p>Есть и другие способы генерации псевдослучайных
+              последовательностей в сценариях. <strong
+               class="COMMAND">Awk</strong> имеет для этого достаточно
+              удобные средства.</p>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="RANDOM2"></a>
+
+                <p><strong>Пример 9-27. Получение псевдослучайных чисел
+                с помощью <a
+                 href="x14802.html#AWKREF">awk</a></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# random2.sh: Генерация псевдослучайных чисел в диапазоне 0 - 1.
+# Используется функция rand() из awk.
+
+AWKSCRIPT=&#39; { srand(); print rand() } &#39;
+# Команды/параметры, передаваемые awk
+# Обратите внимание, функция srand() переустанавливает начальное число генератора случайных чисел.
+
+echo -n &quot;Случайное число в диапазоне от 0 до 1 = &quot;
+echo | awk &quot;$AWKSCRIPT&quot;
+
+exit 0
+
+
+# Упражнения:
+# ---------
+
+# 1) С помощью оператора цикла выведите 10 различных случайных чисел.
+#      (Подсказка: вам потребуется вызвать функцию &quot;srand()&quot;
+#      в каждом цикле с разными начальными числами.
+#      Что произойдет, если этого не сделать?)
+
+# 2) Заставьте сценарий генерировать случайные числа в диапазоне 10 - 100
+#      используя целочисленный множитель, как коэффициент масштабирования
+
+# 3) То же самое, что и во втором упражнении,
+#      но на этот раз случайные числа должны быть целыми.
+</pre>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x4788.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x4862.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Косвенные ссылки на переменные</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c3270.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Двойные круглые скобки</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

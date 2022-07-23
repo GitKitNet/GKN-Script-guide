@@ -1,0 +1,385 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Стиль программирования</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Материал повышенной сложности"
+     href="p11889.html">
+    <link
+     rel="PREVIOUS"
+     title="Широко распространенные ошибки"
+     href="c13371.html">
+    <link
+     rel="NEXT"
+     title="Разное"
+     href="c13505.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c13371.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c13505.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="SCRSTYLE"></a>Глава 32. Стиль программирования</h1>
+
+      <p>Возьмите в привычку структурный и систематический подход к
+      программированию на языке командной оболочки. Даже для сценариев
+      <span
+       class="QUOTE">&quot;выходного дня&quot;</span> и <span
+       class="QUOTE">&quot;писаных на коленке&quot;</span>, не
+      поленитесь, найдите время для того, чтобы разложить свои мысли по
+      полочкам и продумать структуру будущего скрипта прежде чем
+      приниматься за кодирование.</p>
+
+      <p>Ниже приводится несколько рекомендаций по оформлению
+      сценариев, однако их не следует рассматривать как <span
+       class="emphasis"><em
+       class="EMPHASIS">Официальное Руководство</em></span>.</p>
+
+      <div
+       class="SECT1">
+        <h1
+         class="SECT1"><a
+         name="UNOFFICIALST"></a>32.1. Неофициальные рекомендации по
+        оформлению сценариев</h1>
+
+        <ul>
+          <li>
+            <p>Комментируйте свой код. Это сделает ваши сценарии
+            понятнее для других, и более простыми, в обслуживании, для
+            вас.</p>
+<pre
+ class="PROGRAMLISTING">
+PASS=&quot;$PASS${MATRIX:$(($RANDOM%${#MATRIX})):1}&quot;
+# Эта строка имела некоторый смысл в момент написания,
+# но через год-другой будет очень тяжело вспомнить -- что она делает.
+# (Из сценария &quot;pw.sh&quot;, автор: Antek Sawicki)
+</pre>
+            <br>
+            <br>
+
+            <p>Добавляйте заголовочные комментарии в начале сценария и
+            перед функциями.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+#************************************************#
+#                   xyz.sh                       #
+#             автор: Bozo Bozeman                #
+#                Июль 05, 2001                   #
+#                                                #
+#          Удаление файлов проекта.              #
+#************************************************#
+
+BADDIR=65                       # Нет такого каталога.
+projectdir=/home/bozo/projects  # Каталог проекта.
+
+# ------------------------------------------------------- #
+# cleanup_pfiles ()                                       #
+# Удаляет все файлы в заданном каталоге.                  #
+# Параметры: $target_directory                            #
+# Возвращаемое значение: 0 -- в случае успеха,            #
+#                        $BADDIR -- в случае ошибки.      #
+# ------------------------------------------------------- #
+cleanup_pfiles ()
+{
+  if [ ! -d &quot;$1&quot; ]  # Проверка существования заданного каталога.
+  then
+    echo &quot;$1 -- не является каталогом.&quot;
+    return $BADDIR
+  fi
+
+  rm -f &quot;$1&quot;/*
+  return 0   # Успешное завершение функции.
+}
+
+cleanup_pfiles $projectdir
+
+exit 0
+</pre>
+            Не забывайте начинать ваш сценарий с sha-bang -- <span
+             class="emphasis"><em
+             class="EMPHASIS">#!/bin/bash</em></span>.<br>
+            <br>
+          </li>
+
+          <li>
+            <p>Заменяйте повторяющиеся значения константами. Это
+            сделает ваш сценарий более простым для понимания и позволит
+            вносить изменения, не опасаясь за его
+            работоспособность.</p>
+<pre
+ class="PROGRAMLISTING">
+if [ -f /var/log/messages ]
+then
+  ...
+fi
+# Представьте себе, что через пару лет
+# вы захотите изменить /var/log/messages на /var/log/syslog.
+# Тогда вам придется отыскать все строки,
+# содержащие /var/log/messages, и заменить их на /var/log/syslog.
+# И проверить несколько раз -- не пропустили ли что-нибудь.
+
+# Использование &quot;констант&quot; дает лучший способ:
+LOGFILE=/var/log/messages  # Если и придется изменить, то только в этой строке.
+if [ -f &quot;$LOGFILE&quot; ]
+then
+  ...
+fi
+</pre>
+            <br>
+            <br>
+          </li>
+
+          <li>
+            <p>В качестве имен переменных и функций выбирайте
+            осмысленные названия.</p>
+<pre
+ class="PROGRAMLISTING">
+fl=`ls -al $dirname`                 # Не очень удачное имя переменной.
+file_listing=`ls -al $dirname`       # Уже лучше.
+
+
+MAXVAL=10   # Пишите имена констант в верхнем регистре.
+while [ &quot;$index&quot; -le &quot;$MAXVAL&quot; ]
+...
+
+
+E_NOTFOUND=75                        # Имена кодов ошибок -- в верхнем регистре,
+                                     # к тому же, их желательно дополнять префиксом &quot;E_&quot;.
+if [ ! -e &quot;$filename&quot; ]
+then
+  echo &quot;Файл $filename не найден.&quot;
+  exit $E_NOTFOUND
+fi
+
+
+MAIL_DIRECTORY=/var/spool/mail/bozo  # Имена переменных окружения
+                                     # так же желательно записывать символами
+                                     # в верхнем регистре.
+export MAIL_DIRECTORY
+
+
+GetAnswer ()                         # Смешивание символов верхнего и нижнего решистров
+                                     # удобно использовать для имен функций.
+{
+  prompt=$1
+  echo -n $prompt
+  read answer
+  return $answer
+}
+
+GetAnswer &quot;Ваше любимое число? &quot;
+favorite_number=$?
+echo $favorite_number
+
+
+_uservariable=23                     # Допустимо, но не рекомендуется.
+# Желательно, чтобы пользовательские переменные не начинались с символа подчеркивания.
+# Так обычно начинаются системные переменные.
+</pre>
+            <br>
+            <br>
+          </li>
+
+          <li>
+            <p>Используйте смысловые имена для <a
+             href="c2105.html#EXITCOMMANDREF">кодов завершения</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+E_WRONG_ARGS=65
+...
+...
+exit $E_WRONG_ARGS
+</pre>
+            См. так же <a
+             href="a14876.html">Приложение C</a>.<br>
+            <br>
+          </li>
+
+          <li>
+            <p>Разделяйте большие сложные сценарии на серию более
+            коротких и простых модулей. Пользуйтесь функциями. См. <a
+             href="c13936.html#EX79">Пример 34-4</a>.</p>
+          </li>
+
+          <li>
+            <p>Не пользуйтесь сложными конструкциями, если их можно
+            заменить простыми.</p>
+<pre
+ class="PROGRAMLISTING">
+COMMAND
+if [ $? -eq 0 ]
+...
+# Избыточно и неинтуитивно.
+
+if COMMAND
+...
+# Более понятно и коротко.
+</pre>
+            <br>
+            <br>
+          </li>
+        </ul>
+
+        <table
+         border="0"
+         width="100%"
+         cellspacing="0"
+         cellpadding="0"
+         class="EPIGRAPH">
+          <tr>
+            <td
+             width="45%"> </td>
+
+            <td
+             width="45%"
+             align="left"
+             valign="top">
+              <p><em>... читая исходные тексты сценариев на Bourne
+              shell (/bin/sh). Я был потрясен тем, насколько непонятно
+              и загадочно могут выглядеть очень простые алгоритмы из-за
+              неправильного оформления кода. Я не раз спрашивал себя:
+              <span
+               class="QUOTE">&quot;Неужели кто-то может гордиться таким
+              кодом?&quot;</span></em></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td
+             width="45%"> </td>
+
+            <td
+             width="45%"
+             align="right"
+             valign="top"><em><span
+             class="ATTRIBUTION">Landon Noll</span></em></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c13371.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c13505.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Широко распространенные ошибки</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p11889.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Разное</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

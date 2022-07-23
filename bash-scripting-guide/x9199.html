@@ -1,0 +1,812 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Команды выполнения математических операций</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Внешние команды, программы и утилиты"
+     href="c6407.html">
+    <link
+     rel="PREVIOUS"
+     title="Команды управления терминалом"
+     href="x9117.html">
+    <link
+     rel="NEXT"
+     title="Прочие команды"
+     href="x9307.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x9117.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 12. Внешние команды, программы и
+          утилиты</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x9307.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="MATHC"></a>12.8. Команды выполнения математических
+      операций</h1>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="MATHCOMMANDLISTING1"></a></strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">factor</strong></dt>
+
+          <dd>
+            <p>Разложение целого числа на простые множители.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>factor 27417</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">27417: 3 13 19 37</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><a
+           name="BCREF"></a><strong
+           class="COMMAND">bc</strong></dt>
+
+          <dd>
+            <p>Bash не в состоянии выполнять действия над числами с
+            плавающей запятой и не содержит многих важных
+            математических функций. К счастью существует <strong
+             class="COMMAND">bc</strong>.</p>
+
+            <p>Универсальная, выполняющая вычисления с произвольной
+            точностью, утилита <strong
+             class="COMMAND">bc</strong> обладает некоторыми
+            возможностями, характерными для языков
+            программирования.</p>
+
+            <p>Синтаксис <strong
+             class="COMMAND">bc</strong> немного напоминает язык C.</p>
+
+            <p>Поскольку это утилита UNIX, то она может достаточно
+            широко использоваться в сценариях на языке командной
+            оболочки, в том числе и в <a
+             href="c301.html#PIPEREF">конвейерной</a> обработке
+            данных.</p>
+
+            <p>Ниже приводится простой шаблон работы с утилитой <strong
+             class="COMMAND">bc</strong> в сценарии. Здесь используется
+            прием <a
+             href="c11441.html#COMMANDSUBREF">подстановки
+            команд</a>.</p>
+<pre
+ class="SCREEN">
+             <tt
+ class=
+"USERINPUT"><strong>variable=$(echo &quot;OPTIONS; OPERATIONS&quot; | bc)</strong></tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="MONTHLYPMT"></a>
+
+              <p><strong>Пример 12-32. Ежемесячные выплаты по
+              займу</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# monthlypmt.sh: Расчет ежемесячных выплат по займу.
+
+
+#  Это измененный вариант пакета &quot;mcalc&quot; (mortgage calculator),
+#+ написанного Jeff Schmidt и Mendel Cooper (ваш покорный слуга).
+#   http://www.ibiblio.org/pub/Linux/apps/financial/mcalc-1.6.tar.gz  [15k]
+
+echo
+echo &quot;Введите сумму займа, процентную ставку и срок займа,&quot;
+echo &quot;для расчета суммы ежемесячных выплат.&quot;
+
+bottom=1.0
+
+echo
+echo -n &quot;Сумма займа (без запятых -- с точностью до доллара) &quot;
+read principal
+echo -n &quot;Процентная ставка (процент) &quot;  # Если 12%, то нужно вводить &quot;12&quot;, а не &quot;.12&quot;.
+read interest_r
+echo -n &quot;Срок займа (месяцев) &quot;
+read term
+
+
+ interest_r=$(echo &quot;scale=9; $interest_r/100.0&quot; | bc) # Здесь &quot;scale&quot; -- точность вычислений.
+
+
+ interest_rate=$(echo &quot;scale=9; $interest_r/12 + 1.0&quot; | bc)
+
+
+ top=$(echo &quot;scale=9; $principal*$interest_rate^$term&quot; | bc)
+
+ echo; echo &quot;Прошу подождать. Вычисления потребуют некоторого времени.&quot;
+
+ let &quot;months = $term - 1&quot;
+# ====================================================================
+ for ((x=$months; x &gt; 0; x--))
+ do
+   bot=$(echo &quot;scale=9; $interest_rate^$x&quot; | bc)
+   bottom=$(echo &quot;scale=9; $bottom+$bot&quot; | bc)
+#  bottom = $(($bottom + $bot&quot;))
+ done
+# --------------------------------------------------------------------
+#  Rick Boivie предложил более эффективную реализацию
+#+ цикла вычислений, который дает выигрыш по времени на 2/3.
+
+# for ((x=1; x &lt;= $months; x++))
+# do
+#   bottom=$(echo &quot;scale=9; $bottom * $interest_rate + 1&quot; | bc)
+# done
+
+
+#  А затем нашел еще более эффективную альтернативу,
+#+ которая выполняется в 20 раз быстрее !!!
+
+# bottom=`{
+#     echo &quot;scale=9; bottom=$bottom; interest_rate=$interest_rate&quot;
+#     for ((x=1; x &lt;= $months; x++))
+#     do
+#          echo &#39;bottom = bottom * interest_rate + 1&#39;
+#     done
+#     echo &#39;bottom&#39;
+#     } | bc`       # Внедрить цикл &#39;for&#39; в конструкцию подстановки команд.
+
+# ====================================================================
+
+ # let &quot;payment = $top/$bottom&quot;
+ payment=$(echo &quot;scale=2; $top/$bottom&quot; | bc)
+ # Два знака после запятой, чтобы показать доллары и центы.
+
+ echo
+ echo &quot;ежемесячные выплаты = \$$payment&quot;  # Вывести знак &quot;доллара&quot; перед числом.
+ echo
+
+
+ exit 0
+
+ # Упражнения:
+ #   1) Добавьте возможность ввода суммы с точностью до цента.
+ #   2) Добавьте возможность ввода процентной ставки как в виде процентов, так и в виде десятичного числа -- доли целого.
+ #   3) Если вы действительно честолюбивы,
+ #      добавьте в сценарий вывод полной таблицы помесячных выплат.
+</pre>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="BASE"></a>
+
+              <p><strong>Пример 12-33. Перевод чисел из одной системы
+              счисления в другую</strong></p>
+<pre
+ class="PROGRAMLISTING">
+:
+##########################################################################
+# Shellscript:  base.sh - вывод чисел в разных системах счисления (Bourne Shell)
+# Author     :  Heiner Steven (heiner.steven@odn.de)
+# Date       :  07-03-95
+# Category   :  Desktop
+# $Id: base.sh,v 1.2 2000/02/06 19:55:35 heiner Exp $
+##########################################################################
+# Description
+#
+# Changes
+# 21-03-95 stv  исправлена ошибка, возникающая при вводе числа 0xb (0.2)
+##########################################################################
+
+# ==&gt; Используется в данном документе с разрешения автора.
+# ==&gt; Комментарии добавлены автором документа.
+
+NOARGS=65
+PN=`basename &quot;$0&quot;`                             # Имя программы
+VER=`echo &#39;$Revision: 1.2 $&#39; | cut -d&#39; &#39; -f2`  # ==&gt; VER=1.2
+
+Usage () {
+    echo &quot;$PN - вывод чисел в различных системах счисления, $VER (stv &#39;95)
+Порядок использования: $PN [number ...]
+
+Если число не задано, то производится ввод со stdin.
+Число может быть:
+    двоичное            должно начинаться с комбинации символов 0b (например 0b1100)
+    восьмеричное        должно начинаться с 0  (например 014)
+    шестнадцатиричное   должно начинаться с комбинации символов 0x (например 0xc)
+    десятичное          в любом другом случае (например 12)&quot; &gt;&amp;2
+    exit $NOARGS
+}   # ==&gt; Функция вывода сообщения о порядке использования.
+
+Msg () {
+    for i   # ==&gt; [список] параметров опущен.
+    do echo &quot;$PN: $i&quot; &gt;&amp;2
+    done
+}
+
+Fatal () { Msg &quot;$@&quot;; exit 66; }
+
+PrintBases () {
+    # Определение системы счисления
+    for i      # ==&gt; [список] параметров опущен...
+    do         # ==&gt; поэтому работает с аргументами командной строки.
+        case &quot;$i&quot; in
+            0b*)                ibase=2;;       # двоичная
+            0x*|[a-f]*|[A-F]*)  ibase=16;;      # шестнадцатиричная
+            0*)                 ibase=8;;       # восьмеричная
+            [1-9]*)             ibase=10;;      # десятичная
+            *)
+                Msg &quot;Ошибка в числе $i - число проигнорировано&quot;
+                continue;;
+        esac
+
+        # Удалить префикс и преобразовать шестнадцатиричные цифры в верхний регистр (этого требует bc)
+        number=`echo &quot;$i&quot; | sed -e &#39;s:^0[bBxX]::&#39; | tr &#39;[a-f]&#39; &#39;[A-F]&#39;`
+        # ==&gt; вместо &quot;/&quot;, здесь используется символ &quot;:&quot; как разделитель для sed.
+
+        # Преобразование в десятичную систему счисления
+        dec=`echo &quot;ibase=$ibase; $number&quot; | bc`  # ==&gt; &#39;bc&#39; используется как калькулятор.
+        case &quot;$dec&quot; in
+            [0-9]*)     ;;       # все в порядке
+            *)          continue;; # ошибка: игнорировать
+        esac
+
+        # Напечатать все преобразования в одну строку.
+        # ==&gt; &#39;вложенный документ&#39; -- список команд для &#39;bc&#39;.
+        echo `bc &lt;&lt;!
+            obase=16; &quot;hex=&quot;; $dec
+            obase=10; &quot;dec=&quot;; $dec
+            obase=8;  &quot;oct=&quot;; $dec
+            obase=2;  &quot;bin=&quot;; $dec
+!
+    ` | sed -e &#39;s: :    :g&#39;
+
+    done
+}
+
+while [ $# -gt 0 ]
+do
+    case &quot;$1&quot; in
+        --)     shift; break;;
+        -h)     Usage;;          # ==&gt; Вывод справочного сообщения.
+        -*)     Usage;;
+        *)      break;;          # первое число
+    esac   # ==&gt; Хорошо бы расширить анализ вводимых символов.
+    shift
+done
+
+if [ $# -gt 0 ]
+then
+    PrintBases &quot;$@&quot;
+else                                    # чтение со stdin
+    while read line
+    do
+        PrintBases $line
+    done
+fi
+</pre>
+            </div>
+
+            <p>Один из вариантов вызова <strong
+             class="COMMAND">bc</strong> -- использование <a
+             href="c11785.html#HEREDOCREF">вложенного документа</a>,
+            внедряемого в блок с <a
+             href="c11441.html#COMMANDSUBREF">подстановкой команд</a>.
+            Это особенно актуально, когда сценарий должен передать
+            <strong
+             class="COMMAND">bc</strong> значительный по объему список
+            команд и аргументов.</p>
+<pre
+ class="PROGRAMLISTING">
+variable=`bc &lt;&lt; LIMIT_STRING
+options
+statements
+operations
+LIMIT_STRING
+`
+</pre>
+            ...или... 
+<pre
+ class="PROGRAMLISTING">
+variable=$(bc &lt;&lt; LIMIT_STRING
+options
+statements
+operations
+LIMIT_STRING
+)
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="ALTBC"></a>
+
+              <p><strong>Пример 12-34. Пример взаимодействия bc со
+              <span
+               class="QUOTE">&quot;встроенным
+              документом&quot;</span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Комбинирование &#39;bc&#39; с
+# &#39;вложенным документом&#39;.
+
+
+var1=`bc &lt;&lt; EOF
+18.33 * 19.78
+EOF
+`
+echo $var1       # 362.56
+
+
+#  запись $( ... ) тоже работает.
+v1=23.53
+v2=17.881
+v3=83.501
+v4=171.63
+
+var2=$(bc &lt;&lt; EOF
+scale = 4
+a = ( $v1 + $v2 )
+b = ( $v3 * $v4 )
+a * b + 15.35
+EOF
+)
+echo $var2       # 593487.8452
+
+
+var3=$(bc -l &lt;&lt; EOF
+scale = 9
+s ( 1.7 )
+EOF
+)
+# Возвращается значение синуса от 1.7 радиана.
+# Ключом &quot;-l&quot; вызывается математическая библиотека &#39;bc&#39;.
+echo $var3       # .991664810
+
+
+# Попробуем функции...
+hyp=             # Объявление глобальной переменной.
+hypotenuse ()    # Расчет гипотенузы прямоугольного треугольника.
+{
+hyp=$(bc -l &lt;&lt; EOF
+scale = 9
+sqrt ( $1 * $1 + $2 * $2 )
+EOF
+)
+# К сожалению, функции Bash не могут возвращать числа с плавающей запятой.
+}
+
+hypotenuse 3.68 7.31
+echo &quot;гипотенуза = $hyp&quot;    # 8.184039344
+
+
+exit 0
+</pre>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="CANNON"></a>
+
+              <p><strong>Пример 12-35. Вычисление числа
+              &quot;пи&quot;</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# cannon.sh: Аппроксимация числа &quot;пи&quot;.
+
+# Это очень простой вариант реализации метода &quot;Monte Carlo&quot;,
+#+ математическое моделирование событий реальной жизни,
+#+ для эмуляции случайного события используются псевдослучайные числа.
+
+#  Допустим, что мы располагаем картой квадратного участка поверхности со стороной квадрата 10000 единиц.
+#  На этом участке, в центре, находится совершенно круглое озеро,
+#+ с диаметром в 10000 единиц.
+#  Т.е. озеро покрывает почти всю карту, кроме ее углов.
+#  (Фактически -- это квадрат со вписанным кругом.)
+#
+#  Пусть по этому участку ведется стрельба железными ядрами из древней пушки
+#  Все ядра падают где-то в пределах данного участка,
+#+ т.е. либо в озеро, либо на сушу, по углам участка.
+#  Поскольку озеро покрывает большую часть участка,
+#+ то большинство ядер будет падать в воду.
+#  Незначительная часть ядер будет падать на твердую почву.
+#
+#  Если произвести достаточно большое число неприцельных выстрелов по данному участку,
+#+ то отношение попаданий в воду к общему числу выстрелов будет примерно равно
+#+ значению PI/4.
+#
+#  По той простой причине, что стрельба фактически ведется только
+#+ по правому верхнему квадранту карты.
+#  (Предыдущее описание было несколько упрощено.)
+#
+#  Теоретически, чем больше будет произведено выстрелов, тем точнее будет результат.
+#  Однако, сценарий на языке командной оболочки, в отличие от других языков программирования,
+#+ в которых доступны операции с плавающей запятой, имеет некоторые ограничения.
+#  К сожалению, это делает вычисления менее точными.
+
+
+DIMENSION=10000  # Длина стороны квадратного участка поверхности.
+                 # Он же -- верхний предел для генератора случайных чисел.
+
+MAXSHOTS=1000    # Количество выстрелов.
+                 # 10000 выстрелов (или больше) даст лучший результат,
+                                                                 # но потребует значительного количества времени.
+PMULTIPLIER=4.0  # Масштабирующий коэффициент.
+
+get_random ()
+{
+SEED=$(head -1 /dev/urandom | od -N 1 | awk &#39;{ print $2 }&#39;)
+RANDOM=$SEED                                  #  Из примера &quot;seeding-random.sh&quot;
+
+let &quot;rnum = $RANDOM % $DIMENSION&quot;             #  Число не более чем 10000.
+echo $rnum
+}
+
+distance=        # Объявление глобальной переменной.
+hypotenuse ()    # Расчет гипотенузы прямоугольного треугольника.
+{                # Из примера &quot;alt-bc.sh&quot;.
+distance=$(bc -l &lt;&lt; EOF
+scale = 0
+sqrt ( $1 * $1 + $2 * $2 )
+EOF
+)
+#  Установка &quot;scale&quot; в ноль приводит к округлению результата &quot;вниз&quot;,
+#+ это и есть то самое ограничение, накладываемое командной оболочкой.
+#  Что, к сожалению, снижает точность аппроксимации.
+}
+
+
+# main() {
+
+# Инициализация переменных.
+shots=0
+splashes=0
+thuds=0
+Pi=0
+
+while [ &quot;$shots&quot; -lt  &quot;$MAXSHOTS&quot; ]           # Главный цикл.
+do
+
+  xCoord=$(get_random)                        # Получить случайные координаты X и Y.
+  yCoord=$(get_random)
+  hypotenuse $xCoord $yCoord                  #  Гипотенуза = расстоянию.
+  ((shots++))
+
+  printf &quot;#%4d   &quot; $shots
+  printf &quot;Xc = %4d  &quot; $xCoord
+  printf &quot;Yc = %4d  &quot; $yCoord
+  printf &quot;Distance = %5d  &quot; $distance         #  Растояние от
+                                              #+ центра озера,
+                                              #+ с координатами (0,0).
+
+  if [ &quot;$distance&quot; -le &quot;$DIMENSION&quot; ]
+  then
+    echo -n &quot;ШЛЕП!  &quot;                         # попадание в озеро
+    ((splashes++))
+  else
+    echo -n &quot;БУХ!    &quot;                        # попадание на твердую почву
+    ((thuds++))
+  fi
+
+  Pi=$(echo &quot;scale=9; $PMULTIPLIER*$splashes/$shots&quot; | bc)
+  # Умножение на коэффициент 4.0.
+  echo -n &quot;PI ~ $Pi&quot;
+  echo
+
+done
+
+echo
+echo &quot;После $shots выстрела, примерное значение числа \&quot;пи\&quot; равно $Pi.&quot;
+# Имеет тенденцию к завышению...
+# Вероятно из-за ошибок округления и несовершенства генератора случайных чисел.
+echo
+
+# }
+
+exit 0
+
+#  Самое время задуматься над тем, является ли сценарий удобным средством
+#+ для выполнения большого количества столь сложных вычислений.
+#
+#  Тем не менее, этот пример может расцениваться как
+#  1) Доказательство возможностей языка командной оболочки.
+#  2) Прототип для &quot;обкатки&quot; алгоритма перед тем как перенести
+#+    его на высокоуровневые языки программирования компилирующего типа.
+</pre>
+            </div>
+          </dd>
+
+          <dt><a
+           name="DCREF"></a><strong
+           class="COMMAND">dc</strong></dt>
+
+          <dd>
+            <p>Утилита <strong
+             class="COMMAND">dc</strong> (<strong
+             class="COMMAND">d</strong>esk <strong
+             class="COMMAND">c</strong>alculator) -- это калькулятор,
+            использующий &quot;Обратную Польскую Нотацию&quot;, и
+            ориентированный на работу со стеком.</p>
+
+            <p>Многие стараются избегать испоьзования <strong
+             class="COMMAND">dc</strong>, из-за непривычной формы
+            записи операндов и операций. Однако, <strong
+             class="COMMAND">dc</strong> имеет и своих сторонников.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="HEXCONVERT"></a>
+
+              <p><strong>Пример 12-36. Преобразование чисел из
+              десятичной в шестнадцатиричную систему
+              счисления</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# hexconvert.sh: Преобразование чисел из десятичной в шестнадцатиричную систему счисления.
+
+BASE=16     # Шестнадцатиричная.
+
+if [ -z &quot;$1&quot; ]
+then
+  echo &quot;Порядок использования: $0 number&quot;
+  exit $E_NOARGS
+  # Необходим аргумент командной строки.
+fi
+# Упражнение: добавьте проверку корректности аргумента.
+
+
+hexcvt ()
+{
+if [ -z &quot;$1&quot; ]
+then
+  echo 0
+  return    # &quot;Return&quot; 0, если функции не был передан аргумент.
+fi
+
+echo &quot;&quot;$1&quot; &quot;$BASE&quot; o p&quot; | dc
+#                 &quot;o&quot; устанавливает основание системы счисления для вывода.
+#                   &quot;p&quot; выводит число, находящееся на вершине стека.
+# См. &#39;man dc&#39;.
+return
+}
+
+hexcvt &quot;$1&quot;
+
+exit 0
+</pre>
+            </div>
+
+            <p>Изучение страниц <span
+             class="emphasis"><em
+             class="EMPHASIS">info</em></span> <strong
+             class="COMMAND">dc</strong> позволит детальнее разобраться
+            с утилитой. Однако, отряд &quot;гуру&quot;, которые могут
+            похвастать своим знанием этой мощной, но весьма запутанной
+            утилиты, весьма немногочислен.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="FACTR"></a>
+
+              <p><strong>Пример 12-37. Разложение числа на простые
+              множители</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# factr.sh: Разложение числа на простые множители
+
+MIN=2       # Не работает с числами меньше 2.
+E_NOARGS=65
+E_TOOSMALL=66
+
+if [ -z $1 ]
+then
+  echo &quot;Порядок использования: $0 number&quot;
+  exit $E_NOARGS
+fi
+
+if [ &quot;$1&quot; -lt &quot;$MIN&quot; ]
+then
+  echo &quot;Исходное число должно быть больше или равно $MIN.&quot;
+  exit $E_TOOSMALL
+fi
+
+# Упражнение: Добавьте проверку типа числа (не целые числа должны отвергаться).
+
+echo &quot;Простые множители для числа $1:&quot;
+# ---------------------------------------------------------------------------------
+echo &quot;$1[p]s2[lip/dli%0=1dvsr]s12sid2%0=13sidvsr[dli%0=1lrli2+dsi!&gt;.]ds.xd1&lt;2&quot; | dc
+# ---------------------------------------------------------------------------------
+# Автор вышеприведенной строки: Michel Charpentier &lt;charpov@cs.unh.edu&gt;.
+# Используется с его разрешения (спасибо).
+
+ exit 0
+</pre>
+            </div>
+          </dd>
+
+          <dt><a
+           name="AWKMATH"></a><strong
+           class="COMMAND">awk</strong></dt>
+
+          <dd>
+            <p>Еще один способ выполнения математических операций, над
+            числами с плавающей запятой, состоит в создании <a
+             href="x13541.html#SHWRAPPER">сценария-обертки</a>,
+            использующего математические функции <a
+             href="x14802.html#AWKREF">awk</a>.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="HYPOT"></a>
+
+              <p><strong>Пример 12-38. Расчет гипотенузы прямоугольного
+              треугольника</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# hypotenuse.sh: Возвращает &quot;гипотенузу&quot; прямоугольного треугольника.
+#               ( корень квадратный от суммы квадратов катетов)
+
+ARGS=2                # В сценарий необходимо передать два катета.
+E_BADARGS=65          # Ошибка в аргументах.
+
+if [ $# -ne &quot;$ARGS&quot; ] # Проверка количества аргументов.
+then
+  echo &quot;Порядок использования: `basename $0` катет_1 катет_2&quot;
+  exit $E_BADARGS
+fi
+
+
+AWKSCRIPT=&#39; { printf( &quot;%3.7f\n&quot;, sqrt($1*$1 + $2*$2) ) } &#39;
+#            команды и параметры, передаваемые в awk
+
+
+echo -n &quot;Гипотенуза прямоугольного треугольника, с катетами $1 и $2, = &quot;
+echo $1 $2 | awk &quot;$AWKSCRIPT&quot;
+
+exit 0
+</pre>
+            </div>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x9117.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x9307.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Команды управления терминалом</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c6407.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Прочие команды</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

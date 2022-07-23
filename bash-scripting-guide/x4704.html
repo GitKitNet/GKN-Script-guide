@@ -1,0 +1,339 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Объявление переменных: declare и typeset</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="К вопросу о переменных"
+     href="c3270.html">
+    <link
+     rel="PREVIOUS"
+     title="Подстановка параметров"
+     href="x4462.html">
+    <link
+     rel="NEXT"
+     title="Косвенные ссылки на переменные"
+     href="x4788.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x4462.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 9. К вопросу о переменных</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x4788.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="DECLAREREF"></a>9.4. Объявление переменных: <strong
+       class="COMMAND">declare</strong> и <strong
+       class="COMMAND">typeset</strong></h1>
+
+      <p>Инструкции <strong
+       class="COMMAND">declare</strong> и <strong
+       class="COMMAND">typeset</strong> являются <a
+       href="c5358.html#BUILTINREF">встроенными</a> инструкциями (они
+      абсолютно идентичны друг другу и являются синонимами) и
+      предназначена для наложения ограничений на переменные. Это очень
+      слабая попытка контроля над типами, которая имеется во многих
+      языках программирования. Инструкция <strong
+       class="COMMAND">declare</strong> появилась в Bash, начиная с
+      версии 2. Кроме того, инструкция <strong
+       class="COMMAND">typeset</strong> может использоваться и в
+      ksh-сценариях.</p>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="DECLAREOPSREF1"></a>ключи инструкций
+        declare/typeset</strong></p>
+
+        <dl>
+          <dt><span
+           class="TOKEN">-r</span> <tt
+           class="REPLACEABLE"><em>readonly</em></tt> (только для
+          чтения)</dt>
+
+          <dd>
+<pre
+ class="PROGRAMLISTING">
+declare -r var1
+</pre>
+            <br>
+            <br>
+
+            <p>(<tt
+             class="USERINPUT"><strong>declare -r var1</strong></tt>
+            аналогично объявлению <tt
+             class="USERINPUT"><strong>readonly var1</strong></tt>)</p>
+
+            <p>Это грубый эквивалент констант (const) в языке C.
+            Попытка изменения таких переменных завершается сообщением
+            об ошибке.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-i</span> <tt
+           class="REPLACEABLE"><em>integer</em></tt></dt>
+
+          <dd>
+<pre
+ class="PROGRAMLISTING">
+declare -i number
+# Сценарий интерпретирует переменную &quot;number&quot; как целое число.
+
+number=3
+echo &quot;number = $number&quot;     # number = 3
+
+number=three
+echo &quot;number = $number&quot;     # number = 0
+# Строка &quot;three&quot; интерпретируется как целое число.
+</pre>
+            Примечательно, что допускается выполнение некоторых
+            арифметических операций над переменными, объявленными как
+            integer, не прибегая к инструкциям <a
+             href="x6646.html#EXPRREF">expr</a> или <a
+             href="c5358.html#LETREF">let</a>.<br>
+            <br>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-a</span> <tt
+           class="REPLACEABLE"><em>array</em></tt></dt>
+
+          <dd>
+<pre
+ class="PROGRAMLISTING">
+declare -a indices
+</pre>
+            <br>
+            <br>
+
+            <p>Переменная <tt
+             class="VARNAME">indices</tt> объявляется массивом.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-f</span> <tt
+           class="REPLACEABLE"><em>functions</em></tt></dt>
+
+          <dd>
+<pre
+ class="PROGRAMLISTING">
+declare -f
+</pre>
+            <br>
+            <br>
+
+            <p>Инструкция <tt
+             class="USERINPUT"><strong>declare -f</strong></tt>, без
+            аргументов, приводит к выводу списка ранее объявленных
+            функций в сценарии.</p>
+<pre
+ class="PROGRAMLISTING">
+declare -f function_name
+</pre>
+            <br>
+            <br>
+
+            <p>Инструкция <tt
+             class="USERINPUT"><strong>declare -f
+            function_name</strong></tt> выводит имя функции
+            function_name, если она была объявлена ранее.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-x</span> <a
+           href="c5358.html#EXPORTREF">export</a></dt>
+
+          <dd>
+<pre
+ class="PROGRAMLISTING">
+declare -x var3
+</pre>
+            <br>
+            <br>
+
+            <p>Эта инструкция объявляет переменную, как доступную для
+            экспорта.</p>
+          </dd>
+
+          <dt>var=$value</dt>
+
+          <dd>
+<pre
+ class="PROGRAMLISTING">
+declare -x var3=373
+</pre>
+            <br>
+            <br>
+
+            <p>Инструкция <strong
+             class="COMMAND">declare</strong> допускает совмещение
+            объявления и присваивания значения переменной
+            одновременно.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX20"></a>
+
+        <p><strong>Пример 9-20. Объявление переменных с помощью
+        инструкции declare</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+func1 ()
+{
+echo Это функция.
+}
+
+declare -f        # Список функций, объявленных выше.
+
+echo
+
+declare -i var1   # var1 -- целочисленная переменная.
+var1=2367
+echo &quot;переменная var1 объявлена как $var1&quot;
+var1=var1+1       # Допустимая арифметическая операция над целочисленными переменными.
+echo &quot;переменная var1 увеличена на 1 = $var1.&quot;
+# Допустимая операция для целочисленных переменных
+echo &quot;Возможно ли записать дробное число 2367.1 в var1?&quot;
+var1=2367.1       # Сообщение об ошибке, переменная не изменяется.
+echo &quot;значение переменной var1 осталось прежним = $var1&quot;
+
+echo
+
+declare -r var2=13.36         # инструкция &#39;declare&#39; допускает установку свойств переменной
+                              #+ и одновременно присваивать значение.
+echo &quot;var2 declared as $var2&quot; # Допускается ли изменять значение readonly переменных?
+var2=13.37                    # Сообщение об ошибке и завершение работы сценария.
+
+echo &quot;значение переменной var2 осталось прежним $var2&quot; # Эта строка никогда не будет выполнена.
+
+exit 0                        # Сценарий завершит работу выше.
+</pre>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x4462.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x4788.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Подстановка параметров</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c3270.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Косвенные ссылки на переменные</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

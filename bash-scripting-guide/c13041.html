@@ -1,0 +1,408 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>/dev/zero и /dev/null</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Материал повышенной сложности"
+     href="p11889.html">
+    <link
+     rel="PREVIOUS"
+     title="/proc"
+     href="x12987.html">
+    <link
+     rel="NEXT"
+     title="Отладка сценариев"
+     href="c13099.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x12987.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c13099.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="ZEROS"></a>Глава 28. /dev/zero и /dev/null</h1>
+
+      <p><a
+       name="ZEROSREF"></a></p>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="ZERONULL1"></a></strong></p>
+
+        <dl>
+          <dt><tt
+           class="FILENAME">/dev/null</tt></dt>
+
+          <dd>
+            <p>Псевдоустройство <tt
+             class="FILENAME">/dev/null</tt> -- это, своего рода, <span
+             class="QUOTE">&quot;черная дыра&quot;</span> в системе.
+            Это, пожалуй, самый близкий смысловой эквивалент. Все, что
+            записывается в этот файл, &quot;исчезает&quot; навсегда.
+            Попытки записи или чтения из этого файла не дают, ровным
+            счетом, никакого результата. Тем не менее, псевдоустройство
+            <tt
+             class="FILENAME">/dev/null</tt> вполне может
+            пригодиться.</p>
+
+            <p>Подавление вывода на <tt
+             class="FILENAME">stdout</tt>.</p>
+<pre
+ class="PROGRAMLISTING">
+cat $filename &gt;/dev/null
+# Содержимое файла $filename не появится на stdout.
+</pre>
+            <br>
+            <br>
+
+            <p>Подавление вывода на <tt
+             class="FILENAME">stderr</tt> (from <a
+             href="x6646.html#EX57">Пример 12-2</a>).</p>
+<pre
+ class="PROGRAMLISTING">
+rm $badname 2&gt;/dev/null
+#           Сообщение об ошибке &quot;уйдет в никуда&quot;.
+</pre>
+            <br>
+            <br>
+
+            <p>Подавление вывода, как на <tt
+             class="FILENAME">stdout</tt>, так и на <tt
+             class="FILENAME">stderr</tt>.</p>
+<pre
+ class="PROGRAMLISTING">
+cat $filename 2&gt;/dev/null &gt;/dev/null
+# Если &quot;$filename&quot; не будет найден, то вы не увидите сообщения об ошибке.
+# Если &quot;$filename&quot; существует, то вы не увидите его содержимое.
+# Таким образом, вышеприведенная команда ничего не выводит на экран.
+#
+#  Такая методика бывает полезной, когда необходимо лишь проверить код завершения команды
+#+ и нежелательно выводить результат работы команды на экран.
+#
+# cat $filename &amp;&gt;/dev/null
+#     дает тот же результат, автор примечания Baris Cicek.
+</pre>
+            <br>
+            <br>
+
+            <p>Удаление содержимого файла, сохраняя, при этом, сам
+            файл, со всеми его правами доступа (очистка файла) (из <a
+             href="c178.html#EX1">Пример 2-1</a> и <a
+             href="c178.html#EX2">Пример 2-2</a>):</p>
+<pre
+ class="PROGRAMLISTING">
+cat /dev/null &gt; /var/log/messages
+#  : &gt; /var/log/messages   дает тот же эффект, но не порождает дочерний процесс.
+
+cat /dev/null &gt; /var/log/wtmp
+</pre>
+            <br>
+            <br>
+
+            <p>Автоматическая очистка содержимого системного журнала
+            (logfile) (особенно хороша для борьбы с надоедливыми
+            рекламными идентификационными файлами (<span
+             class="QUOTE">&quot;cookies&quot;</span>)):</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="COOKIES"></a>
+
+              <p><strong>Пример 28-1. Удаление
+              cookie-файлов</strong></p>
+<pre
+ class="PROGRAMLISTING">
+if [ -f ~/.netscape/cookies ]  # Удалить, если имеются.
+then
+  rm -f ~/.netscape/cookies
+fi
+
+ln -s /dev/null ~/.netscape/cookies
+# Теперь, все cookie-файлы, вместо того, чтобы сохраняться на диске, будут &quot;вылетать в трубу&quot;.
+</pre>
+            </div>
+          </dd>
+
+          <dt><a
+           name="ZEROSREF1"></a><tt
+           class="FILENAME">/dev/zero</tt></dt>
+
+          <dd>
+            <p>Подобно псевдоустройству <tt
+             class="FILENAME">/dev/null</tt>, <tt
+             class="FILENAME">/dev/zero</tt> так же является
+            псевдоустройством, с той лишь разницей, что содержит нули.
+            Информация, выводимая в этот файл, так же бесследно
+            исчезает. Чтение нулей из этого файла может вызвать
+            некоторые затруднения, однако это можно сделать, к примеру,
+            с помощью команды <a
+             href="x9307.html#ODREF">od</a> или шестнадцатиричного
+            редактора. В основном, <tt
+             class="FILENAME">/dev/zero</tt> используется для создания
+            заготовки файла с заданой длиной.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX73"></a>
+
+              <p><strong>Пример 28-2. Создание файла подкачки
+              (swapfile), с помощью <tt
+               class="FILENAME">/dev/zero</tt></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Создание файла подкачки.
+# Этот сценарий должен запускаться с правами root.
+
+ROOT_UID=0         # Для root -- $UID 0.
+E_WRONG_USER=65    # Не root?
+
+FILE=/swap
+BLOCKSIZE=1024
+MINBLOCKS=40
+SUCCESS=0
+
+if [ &quot;$UID&quot; -ne &quot;$ROOT_UID&quot; ]
+then
+  echo; echo &quot;Этот сценарий должен запускаться с правами root.&quot;; echo
+  exit $E_WRONG_USER
+fi
+
+
+blocks=${1:-$MINBLOCKS}          #  По-умолчанию -- 40 блоков,
+                                 #+ если размер не задан из командной строки.
+# Ниже приводится эквивалентный набор команд.
+# --------------------------------------------------
+# if [ -n &quot;$1&quot; ]
+# then
+#   blocks=$1
+# else
+#   blocks=$MINBLOCKS
+# fi
+# --------------------------------------------------
+
+
+if [ &quot;$blocks&quot; -lt $MINBLOCKS ]
+then
+  blocks=$MINBLOCKS              # Должно быть как минимум 40 блоков.
+fi
+
+
+echo &quot;Создание файла подкачки размером $blocks блоков (KB).&quot;
+dd if=/dev/zero of=$FILE bs=$BLOCKSIZE count=$blocks  # &quot;Забить&quot; нулями.
+
+mkswap $FILE $blocks             # Назначить как файл подкачки.
+swapon $FILE                     # Активировать.
+
+echo &quot;Файл подкачки создан и активирован.&quot;
+
+exit $SUCCESS
+</pre>
+            </div>
+
+            <p>Еще одна область применения <tt
+             class="FILENAME">/dev/zero</tt> -- <span
+             class="QUOTE">&quot;очистка&quot;</span> специального
+            файла заданного размера, например файлов, монтируемых как
+            <a
+             href="c12942.html#LOOPBACKREF">loopback-устройства</a>
+            (см. <a
+             href="c9708.html#CREATEFS">Пример 13-6</a>) или для
+            безопасного удаления файла (см. <a
+             href="x9307.html#BLOTOUT">Пример 12-42</a>).</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="RAMDISK"></a>
+
+              <p><strong>Пример 28-3. Создание электронного
+              диска</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# ramdisk.sh
+
+#  &quot;электронный диск&quot; -- это область в ОЗУ компьютера
+#+ с которой система взаимодействует как с файловой системой.
+#  Основное преимущество -- очень высокая скорость чтения/записи.
+#  Недостатки -- энергозависимость, уменьшение объема ОЗУ, доступного системе,
+#                относительно небольшой размер.
+#
+#  Чем хорош электронный диск?
+#  При хранении наборов данных, таких как таблиц баз данных или словарей, на электронном диске
+#+ вы получаете высокую скорость работы с этими наборами, поскольку время доступа к ОЗУ
+#  неизмеримо меньше времени доступа к жесткому диску.
+
+
+E_NON_ROOT_USER=70             # Сценарий должен запускаться с правами root.
+ROOTUSER_NAME=root
+
+MOUNTPT=/mnt/ramdisk
+SIZE=2000                      # 2K блоков (измените, если это необходимо)
+BLOCKSIZE=1024                 # размер блока -- 1K (1024 байт)
+DEVICE=/dev/ram0               # Первое устройство ram
+
+username=`id -nu`
+if [ &quot;$username&quot; != &quot;$ROOTUSER_NAME&quot; ]
+then
+  echo &quot;Сценарий должен запускаться с правами root.&quot;
+  exit $E_NON_ROOT_USER
+fi
+
+if [ ! -d &quot;$MOUNTPT&quot; ]         #  Проверка наличия точки монтирования,
+then                           #+ благодаря этой проверке, при повторных запусках сценария
+  mkdir $MOUNTPT               #+ ошибки возникать не будет.
+fi
+
+dd if=/dev/zero of=$DEVICE count=$SIZE bs=$BLOCKSIZE  # Очистить электронный диск.
+mke2fs $DEVICE                 # Создать файловую систему ext2.
+mount $DEVICE $MOUNTPT         # Смонтировать.
+chmod 777 $MOUNTPT             # Сделать электронный диск доступным для обычных пользователей.
+                               # Но при этом, только root сможет его отмонтировать.
+
+echo &quot;Электронный диск \&quot;$MOUNTPT\&quot; готов к работе.&quot;
+# Теперь электронный диск доступен для любого пользователя в системе.
+
+#  Внимание! Электронный диск -- это энергозависимое устройство! Все данные, хранящиеся на нем,
+#+ будут утеряны при остановке или перезагрузке системы.
+#  Если эти данные представляют для вас интерес, то сохраняйте их копии в обычном каталоге.
+
+# После перезагрузки, чтобы вновь создать электронный диск, запустите этот сценарий.
+# Простое монтирование /mnt/ramdisk, без выполнения подготовительных действий, не будет работать.
+
+exit 0
+</pre>
+            </div>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x12987.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c13099.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><tt
+           class="FILENAME">/proc</tt></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p11889.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Отладка сценариев</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

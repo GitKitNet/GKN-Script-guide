@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Проблемы безопасности</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Разное"
+     href="c13505.html">
+    <link
+     rel="PREVIOUS"
+     title="Разные советы"
+     href="x13753.html">
+    <link
+     rel="NEXT"
+     title="Проблемы переносимости"
+     href="x13898.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x13753.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 33. Разное</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x13898.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="SECURITYISSUES"></a>33.8. Проблемы безопасности</h1>
+
+      <p>Уместным будет лишний раз предупредить о соблюдении мер
+      предосторожности при работе с незнакомыми сценариями. Сценарий
+      может содержать <span
+       class="emphasis"><em
+       class="EMPHASIS">червя</em></span>, <span
+       class="emphasis"><em
+       class="EMPHASIS">трояна</em></span> или даже <span
+       class="emphasis"><em
+       class="EMPHASIS">вирус</em></span>. Если вы получили сценарий не
+      из источника, которому доверяете, то никогда не запускайте его с
+      привилегиями root и не позволяйте вставлять его в список
+      сценариев начальной инициализации системы в <tt
+       class="FILENAME">/etc/rc.d</tt>, пока не убедитесь в том, что он
+      безвреден для системы.</p>
+
+      <p>Исследователи из Bell Labs и других организаций, включая M.
+      Douglas McIlroy, Tom Duff, и Fred Cohen исследовали вопрос о
+      возможности создания вирусов на языке сценариев командной
+      оболочки, и пришли к выводу, что это делается очень легко и
+      доступно даже для новичков. <a
+       name="AEN13892"
+       href="#FTN.AEN13892"><span
+       class="footnote">[1]</span></a></p>
+
+      <p>Это еще одна из причин, по которым следует изучать язык
+      командной оболочки. Способность читать и понимать сценарии
+      поможет вам предотвратить возможность взлома и/или разрушения
+      вашей системы.</p>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN13892"
+         href="x13884.html#AEN13892"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>См. статью Marius van Oers, <a
+           href=
+          "http://www.virusbtn.com/magazine/archives/200204/malshell.xml"
+           target="_top">Unix Shell Scripting Malware</a>, а также
+          ссылку на <span
+           class="emphasis"><em
+           class="EMPHASIS">Denning</em></span> в разделе <a
+           href="b14059.html#BIBLIOREF">Литература</a>.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x13753.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x13898.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Разные советы</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c13505.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Проблемы переносимости</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

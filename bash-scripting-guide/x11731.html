@@ -1,0 +1,464 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Перенаправление для блоков кода</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Перенаправление ввода/вывода"
+     href="c11620.html">
+    <link
+     rel="PREVIOUS"
+     title="Перенаправление ввода/вывода"
+     href="c11620.html">
+    <link
+     rel="NEXT"
+     title="Область применения"
+     href="x11778.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c11620.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 16. Перенаправление ввода/вывода</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x11778.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="REDIRCB"></a>16.2. Перенаправление для блоков кода</h1>
+
+      <p><a
+       name="REDIRREF"></a>Блоки кода, такие как циклы <a
+       href="c4875.html#WHILELOOPREF">while</a>, <a
+       href="c4875.html#UNTILLOOPREF">until</a> и <a
+       href="c4875.html#FORLOOPREF1">for</a>, условный оператор <a
+       href="c2171.html#IFTHEN">if/then</a>, так же могут смешиваться с
+      перенаправлением <tt
+       class="FILENAME">stdin</tt>. Даже функции могут использовать эту
+      форму перенаправления (см. <a
+       href="c12483.html#REALNAME">Пример 22-7</a>). Оператор
+      перенаправления <span
+       class="TOKEN">&lt;</span>, в таких случаях, ставится в конце
+      блока.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="REDIR2"></a>
+
+        <p><strong>Пример 16-4. Перенаправление в цикл <span
+         class="emphasis"><em
+         class="EMPHASIS">while</em></span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+if [ -z &quot;$1&quot; ]
+then
+  Filename=names.data       # По-умолчанию, если имя файла не задано.
+else
+  Filename=$1
+fi
+#  Конструкцию проверки выше, можно заменить следующей строкой (подстановка параметров):
+#+ Filename=${1:-names.data}
+
+count=0
+
+echo
+
+while [ &quot;$name&quot; != Smith ]  # Почему переменная $name взята в кавычки?
+do
+  read name                 # Чтение из $Filename, не со stdin.
+  echo $name
+  let &quot;count += 1&quot;
+done &lt;&quot;$Filename&quot;           # Перенаправление на ввод из файла $Filename.
+#    ^^^^^^^^^^^^
+
+echo; echo &quot;Имен прочитано: $count&quot;; echo
+
+#  Обратите внимание: в некоторых старых командных интерпретаторах,
+#+ перенаправление в циклы приводит к запуску цикла в субоболочке (subshell).
+#  Таким образом, переменная $count, по окончании цикла, будет содержать 0,
+#  значение, записанное в нее до входа в цикл.
+#  Bash и ksh стремятся избежать запуска субоболочки (subshell), если это возможно,
+#+ так что этот сценарий, в этих оболочках, работает корректно.
+#
+# Спасибо Heiner Steven за это примечание.
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="REDIR2A"></a>
+
+        <p><strong>Пример 16-5. Альтернативная форма перенаправления в
+        цикле <span
+         class="emphasis"><em
+         class="EMPHASIS">while</em></span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Это альтернативный вариант предыдущего сценария.
+
+#  Предложил: by Heiner Steven
+#+ для случаев, когда циклы с перенаправлением
+#+ запускаются в субоболочке, из-за чего переменные, устанавливаемые в цикле,
+#+ не сохраняют свои значения по завершении цикла.
+
+
+if [ -z &quot;$1&quot; ]
+then
+  Filename=names.data     # По-умолчанию, если имя файла не задано.
+else
+  Filename=$1
+fi
+
+
+exec 3&lt;&amp;0                 # Сохранить stdin в дескр. 3.
+exec 0&lt;&quot;$Filename&quot;        # Перенаправить stdin.
+
+count=0
+echo
+
+
+while [ &quot;$name&quot; != Smith ]
+do
+  read name               # Прочитать с перенаправленного stdin ($Filename).
+  echo $name
+  let &quot;count += 1&quot;
+done &lt;&quot;$Filename&quot;         # Цикл читает из файла $Filename.
+#    ^^^^^^^^^^^^
+
+
+exec 0&lt;&amp;3                 # Восстановить stdin.
+exec 3&lt;&amp;-                 # Закрыть временный дескриптор 3.
+
+echo; echo &quot;Имен прочитано: $count&quot;; echo
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="REDIR3"></a>
+
+        <p><strong>Пример 16-6. Перенаправление в цикл <span
+         class="emphasis"><em
+         class="EMPHASIS">until</em></span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# То же самое, что и в предыдущем примере, только для цикла &quot;until&quot;.
+
+if [ -z &quot;$1&quot; ]
+then
+  Filename=names.data         # По-умолчанию, если файл не задан.
+else
+  Filename=$1
+fi
+
+# while [ &quot;$name&quot; != Smith ]
+until [ &quot;$name&quot; = Smith ]     # Проверка != изменена на =.
+do
+  read name                   # Чтение из $Filename, не со stdin.
+  echo $name
+done &lt;&quot;$Filename&quot;             # Перенаправление на ввод из файла $Filename.
+#    ^^^^^^^^^^^^
+
+# Результаты получаются теми же, что и в случае с циклом &quot;while&quot;, в предыдущем примере.
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="REDIR4"></a>
+
+        <p><strong>Пример 16-7. Перенаправление в цикл <span
+         class="emphasis"><em
+         class="EMPHASIS">for</em></span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+if [ -z &quot;$1&quot; ]
+then
+  Filename=names.data          # По-умолчанию, если файл не задан.
+else
+  Filename=$1
+fi
+
+line_count=`wc $Filename | awk &#39;{ print $1 }&#39;`
+#           Число строк в файле.
+#
+#  Слишком запутано, тем не менее показывает
+#+ возможность перенаправления stdin внутри цикла &quot;for&quot;...
+#+ если вы достаточно умны.
+#
+# Более короткий вариант    line_count=$(wc &lt; &quot;$Filename&quot;)
+
+
+for name in `seq $line_count`  # &quot;seq&quot; выводит последовательность чисел.
+# while [ &quot;$name&quot; != Smith ]   --   более запутанно, чем в случае с циклом &quot;while&quot;   --
+do
+  read name                    # Чтение из файла $Filename, не со stdin.
+  echo $name
+  if [ &quot;$name&quot; = Smith ]
+  then
+    break
+  fi
+done &lt;&quot;$Filename&quot;              # Перенаправление на ввод из файла $Filename.
+#    ^^^^^^^^^^^^
+
+exit 0
+</pre>
+      </div>
+
+      <p>Предыдущий пример можно модифицировать так, чтобы
+      перенаправить вывод из цикла.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="REDIR4A"></a>
+
+        <p><strong>Пример 16-8. Перенаправление устройств (<tt
+         class="FILENAME">stdin</tt> и <tt
+         class="FILENAME">stdout</tt>) в цикле <span
+         class="emphasis"><em
+         class="EMPHASIS">for</em></span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+if [ -z &quot;$1&quot; ]
+then
+  Filename=names.data          # По-умолчанию, если файл не задан.
+else
+  Filename=$1
+fi
+
+Savefile=$Filename.new         # Имя файла, в котором сохраняются результаты.
+FinalName=Jonah                # Имя, на котором завершается чтение.
+
+line_count=`wc $Filename | awk &#39;{ print $1 }&#39;`  # Число строк в заданном файле.
+
+
+for name in `seq $line_count`
+do
+  read name
+  echo &quot;$name&quot;
+  if [ &quot;$name&quot; = &quot;$FinalName&quot; ]
+  then
+    break
+  fi
+done &lt; &quot;$Filename&quot; &gt; &quot;$Savefile&quot;     # Перенаправление на ввод из файла $Filename,
+#    ^^^^^^^^^^^^^^^^^^^^^^^^^^^       и сохранение результатов в файле.
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="REDIR5"></a>
+
+        <p><strong>Пример 16-9. Перенаправление в конструкции <span
+         class="emphasis"><em
+         class="EMPHASIS">if/then</em></span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+if [ -z &quot;$1&quot; ]
+then
+  Filename=names.data   # По-умолчанию, если файл не задан.
+else
+  Filename=$1
+fi
+
+TRUE=1
+
+if [ &quot;$TRUE&quot; ]          # конструкции &quot;if true&quot; и &quot;if :&quot; тоже вполне допустимы.
+then
+ read name
+ echo $name
+fi &lt;&quot;$Filename&quot;
+#  ^^^^^^^^^^^^
+
+# Читает только первую строку из файла.
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="NAMESDATA"></a>
+
+        <p><strong>Пример 16-10. Файл с именами <span
+         class="QUOTE">&quot;names.data&quot;</span>, для примеров
+        выше</strong></p>
+<pre
+ class="PROGRAMLISTING">
+Aristotle
+Belisarius
+Capablanca
+Euler
+Goethe
+Hamurabi
+Jonah
+Laplace
+Maroczy
+Purcell
+Schmidt
+Semmelweiss
+Smith
+Turing
+Venn
+Wilson
+Znosko-Borowski
+
+#  Это файл с именами для примеров
+#+ &quot;redir2.sh&quot;, &quot;redir3.sh&quot;, &quot;redir4.sh&quot;, &quot;redir4a.sh&quot;, &quot;redir5.sh&quot;.
+</pre>
+      </div>
+
+      <p>Перенаправление <tt
+       class="FILENAME">stdout</tt> для блока кода, может
+      использоваться для сохранения результатов работы этого блока в
+      файл. См. <a
+       href="c301.html#RPMCHECK">Пример 3-2</a>.</p>
+
+      <p><a
+       href="c11785.html#HEREDOCREF">Встроенный документ</a> -- это
+      особая форма перенаправления для блоков кода.</p>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c11620.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x11778.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Перенаправление ввода/вывода</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c11620.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Область применения</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

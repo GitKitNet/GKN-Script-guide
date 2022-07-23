@@ -1,0 +1,417 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Локальные переменные</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Функции"
+     href="c12483.html">
+    <link
+     rel="PREVIOUS"
+     title="Функции"
+     href="c12483.html">
+    <link
+     rel="NEXT"
+     title="Псевдонимы"
+     href="c12683.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c12483.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 22. Функции</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c12683.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="LOCALVAR"></a>22.2. Локальные переменные</h1>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="LOCALSREF1"></a>Что такое <span
+         class="QUOTE">&quot;локальная&quot;</span>
+        переменная?</strong></p>
+
+        <dl>
+          <dt>локальные переменные</dt>
+
+          <dd>
+            <p>Переменные, объявленные как <em
+             class="FIRSTTERM">локальные</em>, имеют ограниченную
+            область видимости, и доступны только в пределах <a
+             href="c301.html#CODEBLOCKREF">блока</a>, в котором они
+            были объявлены. Для функций это означает, что локальная
+            переменная &quot;видна&quot; только в теле самой
+            функции.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX62"></a>
+
+              <p><strong>Пример 22-8. Область видимости локальных
+              переменных</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+func ()
+{
+  local loc_var=23       # Объявление локальной переменной.
+  echo
+  echo &quot;\&quot;loc_var\&quot; в функции = $loc_var&quot;
+  global_var=999         # Эта переменная не была объявлена локальной.
+  echo &quot;\&quot;global_var\&quot; в функции = $global_var&quot;
+}
+
+func
+
+# Проверим, &quot;видна&quot; ли локальная переменная за пределами функции.
+
+echo
+echo &quot;\&quot;loc_var\&quot; за пределами функции = $loc_var&quot;
+                                      # &quot;loc_var&quot; за пределами функции =
+                                      # Итак, $loc_var не видна в глобальном контексте.
+echo &quot;\&quot;global_var\&quot; за пределами функции = $global_var&quot;
+                                      # &quot;global_var&quot; за пределами функции = 999
+                                      # $global_var имеет глобальную область видимости.
+echo                                  
+
+exit 0
+</pre>
+            </div>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Переменные, объявляемые в теле функции,
+                    считаются необъявленными до тех пор, пока функция
+                    не будет вызвана. Это касается <span
+                     class="emphasis"><em
+                     class="EMPHASIS">всех</em></span> переменных.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+func ()
+{
+global_var=37    #  Эта переменная будет считаться необъявленной
+                 #+ до тех пор, пока функция не будет вызвана.
+}                # КОНЕЦ ФУНКЦИИ
+
+echo &quot;global_var = $global_var&quot;  # global_var =
+                                 #  Функция &quot;func&quot; еще не была вызвана,
+                                 #+ поэтому $global_var пока еще не &quot;видна&quot; здесь.
+
+func
+echo &quot;global_var = $global_var&quot;  # global_var = 37
+                                 # Переменная была инициализирована в функции.
+</pre>
+                    <br>
+                    <br>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="SECT2">
+        <h2
+         class="SECT2"><a
+         name="LOCVARRECUR"></a>22.2.1. Локальные переменные делают
+        возможной рекурсию.</h2>
+
+        <p>Хотя локальные переменные и допускают рекурсию, <a
+         name="AEN12669"
+         href="#FTN.AEN12669"><span
+         class="footnote">[1]</span></a> но она сопряжена с большими
+        накладными расходами и не рекомендуется для использования в
+        сценариях. <a
+         name="AEN12675"
+         href="#FTN.AEN12675"><span
+         class="footnote">[2]</span></a></p>
+
+        <div
+         class="EXAMPLE">
+          <a
+           name="EX63"></a>
+
+          <p><strong>Пример 22-9. Использование локальных переменных
+          при рекурсии</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+#               факториал
+#               ---------
+
+
+# Действительно ли bash допускает рекурсию?
+# Да! Но...
+# Нужно быть действительно дубинноголовым, чтобы использовать ее в сценариях
+# на языке командной оболочки.
+
+
+MAX_ARG=5
+E_WRONG_ARGS=65
+E_RANGE_ERR=66
+
+
+if [ -z &quot;$1&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` число&quot;
+  exit $E_WRONG_ARGS
+fi
+
+if [ &quot;$1&quot; -gt $MAX_ARG ]
+then
+  echo &quot;Выход за верхний предел (максимально возможное число -- 5).&quot;
+  # Вернитесь к реальности.
+  # Если вам захочется поднять верхнюю границу,
+  # то перепишите эту программу на настоящем языке программирования.
+  exit $E_RANGE_ERR
+fi
+
+fact ()
+{
+  local number=$1
+  # Переменная &quot;number&quot; должна быть объявлена как локальная,
+  # иначе результат будет неверный.
+  if [ &quot;$number&quot; -eq 0 ]
+  then
+    factorial=1    # Факториал числа 0 = 1.
+  else
+    let &quot;decrnum = number - 1&quot;
+    fact $decrnum  # Рекурсивный вызов функции.
+    let &quot;factorial = $number * $?&quot;
+  fi
+
+  return $factorial
+}
+
+fact $1
+echo &quot;Факториал числа $1 = $?.&quot;
+
+exit 0
+</pre>
+        </div>
+
+        <p>Еще один пример использования рекурсии вы найдете в <a
+         href="a14477.html#PRIMES">Пример A-18</a>. Не забывайте, что
+        рекурсия весьма ресурсоемкое удовольствие, к тому же она
+        выполняется слишком медленно, поэтому не следует использовать
+        ее в сценариях.</p>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN12669"
+         href="x12644.html#AEN12669"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p><a
+           name="RECURSIONREF"></a> <a
+           href="b14059.html#MAYERREF">Herbert Mayer</a> определяет
+          <span
+           class="emphasis"><em
+           class="EMPHASIS">рекурсию</em></span>, как <span
+           class="QUOTE">&quot;...описание алгоритма с помощью более
+          простой версии того же самого алгоритма...&quot;</span>
+          Рекурсивной называется функция, которая вызывает самого
+          себя.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN12675"
+         href="x12644.html#AEN12675"><span
+         class="footnote">[2]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Слишком глубокая рекурсия может вызвать крах сценария.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+recursive_function ()
+{
+(( $1 &lt; $2 )) &amp;&amp; recursive_function $(( $1 + 1 )) $2;
+#  Увеличивать 1-й параметр до тех пор,
+#+ пока он не станет равным, или не превысит, второму параметру.
+}
+
+recursive_function 1 50000  # Глубина рекурсии = 50,000!
+# Само собой -- Segmentation fault.
+
+#  Рекурсия такой глубины может &quot;обрушить&quot; даже программу, написанную на C,
+#+ по исчерпании памяти, выделенной под сегмент стека.
+
+# Спасибо S.C.
+
+exit 0  # Этот сценарий завершает работу не здесь, а в результате ошибки Segmentation fault.
+</pre>
+          <br>
+          <br>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c12483.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c12683.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Функции</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c12483.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Псевдонимы</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

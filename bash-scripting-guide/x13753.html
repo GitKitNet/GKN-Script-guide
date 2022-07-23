@@ -1,0 +1,824 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Разные советы</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Разное"
+     href="c13505.html">
+    <link
+     rel="PREVIOUS"
+     title="Оптимизация"
+     href="x13734.html">
+    <link
+     rel="NEXT"
+     title="Проблемы безопасности"
+     href="x13884.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x13734.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 33. Разное</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x13884.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="ASSORTEDTIPS"></a>33.7. Разные советы</h1>
+
+      <ul>
+        <li>
+          <p>Для ведения учета использования сценария пользователями,
+          добавьте следующие строки в сценарий. Они запишут в файл
+          отчета название сценария и время запуска.</p>
+<pre
+ class="PROGRAMLISTING">
+# Добавление (&gt;&gt;) учетной записи, об использовании сценария, в файл отчета.
+
+date&gt;&gt; $SAVE_FILE      # Дата и время.
+echo $0&gt;&gt; $SAVE_FILE   # Название сценария.
+echo&gt;&gt; $SAVE_FILE      # Пустая строка -- как разделитель записей.
+
+# Не забудьте определить переменную окружения SAVE_FILE в ~/.bashrc
+# (что нибудь, типа: ~/.scripts-run)
+</pre>
+          <br>
+          <br>
+        </li>
+
+        <li>
+          <p><a
+           name="PREPENDREF"></a></p>
+
+          <p>Оператор <span
+           class="TOKEN">&gt;&gt;</span> производит добавление строки в
+          конец файла. А как быть, если надо добавить строку в начало
+          существующего файла?</p>
+<pre
+ class="PROGRAMLISTING">
+file=data.txt
+title=&quot;***Это титульная строка в текстовом файле***&quot;
+
+echo $title | cat - $file &gt;$file.new
+# &quot;cat -&quot; объединяет stdout с содержимым $file.
+#  В результате получится
+#+ новый файл $file.new, в начало которого добавлена строка $title.
+</pre>
+          <br>
+          <br>
+
+          <p>Само собой разумеется, то же самое можно сделать с помощью
+          <a
+           href="a14586.html#SEDREF">sed</a>.</p>
+        </li>
+
+        <li>
+          <p>Сценарий командной оболочки может использоваться как
+          команда внутри другого сценария командной оболочки, <span
+           class="emphasis"><em
+           class="EMPHASIS">Tcl</em></span>, или <span
+           class="emphasis"><em
+           class="EMPHASIS">wish</em></span> сценария или, даже в <a
+           href="x7794.html#MAKEFILEREF">Makefile</a>. Он может быть
+          вызван как внешняя команда из программы на языке C, с помощью
+          функции <tt
+           class="REPLACEABLE"><em>system()</em></tt>, т.е. <tt
+           class=
+          "REPLACEABLE"><em>system(&quot;script_name&quot;);</em></tt>.</p>
+        </li>
+
+        <li>
+          <p>Собирайте свои библиотеки часто используемых функций и
+          определений. Эти &quot;библиотеки&quot; могут быть <span
+           class="QUOTE">&quot;подключены&quot;</span> к сценариям, с
+          помощью команды <a
+           href="c301.html#DOTREF">точка</a> (<strong
+           class="COMMAND">.</strong>) или <a
+           href="c5358.html#SOURCEREF">source</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+# Сценарий-библиотека
+# ------ -------
+
+# Обратите внимание:
+# Здесь нет sha-bang (&quot;#!&quot;).
+# И нет &quot;живого кода&quot;.
+
+
+# Определения переменных
+
+ROOT_UID=0             # UID root-а, 0.
+E_NOTROOT=101          # Ошибка -- &quot;обычный пользователь&quot;.
+MAXRETVAL=255          # Максимальное значение, которое могут возвращать функции.
+SUCCESS=0
+FAILURE=-1
+
+
+
+# Функции
+
+Usage ()               # Сообщение &quot;Порядок использования:&quot;.
+{
+  if [ -z &quot;$1&quot; ]       # Нет аргументов.
+  then
+    msg=filename
+  else
+    msg=$@
+  fi
+
+  echo &quot;Порядок использования: `basename $0` &quot;$msg&quot;&quot;
+}
+
+
+Check_if_root ()       # Проверка прав пользователя.
+{                      # из примера &quot;ex39.sh&quot;.
+  if [ &quot;$UID&quot; -ne &quot;$ROOT_UID&quot; ]
+  then
+    echo &quot;Этот сценарий должен запускаться с привилегиями root.&quot;
+    exit $E_NOTROOT
+  fi
+}
+
+
+CreateTempfileName ()  # Создание &quot;уникального&quot; имени для временного файла.
+{                      # Из примера &quot;ex51.sh&quot;.
+  prefix=temp
+  suffix=`eval date +%s`
+  Tempfilename=$prefix.$suffix
+}
+
+
+isalpha2 ()            # Проверка, состоит ли строка только из алфавитных символов.
+{                      # Из примера &quot;isalpha.sh&quot;.
+  [ $# -eq 1 ] || return $FAILURE
+
+  case $1 in
+  *[!a-zA-Z]*|&quot;&quot;) return $FAILURE;;
+  *) return $SUCCESS;;
+  esac                 # Спасибо S.C.
+}
+
+
+abs ()                           # Абсолютное значение.
+{                                # Внимание: Максимально возможное возвращаеиое значение
+                                 # не может превышать 255.
+  E_ARGERR=-999999
+
+  if [ -z &quot;$1&quot; ]                 # Проверка наличия входного аргумента.
+  then
+    return $E_ARGERR             # Код ошибки, обычно возвращаемый в таких случаях.
+  fi
+
+  if [ &quot;$1&quot; -ge 0 ]              # Если не отрицательное,
+  then                           #
+    absval=$1                    # оставить как есть.
+  else                           # Иначе,
+    let &quot;absval = (( 0 - $1 ))&quot;  # изменить знак.
+  fi
+
+  return $absval
+}
+
+
+tolower ()             #  Преобразование строк символов в нижний регистр
+{
+
+  if [ -z &quot;$1&quot; ]       #  Если нет входного аргумента,
+  then                 #+ выдать сообщение об ошибке
+    echo &quot;(null)&quot;
+    return             #+ и выйти из функции.
+  fi
+
+  echo &quot;$@&quot; | tr A-Z a-z
+  # Преобразовать все входные аргументы ($@).
+
+  return
+
+# Для записи результата работы функции в переменную, используйте операцию подстановки команды.
+# Например:
+#    oldvar=&quot;A seT of miXed-caSe LEtTerS&quot;
+#    newvar=`tolower &quot;$oldvar&quot;`
+#    echo &quot;$newvar&quot;    # a set of mixed-case letters
+#
+# Упражнение: Добавьте в эту библиотеку функцию перевода символов в верхний регистр.
+#           toupper()  [это довольно просто].
+}
+</pre>
+          <br>
+          <br>
+        </li>
+
+        <li>
+          <p>Для повышения ясности комментариев, выделяйте их особым
+          образом.</p>
+<pre
+ class="PROGRAMLISTING">
+## Внимание!
+rm -rf *.zzy   ##  Комбинация ключей &quot;-rf&quot;, в команде &quot;rm&quot;, чрезвычайно опасна,
+               ##+ особенно при удалении по шаблону.
+
+#+ Продолжение комментария на новой строке.
+#  Это первая строка комментария
+#+ это вторая строка комментария,
+#+ это последняя строка комментария.
+
+#* Обратите внимание.
+
+#o Элемент списка.
+
+#&gt; Альтернативный вариант.
+while [ &quot;$var1&quot; != &quot;end&quot; ]    #&gt; while test &quot;$var1&quot; != &quot;end&quot;
+</pre>
+          <br>
+          <br>
+        </li>
+
+        <li>
+          <p>Для создания блочных комментариев, можно использовать
+          конструкцию <a
+           href="c2171.html#TESTCONSTRUCTS1">if-test</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+COMMENT_BLOCK=
+#  Если попробовать инициализировать эту переменную чем нибудь,
+#+ то вы получите неожиданный результат.
+
+if [ $COMMENT_BLOCK ]; then
+
+Блок комментария --
+=================================
+Это строка комментария.
+Это другая строка комментария.
+Это еще одна строка комментария.
+=================================
+
+echo &quot;Эта строка не выводится.&quot;
+
+Этот блок комментария не вызывает сообщения об ошибке! Круто!
+
+fi
+
+echo &quot;Эта строка будет выведена на stdout.&quot;
+
+exit 0
+</pre>
+          <br>
+          <br>
+
+          <p>Сравните этот вариант создания блочных комментариев со <a
+           href="c11785.html#CBLOCK1">встроенным документом,
+          использующимся для создания блочных комментариев</a>.</p>
+        </li>
+
+        <li>
+          <p>С помощью служебной переменной <a
+           href="c3270.html#XSTATVARREF">$?</a>, можно проверить --
+          является ли входной аргумент целым числом.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+SUCCESS=0
+E_BADINPUT=65
+
+test &quot;$1&quot; -ne 0 -o &quot;$1&quot; -eq 0 2&gt;/dev/null
+# Проверка: &quot;равно нулю или не равно нулю&quot;.
+# 2&gt;/dev/null подавление вывода сообщений об ошибках.
+
+if [ $? -ne &quot;$SUCCESS&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` целое_число&quot;
+  exit $E_BADINPUT
+fi
+
+let &quot;sum = $1 + 25&quot;             # Будет выдавать ошибку, если $1 не является целым числом.
+echo &quot;Sum = $sum&quot;
+
+# Любая переменная может быть проверена таким образом, а не только входные аргументы.
+
+exit 0
+</pre>
+          <br>
+          <br>
+        </li>
+
+        <li>
+          <p><a
+           name="RVT"></a>Диапазон, возвращаемых функциями значений, 0
+          - 255 -- серьезное ограничение. Иногда может оказаться весьма
+          проблематичным использование глобальных переменных, для
+          передачи результата из функции. В таких случаях можно
+          порекомендовать передачу результатов работы функции через
+          запись в <tt
+           class="FILENAME">stdout</tt>.</p>
+
+          <div
+           class="EXAMPLE">
+            <a
+             name="MULTIPLICATION"></a>
+
+            <p><strong>Пример 33-10. Необычный способ передачи
+            возвращаемого значения</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# multiplication.sh
+
+multiply ()                     # Функции выполняет перемножение всех переданых аргументов.
+{
+  local product=1
+
+  until [ -z &quot;$1&quot; ]             # Пока не дошли до последнего аргумента...
+  do
+    let &quot;product *= $1&quot;
+    shift
+  done
+
+  echo $product                 #  Значение не будет выведено на экран,
+}                               #+ поскольку оно будет записано в переменную.
+
+mult1=15383; mult2=25211
+val1=`multiply $mult1 $mult2`
+echo &quot;$mult1 X $mult2 = $val1&quot;
+                                # 387820813
+
+mult1=25; mult2=5; mult3=20
+val2=`multiply $mult1 $mult2 $mult3`
+echo &quot;$mult1 X $mult2 X $mult3 = $val2&quot;
+                                # 2500
+
+mult1=188; mult2=37; mult3=25; mult4=47
+val3=`multiply $mult1 $mult2 $mult3 $mult4`
+echo &quot;$mult1 X $mult2 X $mult3 X mult4 = $val3&quot;
+                                # 8173300
+
+exit 0
+</pre>
+          </div>
+
+          <p>Такой прием срабатывает и для строковых значений. Таким
+          образом, функция может <span
+           class="QUOTE">&quot;возвращать&quot;</span> и нечисловой
+          результат.</p>
+<pre
+ class="PROGRAMLISTING">
+capitalize_ichar ()          #  Первый символ всех строковых аргументов
+{                            #+ переводится в верхний регистр.
+
+  string0=&quot;$@&quot;               # Принять все аргументы.
+
+  firstchar=${string0:0:1}   # Первый символ.
+  string1=${string0:1}       # Остаток строки.
+
+  FirstChar=`echo &quot;$firstchar&quot; | tr a-z A-Z`
+                             # Преобразовать в верхний регистр.
+
+  echo &quot;$FirstChar$string1&quot;  # Выдать на stdout.
+
+}
+
+newstring=`capitalize_ichar &quot;each sentence should start with a capital letter.&quot;`
+echo &quot;$newstring&quot;          # Each sentence should start with a capital letter.
+</pre>
+          <br>
+          <br>
+
+          <p>Используя этот прием, функция может <span
+           class="QUOTE">&quot;возвращать&quot;</span> даже несколько
+          значений.</p>
+
+          <div
+           class="EXAMPLE">
+            <a
+             name="SUMPRODUCT"></a>
+
+            <p><strong>Пример 33-11. Необычный способ получения
+            нескольких возвращаемых значений</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# sum-product.sh
+# Функция может &quot;возвращать&quot; несколько значений.
+
+sum_and_product ()   # Вычисляет сумму и произведение аргументов.
+{
+  echo $(( $1 + $2 )) $(( $1 * $2 ))
+# Вывод на stdout двух значений, разделенных пробелом.
+}
+
+echo
+echo &quot;Первое число: &quot;
+read first
+
+echo
+echo &quot;Второе число: &quot;
+read second
+echo
+
+retval=`sum_and_product $first $second`      # Получить результат.
+sum=`echo &quot;$retval&quot; | awk &#39;{print $1}&#39;`      # Первое значение (поле).
+product=`echo &quot;$retval&quot; | awk &#39;{print $2}&#39;`  # Второе значение (поле).
+
+echo &quot;$first + $second = $sum&quot;
+echo &quot;$first * $second = $product&quot;
+echo
+
+exit 0
+</pre>
+          </div>
+        </li>
+
+        <li>
+          <p>Следующая хитрость -- передача <a
+           href="c12790.html#ARRAYREF">массива</a> в <a
+           href="c12483.html#FUNCTIONREF">функцию</a>, и <span
+           class="QUOTE">&quot;возврат&quot;</span> массива из
+          функции.</p>
+
+          <p>Передача массива в функцию выполняется посредством записи
+          элементов массива, разделенных пробелами, в переменную, с
+          помощью операции <a
+           href="c11441.html#COMMANDSUBREF">подстановки команды</a>.
+          Получить массив обратно можно, следуя вышеописанной
+          стратегии, через вывод на stdout, а затем, с помощью все той
+          же операции подстановки команды и оператора <strong
+           class="COMMAND">( ... )</strong> -- записать в массив.</p>
+
+          <div
+           class="EXAMPLE">
+            <a
+             name="ARRFUNC"></a>
+
+            <p><strong>Пример 33-12. Передача массива в функцию и
+            возврат массива из функции</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# array-function.sh: Передача массива в функцию и...
+#                   &quot;возврат&quot; массива из функции
+
+
+Pass_Array ()
+{
+  local passed_array   # Локальная переменная.
+  passed_array=( `echo &quot;$1&quot;` )
+  echo &quot;${passed_array[@]}&quot;
+  #  Список всех элементов в новом массиве,
+  #+ объявленном и инициализированном в функции.
+}
+
+
+original_array=( element1 element2 element3 element4 element5 )
+
+echo
+echo &quot;original_array = ${original_array[@]}&quot;
+#                      Список всех элементов исходного массива.
+
+
+# Так можно отдать массив в функцию.
+# **********************************
+argument=`echo ${original_array[@]}`
+# **********************************
+#  Поместив все элементы массива в переменную,
+#+ разделяя их пробелами.
+#
+# Обратите внимание: метод прямой передачи массива в функцию не сработает.
+
+
+# Так можно получить массив из функции.
+# *****************************************
+returned_array=( `Pass_Array &quot;$argument&quot;` )
+# *****************************************
+# Записать результат в переменную-массив.
+
+echo &quot;returned_array = ${returned_array[@]}&quot;
+
+echo &quot;=============================================================&quot;
+
+#  А теперь попробуйте получить доступ к локальному массиву
+#+ за пределами функции.
+Pass_Array &quot;$argument&quot;
+
+# Функция выведет массив, но...
+#+ доступ к локальному массиву, за пределами функции, окажется невозможен.
+echo &quot;Результирующий массив (внутри функции) = ${passed_array[@]}&quot;
+# &quot;ПУСТОЕ&quot; ЗНАЧЕНИЕ, поскольку это локальная переменная.
+
+echo
+
+exit 0
+</pre>
+          </div>
+
+          <p>Более сложный пример передачи массивов в функции, вы
+          найдете в <a
+           href="a14477.html#LIFESLOW">Пример A-11</a>.</p>
+        </li>
+
+        <li>
+          <p>Использование конструкций с двойными круглыми скобками
+          позволяет применять C-подобный синтаксис операций присвоения
+          и инкремента переменных, а также оформления циклов <a
+           href="c4875.html#FORLOOPREF1">for</a> и <a
+           href="c4875.html#WHILELOOPREF">while</a>. См. <a
+           href="c4875.html#FORLOOPC">Пример 10-12</a> и <a
+           href="c4875.html#WHLOOPC">Пример 10-17</a>.</p>
+        </li>
+
+        <li>
+          <p>Иногда очень удобно &quot;пропускать&quot; данные через
+          один и тот же фильтр, но с разными параметрами, используя
+          конвейерную обработку. Особенно это относится к <a
+           href="x7050.html#TRREF">tr</a> и <a
+           href="x7050.html#GREPREF">grep</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+# Из примера &quot;wstrings.sh&quot;.
+
+wlist=`strings &quot;$1&quot; | tr A-Z a-z | tr &#39;[:space:]&#39; Z | \
+tr -cs &#39;[:alpha:]&#39; Z | tr -s &#39;\173-\377&#39; Z | tr Z &#39; &#39;`
+</pre>
+          <br>
+          <br>
+
+          <div
+           class="EXAMPLE">
+            <a
+             name="AGRAM"></a>
+
+            <p><strong>Пример 33-13. Игры с анаграммами</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# agram.sh: Игры с анаграммами.
+
+# Поиск анаграмм...
+LETTERSET=etaoinshrdlu
+
+anagram &quot;$LETTERSET&quot; | # Найти все анаграммы в наборе символов...
+grep &#39;.......&#39; |       # состоящие, как минимум из 7 символов,
+grep &#39;^is&#39; |           # начинающиеся с &#39;is&#39;
+grep -v &#39;s$&#39; |         # исключая множественное число
+grep -v &#39;ed$&#39;          # и глаголы в прошедшем времени
+
+#  Здесь используется утилита &quot;anagram&quot;
+#+ которая входит в состав пакета &quot;yawl&quot; , разработанного автором.
+#  http://ibiblio.org/pub/Linux/libs/yawl-0.2.tar.gz
+
+exit 0                 # Конец.
+
+bash$ sh agram.sh
+islander
+isolate
+isolead
+isotheral
+</pre>
+          </div>
+
+          <p>См. также <a
+           href="x12987.html#CONSTAT">Пример 27-2</a>, <a
+           href="x7050.html#CRYPTOQUOTE">Пример 12-18</a> и <a
+           href="a14477.html#SOUNDEX">Пример A-10</a>.</p>
+        </li>
+
+        <li>
+          <p>Для создания блочных комментариев можно использовать <span
+           class="QUOTE">&quot;<a
+           href="c11785.html#ANONHEREDOC0">анонимные встроенные
+          документы</a>&quot;</span>. См. <a
+           href="c11785.html#COMMENTBLOCK">Пример 17-10</a>.</p>
+        </li>
+
+        <li>
+          <p>Попытка вызова утилиты из сценария на машине, где эта
+          утилита отсутствует, потенциально опасна. Для обхода подобных
+          проблем можно воспользоваться утилитой <a
+           href="x7794.html#WHATISREF">whatis</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+CMD=command1                 # Основной вариант.
+PlanB=command2               # Запасной вариант.
+
+command_test=$(whatis &quot;$CMD&quot; | grep &#39;nothing appropriate&#39;)
+#  Если &#39;command1&#39; не найдена в системе, то &#39;whatis&#39; вернет
+#+ &quot;command1: nothing appropriate.&quot;
+#==&gt; От переводчика: Будьте внимательны! Если у вас локализованная версия whatis
+#==&gt; то вывод от нее может отличаться от используемого здесь (&#39;nothing appropriate&#39;)
+
+
+if [[ -z &quot;$command_test&quot; ]]  # Проверка наличия утилиты в системе.
+then
+  $CMD option1 option2       #  Запуск команды с параметрами.
+else                         #  Иначе,
+  $PlanB                     #+ запустить command2 (запасной вариант).
+fi
+</pre>
+          <br>
+          <br>
+        </li>
+
+        <li>
+          <p>Команда <a
+           href="x9307.html#RUNPARTSREF">run-parts</a> удобна для
+          запуска нескольких сценариев, особенно в комбинации с <a
+           href="c9708.html#CRONREF">cron</a> или <a
+           href="x6837.html#ATREF">at</a>.</p>
+        </li>
+
+        <li>
+          <p>Было бы неплохо снабдить сценарий графическим интерфейстом
+          X-Window. Для этого можно порекомендовать пакеты <span
+           class="emphasis"><em
+           class="EMPHASIS">Xscript</em></span>, <span
+           class="emphasis"><em
+           class="EMPHASIS">Xmenu</em></span> и <span
+           class="emphasis"><em
+           class="EMPHASIS">widtools</em></span>. Правда, первые два,
+          кажется больше не поддерживаются разработчиками. Зато <span
+           class="emphasis"><em
+           class="EMPHASIS">widtools</em></span> можно получить <a
+           href=
+          "http://www.batse.msfc.nasa.gov/~mallozzi/home/software/xforms/src/widtools-2.0.tgz"
+           target="_top">здесь</a>.</p>
+
+          <div
+           class="CAUTION">
+            <table
+             class="CAUTION"
+             width="90%"
+             border="0">
+              <tr>
+                <td
+                 width="25"
+                 align="center"
+                 valign="top"><img
+                 src="misc/abs-book/images/caution.gif"
+                 hspace="5"
+                 alt="Caution"></td>
+
+                <td
+                 align="left"
+                 valign="top">
+                  <p>Пакет <span
+                   class="emphasis"><em
+                   class="EMPHASIS">widtools</em></span> (widget tools)
+                  требует наличия библиотеки <span
+                   class="emphasis"><em
+                   class="EMPHASIS">XForms</em></span>. Кроме того,
+                  необходимо слегка подправить <a
+                   href="x7794.html#MAKEFILEREF">Makefile</a>, чтобы
+                  этот пакет можно было собрать на типичной
+                  Linux-системе. Но хуже всего то, что три из шести
+                  виджетов не работают :-(( (segfault).</p>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <p>Для постороения приложений с графическим интерфейсом,
+          можно попробовать <span
+           class="emphasis"><em
+           class="EMPHASIS">Tk</em></span>, или <span
+           class="emphasis"><em
+           class="EMPHASIS">wish</em></span> (надстройка над <span
+           class="emphasis"><em
+           class="EMPHASIS">Tcl</em></span>), <span
+           class="emphasis"><em
+           class="EMPHASIS">PerlTk</em></span> (Perl с поддержкой Tk),
+          <span
+           class="emphasis"><em
+           class="EMPHASIS">tksh</em></span> (ksh с поддержкой Tk),
+          <span
+           class="emphasis"><em
+           class="EMPHASIS">XForms4Perl</em></span> (Perl с поддержкой
+          XForms), <span
+           class="emphasis"><em
+           class="EMPHASIS">Gtk-Perl</em></span> (Perl с поддержкой
+          Gtk) или <span
+           class="emphasis"><em
+           class="EMPHASIS">PyQt</em></span> (Python с поддержкой
+          Qt).</p>
+        </li>
+      </ul>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x13734.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x13884.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Оптимизация</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c13505.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Проблемы безопасности</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

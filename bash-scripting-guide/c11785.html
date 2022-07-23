@@ -1,0 +1,795 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Встроенные документы</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Углубленный материал"
+     href="p3268.html">
+    <link
+     rel="PREVIOUS"
+     title="Область применения"
+     href="x11778.html">
+    <link
+     rel="NEXT"
+     title="Материал повышенной сложности"
+     href="p11889.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x11778.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="p11889.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="HERE-DOCS"></a>Глава 17. Встроенные документы</h1>
+
+      <p><a
+       name="HEREDOCREF"></a></p>
+
+      <p><em
+       class="FIRSTTERM">Встроенный документ</em> (here document)
+      является специальной формой <a
+       href="c11620.html#IOREDIRREF">перенаправления ввода/вывода</a>,
+      которая позволяет передать список команд интерактивной программе
+      или команде, например <a
+       href="x8707.html#FTPREF">ftp</a>, <a
+       href="x8707.html#TELNETREF">telnet</a> или <strong
+       class="COMMAND">ex</strong>. Конец встроенного документа
+      выделяется <span
+       class="QUOTE">&quot;строкой-ограничителем&quot;</span>, которая
+      задается с помощью специальной последовательности символов <span
+       class="TOKEN">&lt;&lt;</span>. Эта последовательность -- есть
+      перенаправление вывода из файла в программу, напоминает
+      конструкцию <tt
+       class="USERINPUT"><strong>interactive-program &lt;
+      command-file</strong></tt>, где <tt
+       class="FILENAME">command-file</tt> содержит строки:</p>
+<pre
+ class="PROGRAMLISTING">
+command #1
+command #2
+...
+</pre>
+      <br>
+      <br>
+
+      <p>Сценарий, использующий <span
+       class="QUOTE">&quot;встроенный документ&quot;</span> для тех же
+      целей, может выглядеть примерно так:</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+interactive-program &lt;&lt;LimitString
+command #1
+command #2
+...
+LimitString
+</pre>
+      <br>
+      <br>
+
+      <p>В качестве строки-ограничителя должна выбираться такая
+      последовательность символов, которая не будет встречаться в теле
+      <span
+       class="QUOTE">&quot;встроенного документа&quot;</span>.</p>
+
+      <p>Обратите внимание: использование <span
+       class="emphasis"><em
+       class="EMPHASIS">встроенных документов</em></span> может иногда
+      с успехом применяться и при работе с неинтерактивными командами и
+      утилитами.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX69"></a>
+
+        <p><strong>Пример 17-1. dummyfile: Создание 2-х строчного
+        файла-заготовки</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Неинтерактивное редактирование файла с помощью &#39;vi&#39;.
+# Эмуляция &#39;sed&#39;.
+
+E_BADARGS=65
+
+if [ -z &quot;$1&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` filename&quot;
+  exit $E_BADARGS
+fi
+
+TARGETFILE=$1
+
+# Вставить 2 строки в файл и сохранить.
+#--------Начало встроенного документа-----------#
+vi $TARGETFILE &lt;&lt;x23LimitStringx23
+i
+Это строка 1.
+Это строка 2.
+^[
+ZZ
+x23LimitStringx23
+#----------Конец встроенного документа-----------#
+
+#  Обратите внимание: ^[, выше -- это escape-символ
+#+ Control-V &lt;Esc&gt;.
+
+#  Bram Moolenaar указывает, что этот скрипт может не работать с &#39;vim&#39;,
+#+ из-за возможных проблем взаимодействия с терминалом.
+
+exit 0
+</pre>
+      </div>
+
+      <p>Этот сценарий, с тем же эффектом, мог бы быть реализован,
+      основываясь не на <strong
+       class="COMMAND">vi</strong>, а на <strong
+       class="COMMAND">ex</strong>. Встроенные документы, содержащие
+      команды для <strong
+       class="COMMAND">ex</strong>, стали настолько обычным делом, что
+      их уже смело можно вынести в отдельную категорию -- <em
+       class="FIRSTTERM">ex-сценарии</em>.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX70"></a>
+
+        <p><strong>Пример 17-2. broadcast: Передача сообщения всем,
+        работающим в системе, пользователям</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+wall &lt;&lt;zzz23EndOfMessagezzz23
+Пошлите, по электронной почте, ваш заказ на пиццу, системному администратору.
+    (Добавьте дополнительный доллар, если вы желаете положить на пиццу анчоусы или грибы.)
+# Внимание: строки комментария тоже будут переданы команде &#39;wall&#39; как часть текста.
+zzz23EndOfMessagezzz23
+
+# Возможно, более эффективно это может быть сделано так:
+#         wall &lt;message-file
+# Однако, встроенный документ помогает сэкономить ваши силы и время.
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX71"></a>
+
+        <p><strong>Пример 17-3. Вывод многострочных сообщений с помощью
+        cat</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Команда &#39;echo&#39; прекрасно справляется с выводом однострочных сообщений,
+# но иногда необходимо вывести несколько строк.
+# Команда &#39;cat&#39; и встроенный документ помогут вам в этом.
+
+cat &lt;&lt;End-of-message
+-------------------------------------
+Это первая строка сообщения.
+Это вторая строка сообщения.
+Это третья строка сообщения.
+Это четвертая строка сообщения.
+Это последняя строка сообщения.
+-------------------------------------
+End-of-message
+
+exit 0
+
+
+#--------------------------------------------
+# Команда &quot;exit 0&quot;, выше, не позволить исполнить нижележащие строки.
+
+# S.C. отмечает, что следующий код работает точно так же.
+echo &quot;-------------------------------------
+Это первая строка сообщения.
+Это вторая строка сообщения.
+Это третья строка сообщения.
+Это четвертая строка сообщения.
+Это последняя строка сообщения.
+-------------------------------------&quot;
+# Однако, в этом случае, двойные кавычки в теле сообщения, должны экранироваться.
+</pre>
+      </div>
+
+      <p>Если строка-ограничитель встроенного документа начинается с
+      символа <tt
+       class="OPTION">-</tt> (<tt
+       class="USERINPUT"><strong>&lt;&lt;-LimitString</strong></tt>),
+      то это приводит к подавлению вывода символов табуляции (но не
+      пробелов). Это может оказаться полезным при форматировании текста
+      сценария для большей удобочитаемости.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX71A"></a>
+
+        <p><strong>Пример 17-4. Вывод многострочных сообщений с
+        подавлением символов табуляции</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# То же, что и предыдущий сценарий, но...
+
+#  Символ &quot;-&quot;, начинающий строку-ограничитель встроенного документа: &lt;&lt;-
+#  подавляет вывод символов табуляции, которые могут встречаться в теле документа,
+#  но не пробелов.
+
+cat &lt;&lt;-ENDOFMESSAGE
+        Это первая строка сообщения.
+        Это вторая строка сообщения.
+        Это третья строка сообщения.
+        Это четвертая строка сообщения.
+        Это последняя строка сообщения.
+ENDOFMESSAGE
+# Текст, выводимый сценарием, будет смещен влево.
+# Ведущие символы табуляции не будут выводиться.
+
+# Вышеприведенные 5 строк текста &quot;сообщения&quot; начинаются с табуляции, а не с пробелов.
+
+
+exit 0
+</pre>
+      </div>
+
+      <p>Встроенные документы поддерживают подстановку команд и
+      параметров. Что позволяет передавать различные параметры в тело
+      встроенного документа.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX71B"></a>
+
+        <p><strong>Пример 17-5. Встроенные документы и подстановка
+        параметров</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Вывод встроенного документа командой &#39;cat&#39;, с использованием подстановки параметров.
+
+# Попробуйте запустить сценарий без аргументов,   ./scriptname
+# Попробуйте запустить сценарий с одним аргументом,   ./scriptname Mortimer
+# Попробуйте запустить сценарий с одним аргументом, из двух слов, в кавычках,
+#                           ./scriptname &quot;Mortimer Jones&quot;
+
+CMDLINEPARAM=1     # Минимальное число аргументов командной строки.
+
+if [ $# -ge $CMDLINEPARAM ]
+then
+  NAME=$1          # Если аргументов больше одного,
+                   # то рассматривается только первый.
+else
+  NAME=&quot;John Doe&quot;  # По-умолчанию, если сценарий запущен без аргументов.
+fi
+
+RESPONDENT=&quot;автора этого сценария&quot;
+
+
+cat &lt;&lt;Endofmessage
+
+Привет, $NAME!
+Примите поздравления от $RESPONDENT.
+
+# Этот комментарий тоже выводится (почему?).
+
+Endofmessage
+
+# Обратите внимание на то, что пустые строки тоже выводятся.
+
+exit 0
+</pre>
+      </div>
+
+      <p>Заключая строку-ограничитель в кавычки или экранируя ее, можно
+      запретить подстановку параметров в теле встроенного
+      документа.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX71C"></a>
+
+        <p><strong>Пример 17-6. Отключение подстановки
+        параметров</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Вывод встроенного документа командой &#39;cat&#39;, с запретом подстановки параметров.
+
+NAME=&quot;John Doe&quot;
+RESPONDENT=&quot;автора этого сценария&quot;
+
+cat &lt;&lt;&#39;Endofmessage&#39;
+
+Привет, $NAME.
+Примите поздравления от $RESPONDENT.
+
+Endofmessage
+
+#  Подстановка параметров не производится, если строка ограничитель
+#  заключена в кавычки или экранирована.
+#  Тот же эффект дают:
+#  cat &lt;&lt;&quot;Endofmessage&quot;
+#  cat &lt;&lt;\Endofmessage
+
+exit 0
+</pre>
+      </div>
+
+      <p>Еще один пример сценария, содержащего встроенный документ и
+      подстановку параметров в его теле.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX72"></a>
+
+        <p><strong>Пример 17-7. Передача пары файлов во входящий
+        каталог на <span
+         class="QUOTE">&quot;Sunsite&quot;</span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# upload.sh
+
+# Передача пары файлов (Filename.lsm, Filename.tar.gz)
+# на Sunsite (ibiblio.org).
+
+E_ARGERROR=65
+
+if [ -z &quot;$1&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` filename&quot;
+  exit $E_ARGERROR
+fi
+
+
+Filename=`basename $1`           # Отсечь имя файла от пути к нему.
+
+Server=&quot;ibiblio.org&quot;
+Directory=&quot;/incoming/Linux&quot;
+# Вообще, эти строки должны бы не &quot;зашиваться&quot; жестко в сценарий,
+# а приниматься в виде аргумента из командной строки.
+
+Password=&quot;your.e-mail.address&quot;   # Измените на свой.
+
+ftp -n $Server &lt;&lt;End-Of-Session
+# Ключ -n запрещает автоматическую регистрацию (auto-logon)
+
+user anonymous &quot;$Password&quot;
+binary
+bell                # &quot;Звякнуть&quot; после передачи каждого файла
+cd $Directory
+put &quot;$Filename.lsm&quot;
+put &quot;$Filename.tar.gz&quot;
+bye
+End-Of-Session
+
+exit 0
+</pre>
+      </div>
+
+      <p>Встроенные документы могут передаваться на вход функции,
+      находящейся в том же сценарии.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="HF"></a>
+
+        <p><strong>Пример 17-8. Встроенные документы и
+        функции</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# here-function.sh
+
+GetPersonalData ()
+{
+  read firstname
+  read lastname
+  read address
+  read city
+  read state
+  read zipcode
+} # Это немного напоминает интерактивную функцию, но...
+
+
+# Передать ввод в функцию.
+GetPersonalData &lt;&lt;RECORD001
+Bozo
+Bozeman
+2726 Nondescript Dr.
+Baltimore
+MD
+21226
+RECORD001
+
+
+echo
+echo &quot;$firstname $lastname&quot;
+echo &quot;$address&quot;
+echo &quot;$city, $state $zipcode&quot;
+echo
+
+exit 0
+</pre>
+      </div>
+
+      <p><a
+       name="ANONHEREDOC0"></a></p>
+
+      <p>Встроенный документ можно передать &quot;пустой команде&quot;
+      <span
+       class="TOKEN">:</span>. Такая конструкция, фактически, создает
+      <span
+       class="QUOTE">&quot;анонимный&quot;</span> встроенный
+      документ.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="ANONHEREDOC"></a>
+
+        <p><strong>Пример 17-9. <span
+         class="QUOTE">&quot;Анонимный&quot;</span> Встроенный
+        Документ</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+: &lt;&lt;TESTVARIABLES
+${HOSTNAME?}${USER?}${MAIL?}  # Если одна из переменных не определена, то выводится сообщение об ошибке.
+TESTVARIABLES
+
+exit 0
+</pre>
+      </div>
+
+      <p><a
+       name="CBLOCK1"></a></p>
+
+      <div
+       class="TIP">
+        <table
+         class="TIP"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/tip.gif"
+             hspace="5"
+             alt="Tip"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Подобную технику можно использовать для создания <span
+               class="QUOTE">&quot;блочных
+              комментариев&quot;</span>.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="COMMENTBLOCK"></a>
+
+        <p><strong>Пример 17-10. Блочный комментарий</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# commentblock.sh
+
+: &lt;&lt; COMMENTBLOCK
+echo &quot;Эта строка не будет выведена.&quot;
+Эта строка комментария не начинается с символа &quot;#&quot;.
+Это еще одна строка комментария, которая начинается не с символа &quot;#&quot;.
+
+&amp;*@!!++=
+Эта строка не вызовет ошибки,
+поскольку Bash проигнорирует ее.
+COMMENTBLOCK
+
+echo &quot;Код завершения  \&quot;COMMENTBLOCK\&quot; = $?.&quot;   # 0
+# Показывает, что ошибок не возникало.
+
+
+#  Такая методика создания блочных комментариев
+#+ может использоваться для комментирования блоков кода во время отладки.
+#  Это экономит силы и время, т.к. не нужно втавлять символ &quot;#&quot; в начале каждой строки,
+#+ а затем удалять их.
+
+: &lt;&lt; DEBUGXXX
+for file in *
+do
+ cat &quot;$file&quot;
+done
+DEBUGXXX
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="TIP">
+        <table
+         class="TIP"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/tip.gif"
+             hspace="5"
+             alt="Tip"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Еще одно остроумное применение встроенных документов
+              -- встроенная справка к сценарию.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="SELFDOCUMENT"></a>
+
+        <p><strong>Пример 17-11. Встроенная справка к
+        сценарию</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# self-document.sh: сценарий со встроенной справкой
+# Модификация сценария &quot;colm.sh&quot;.
+
+DOC_REQUEST=70
+
+if [ &quot;$1&quot; = &quot;-h&quot;  -o &quot;$1&quot; = &quot;--help&quot; ]     # Request help.
+then
+  echo; echo &quot;Порядок использования: $0 [directory-name]&quot;; echo
+  sed --silent -e &#39;/DOCUMENTATIONXX$/,/^DOCUMENTATION/p&#39; &quot;$0&quot; |
+  sed -e &#39;/DOCUMENTATIONXX/d&#39;; exit $DOC_REQUEST; fi
+
+: &lt;&lt; DOCUMENTATIONXX
+Сценарий выводит сведения о заданном каталоге в виде таблице.
+-------------------------------------------------------------
+Сценарию необходимо передать имя каталога. Если каталог не
+указан или он недоступен для чтения, то выводятся сведения
+о текущем каталоге.
+
+DOCUMENTATIONXX
+
+if [ -z &quot;$1&quot; -o ! -r &quot;$1&quot; ]
+then
+  directory=.
+else
+  directory=&quot;$1&quot;
+fi
+
+echo &quot;Сведения о каталоге &quot;$directory&quot;:&quot;; echo
+(printf &quot;PERMISSIONS LINKS OWNER GROUP SIZE MONTH DAY HH:MM PROG-NAME\n&quot; \
+; ls -l &quot;$directory&quot; | sed 1d) | column -t
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Для встроенных документов, во время исполнения,
+              создаются временные файлы, но эти файлы удаляются после
+              открытия и недоступны для других процессов.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class=
+"USERINPUT"><strong>bash -c &#39;lsof -a -p $$ -d0&#39; &lt;&lt; EOF</strong></tt>
+<tt
+ class="PROMPT">&gt;</tt> <tt
+ class="USERINPUT"><strong>EOF</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">lsof    1213 bozo    0r   REG    3,5    0 30386 /tmp/t1213-0-sh (deleted)</tt>
+             
+</pre>
+              <br>
+              <br>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div
+       class="CAUTION">
+        <table
+         class="CAUTION"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/caution.gif"
+             hspace="5"
+             alt="Caution"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Некоторые утилиты не могут работать внутри <span
+               class="emphasis"><em
+               class="EMPHASIS">встроенных документов</em></span>.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p>Если какая либо задача не может быть решена с помощью <span
+       class="QUOTE">&quot;встроенного документа&quot;</span>, то вам
+      следует попробовать язык сценариев <strong
+       class="COMMAND">expect</strong>, который приспособлен для
+      передачи параметров на вход интерактивных программ.</p>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x11778.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="p11889.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Область применения</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p3268.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Материал повышенной сложности</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Вложенные циклы</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Циклы и ветвления"
+     href="c4875.html">
+    <link
+     rel="PREVIOUS"
+     title="Циклы и ветвления"
+     href="c4875.html">
+    <link
+     rel="NEXT"
+     title="Управление ходом выполнения цикла"
+     href="x5153.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c4875.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 10. Циклы и ветвления</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x5153.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="NESTEDLOOPS"></a>10.2. Вложенные циклы</h1>
+
+      <p>Цикл называется вложенным, если он размещается внутри другого
+      цикла. На первом проходе, внешний цикл вызывает внутренний,
+      который исполняется до своего завершения, после чего управление
+      передается в тело внешнего цикла. На втором проходе внешний цикл
+      опять вызывает внутренний. И так до тех пор, пока не завершится
+      внешний цикл. Само собой, как внешний, так и внутренний циклы
+      могут быть прерваны командой <strong
+       class="COMMAND">break</strong>.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="NESTEDLOOP"></a>
+
+        <p><strong>Пример 10-19. Вложенный цикл</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Вложенные циклы &quot;for&quot;.
+
+outer=1             # Счетчик внешнего цикла.
+
+# Начало внешнего цикла.
+for a in 1 2 3 4 5
+do
+  echo &quot;Итерация #$outer внешнего цикла.&quot;
+  echo &quot;---------------------&quot;
+  inner=1           # Сброс счетчика вложенного цикла.
+
+  # Начало вложенного цикла.
+  for b in 1 2 3 4 5
+  do
+    echo &quot;Итерация #$inner вложенного цикла.&quot;
+    let &quot;inner+=1&quot;  # Увеличить счетчик итераций вложенного цикла.
+  done
+  # Конец вложенного цикла.
+
+  let &quot;outer+=1&quot;    # Увеличить счетчик итераций внешнего цикла.
+  echo              # Пустая строка для отделения итераций внешнего цикла.
+done
+# Конец внешнего цикла.
+
+exit 0
+</pre>
+      </div>
+
+      <p>Демонстрацию вложенных циклов <span
+       class="QUOTE">&quot;while&quot;</span> вы найдете в <a
+       href="c12790.html#BUBBLE">Пример 25-6</a>, а вложение цикла
+      <span
+       class="QUOTE">&quot;while&quot;</span> в <span
+       class="QUOTE">&quot;until&quot;</span> -- в <a
+       href="c12790.html#EX68">Пример 25-8</a>.</p>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c4875.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x5153.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Циклы и ветвления</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c4875.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Управление ходом выполнения цикла</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

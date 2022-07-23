@@ -1,0 +1,2213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Команды для работы с файлами и архивами</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Внешние команды, программы и утилиты"
+     href="c6407.html">
+    <link
+     rel="PREVIOUS"
+     title="Команды обработки текста"
+     href="x7050.html">
+    <link
+     rel="NEXT"
+     title="Команды для работы с сетью"
+     href="x8707.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x7050.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 12. Внешние команды, программы и
+          утилиты</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x8707.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="FILEARCHIV"></a>12.5. Команды для работы с файлами и
+      архивами</h1>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="FAARCHIVING1"></a>Архивация</strong></p>
+
+        <dl>
+          <dt><a
+           name="TARREF"></a><strong
+           class="COMMAND">tar</strong></dt>
+
+          <dd>
+            <p>Стандартная, для UNIX, утилита архивирования.
+            Первоначально -- это была программа <em
+             class="WORDASWORD">Tape ARchiving</em>, которая
+            впоследствии переросла в универсальный пакет, который может
+            работать с любыми типами устройств (см. <a
+             href="c301.html#EX58">Пример 3-4</a>). В GNU-версию tar
+            была добавлена возможность одновременно производить сжатие
+            tar-архива, например команда <strong
+             class="COMMAND">tar czvf archive_name.tar.gz *</strong>
+            создает tar-архив дерева подкаталогов и вызывает <a
+             href="x7794.html#GZIPREF">gzip</a> для выполнения сжатия,
+            исключение составляют <a
+             href="c6407.html#DOTFILESREF">скрытые файлы</a> в текущем
+            каталоге (<strong
+             class="COMMAND">$PWD</strong>). <a
+             name="AEN7816"
+             href="#FTN.AEN7816"><span
+             class="footnote">[1]</span></a></p>
+
+            <p>Некоторые, часто используемые, ключи команды <strong
+             class="COMMAND">tar</strong>:</p>
+
+            <ol
+             type="1">
+              <li>
+                <p><tt
+                 class="OPTION">-c</tt> -- создать (create) новый
+                архив</p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="OPTION">-x</tt> -- извлечь (extract) файлы из
+                архива</p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="OPTION">--delete</tt> -- удалить (delete) файлы
+                из архива</p>
+
+                <div
+                 class="CAUTION">
+                  <table
+                   class="CAUTION"
+                   width="90%"
+                   border="0">
+                    <tr>
+                      <td
+                       width="25"
+                       align="center"
+                       valign="top"><img
+                       src="misc/abs-book/images/caution.gif"
+                       hspace="5"
+                       alt="Caution"></td>
+
+                      <td
+                       align="left"
+                       valign="top">
+                        <p>Этот ключ игнорируется для накопителей на
+                        магнитной ленте.</p>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </li>
+
+              <li>
+                <p><tt
+                 class="OPTION">-r</tt> -- добавить (append) файлы в
+                существующий архив</p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="OPTION">-A</tt> -- добавить (append) <span
+                 class="emphasis"><em
+                 class="EMPHASIS">tar</em></span>-файлы в существующий
+                архив</p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="OPTION">-t</tt> -- список файлов в архиве
+                (содержимое архива)</p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="OPTION">-u</tt> -- обновить (update) архив</p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="OPTION">-d</tt> -- операция сравнения архива с
+                заданной файловой системой</p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="OPTION">-z</tt> -- обработка архива с помощью
+                <a
+                 href="x7794.html#GZIPREF">gzip</a></p>
+
+                <p>(Сжатие или разжатие, в зависимости от комбинации
+                сопутствующих ключей <tt
+                 class="OPTION">-c</tt> или <tt
+                 class="OPTION">-x</tt>)</p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="OPTION">-j</tt> -- обработка архива с помошью
+                <a
+                 href="x7794.html#BZIPREF">bzip2</a></p>
+              </li>
+            </ol>
+            <br>
+            <br>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>При восстановлении &quot;битых&quot; <span
+                     class="emphasis"><em
+                     class="EMPHASIS">tar.gz</em></span> архивов могут
+                    возникнуть определенные сложности, поэтому делайте
+                    несколько резервных копий.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">shar</strong></dt>
+
+          <dd>
+            <p>Утилита создания shell-архива. Архивируемые файлы
+            объединяются в единый файл без выполнения сжатия, в
+            результате получается архив -- по сути полноценный сценарий
+            на языке командной оболочки, начинающийся со строки <span
+             class="TOKEN">#!/bin/sh</span>, который содержит полный
+            набор команд, необходимый для разархивирования. Такого рода
+            архивы до сих пор можно найти в некоторых телеконференциях
+            в Internet, но в последнее время они активно вытесняются
+            связкой <strong
+             class="COMMAND">tar</strong>/<strong
+             class="COMMAND">gzip</strong>. Для распаковки shar-архивов
+            предназначена команда <strong
+             class="COMMAND">unshar</strong>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">ar</strong></dt>
+
+          <dd>
+            <p>Утилита создания и обслуживания архивов, главным образом
+            применяется к двоичным файлам библиотек.</p>
+          </dd>
+
+          <dt><a
+           name="RPMREF"></a><strong
+           class="COMMAND">rpm</strong></dt>
+
+          <dd>
+            <p><span
+             class="emphasis"><em
+             class="EMPHASIS">Red Hat Package Manager</em></span>, или
+            <strong
+             class="COMMAND">rpm</strong> -- набор утилит,
+            предназначенных для построения и обслуживания пакетов
+            программного обеспечения как в исходном коде, так и в
+            собранном (откомпилированном) виде. Среди всего прочего,
+            включает в себя утилиты, производящие установку ПО,
+            проверку зависимостей пакетов и проверку их
+            целостности.</p>
+
+            <p>Самый простой вариант установки ПО из rpm -- выполнить
+            команду <strong
+             class="COMMAND">rpm -i package_name.rpm</strong>.</p>
+
+            <div
+             class="TIP">
+              <table
+               class="TIP"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/tip.gif"
+                   hspace="5"
+                   alt="Tip"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Команда <tt
+                     class="USERINPUT"><strong>rpm -qa</strong></tt>
+                    выдаст полный список всех установленных <span
+                     class="emphasis"><em
+                     class="EMPHASIS">rpm</em></span>-пакетов в данной
+                    системе. Команда <tt
+                     class="USERINPUT"><strong>rpm -qa
+                    package_name</strong></tt> выведет только пакет(ы)
+                    с именем, содержащим комбинацию символов <tt
+                     class="FILENAME">package_name</tt>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>rpm -qa</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">redhat-logos-1.1.3-1
+ glibc-2.2.4-13
+ cracklib-2.7-12
+ dosfstools-2.7-1
+ gdbm-1.8.0-10
+ ksymoops-2.4.1-1
+ mktemp-1.5-11
+ perl-5.6.0-17
+ reiserfs-utils-3.x.0j-2
+ ...</tt>
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>rpm -qa docbook-utils</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">docbook-utils-0.6.9-2</tt>
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>rpm -qa docbook | grep docbook</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">docbook-dtd31-sgml-1.0-10
+ docbook-style-dsssl-1.64-3
+ docbook-dtd30-sgml-1.0-10
+ docbook-dtd40-sgml-1.0-11
+ docbook-utils-pdf-0.6.9-2
+ docbook-dtd41-sgml-1.0-10
+ docbook-utils-0.6.9-2</tt>
+             
+</pre>
+                    <br>
+                    <br>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">cpio</strong></dt>
+
+          <dd>
+            <p>Специализированная утилита архивации и копирования
+            (<strong
+             class="COMMAND">c</strong>o<strong
+             class="COMMAND">p</strong>y <strong
+             class="COMMAND">i</strong>nput and <strong
+             class="COMMAND">o</strong>utput). Используется все реже и
+            реже, поскольку вытесняется более мощным архиватором
+            <strong
+             class="COMMAND">tar</strong>/<strong
+             class="COMMAND">gzip</strong>. Наиболее употребительна для
+            таких операций, как перемещение дерева каталогов.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX48"></a>
+
+              <p><strong>Пример 12-22. Пример перемещения дерева
+              каталогов с помощью cpio</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Копирование дерева каталогов с помощью cpio.
+
+ARGS=2
+E_BADARGS=65
+
+if [ $# -ne &quot;$ARGS&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` source destination&quot;
+  exit $E_BADARGS
+fi
+
+source=$1
+destination=$2
+
+find &quot;$source&quot; -depth | cpio -admvp &quot;$destination&quot;
+# Информацию по ключам утилиты cpio вы найдете в страницах руководства &quot;man cpio&quot;.
+
+exit 0
+</pre>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">rpm2cpio</strong></dt>
+
+          <dd>
+            <p>Эта утилита конвертирует <a
+             href="x7794.html#RPMREF">rpm</a>-пакет в архив <strong
+             class="COMMAND">cpio</strong>.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="DERPM"></a>
+
+              <p><strong>Пример 12-23. Распаковка архива <span
+               class="emphasis"><em
+               class="EMPHASIS">rpm</em></span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# de-rpm.sh: Распаковка архива &#39;rpm&#39;
+
+: ${1?&quot;Порядок использования: `basename $0` target-file&quot;}
+# Сценарию должно быть передано имя архива &#39;rpm&#39;.
+
+
+TEMPFILE=$$.cpio                         # Временный файл с &quot;уникальным&quot; именем.
+                                         # $$ -- PID процесса сценария.
+
+rpm2cpio &lt; $1 &gt; $TEMPFILE                # Конверсия из rpm в cpio.
+cpio --make-directories -F $TEMPFILE -i  # Рапсковка cpio-архива.
+rm -f $TEMPFILE                          # Удаление cpio-архива.
+
+exit 0
+
+#  Упражнение:
+#  Добавьте проверку на: 1) Существование &quot;target-file&quot;
+#+                       2) Действительно ли &quot;target-file&quot; является rpm-архивом.
+#  Подсказка:               используйте комсанду &#39;file&#39;.
+</pre>
+            </div>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="FACOMPRESSION1"></a>Сжатие</strong></p>
+
+        <dl>
+          <dt><a
+           name="GZIPREF"></a><strong
+           class="COMMAND">gzip</strong></dt>
+
+          <dd>
+            <p>Стандартная GNU/UNIX утилита сжатия, заменившая более
+            слабую, и к тому же проприетарную, утилиту <strong
+             class="COMMAND">compress</strong>. Соответствующая утилита
+            декомпрессии (разжатия) -- <strong
+             class="COMMAND">gunzip</strong>, которая является
+            эквивалентом команды <strong
+             class="COMMAND">gzip -d</strong>.</p>
+
+            <p>Для работы со сжатыми файлами в конвейере используется
+            фильтр <strong
+             class="COMMAND">zcat</strong>, который выводит результат
+            своей работы на <tt
+             class="FILENAME">stdout</tt>, допускает перенаправление
+            вывода. Фактически это та же команда <strong
+             class="COMMAND">cat</strong>, только приспособленная для
+            работы со сжатыми файлами (включая файлы, сжатые утилитой
+            <strong
+             class="COMMAND">compress</strong>). Эквивалент команды
+            <strong
+             class="COMMAND">zcat</strong> -- <strong
+             class="COMMAND">gzip -dc</strong>.</p>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>В некоторых коммерческих версиях UNIX, команда
+                    <strong
+                     class="COMMAND">zcat</strong> является синонимом
+                    команды <strong
+                     class="COMMAND">uncompress -c</strong>, и не может
+                    работать с файлами, сжатыми с помощью <span
+                     class="emphasis"><em
+                     class="EMPHASIS">gzip</em></span>.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <p>См. также <a
+             href="x2565.html#EX14">Пример 7-7</a>.</p>
+          </dd>
+
+          <dt><a
+           name="BZIPREF"></a><strong
+           class="COMMAND">bzip2</strong></dt>
+
+          <dd>
+            <p>Альтернативная утилита сжатия, обычно дает более высокую
+            степень сжатия (но при этом работает медленнее), чем
+            <strong
+             class="COMMAND">gzip</strong>, особенно это проявляется на
+            больших файлах. Соответствующая утилита декомпрессии --
+            <strong
+             class="COMMAND">bunzip2</strong>.</p>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>В современные версии <a
+                     href="x7794.html#TARREF">tar</a> добавлена
+                    поддержка <strong
+                     class="COMMAND">bzip2</strong>.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">compress</strong>, <strong
+           class="COMMAND">uncompress</strong></dt>
+
+          <dd>
+            <p>Устаревшие проприетарные утилиты для работы с архивами,
+            входящие в состав некоторых коммерческих дистрибутивов
+            UNIX. В последнее время вытесняются более мощной утилитой
+            <strong
+             class="COMMAND">gzip</strong>. Linux-дистрибутивы, как
+            правило, включают в свой состав эти утилиты для обратной
+            совместимости, однако <strong
+             class="COMMAND">gunzip</strong> корректно разархивирует
+            файлы, обработанные с помощью <strong
+             class="COMMAND">compress</strong>.</p>
+
+            <div
+             class="TIP">
+              <table
+               class="TIP"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/tip.gif"
+                   hspace="5"
+                   alt="Tip"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Утилита <strong
+                     class="COMMAND">znew</strong> предназначена для
+                    преобразования <span
+                     class="emphasis"><em
+                     class="EMPHASIS">compress</em></span>-архивов в
+                    <span
+                     class="emphasis"><em
+                     class="EMPHASIS">gzip</em></span>-архивы.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">sq</strong></dt>
+
+          <dd>
+            <p>Еще одна утилита-фильтр сжатия, которая обслуживает
+            только отсортированные списки слов. Использует стандартный,
+            для фильтров, синтаксис вызова -- <strong
+             class="COMMAND">sq &lt; input-file &gt;
+            output-file</strong>. Быстрая, но не такая эффективная как
+            <a
+             href="x7794.html#GZIPREF">gzip</a>. Соответствующая ей
+            утилита декомпрессии называется <strong
+             class="COMMAND">unsq</strong>, синтаксис вызова аналогичен
+            утилите <strong
+             class="COMMAND">sq</strong>.</p>
+
+            <div
+             class="TIP">
+              <table
+               class="TIP"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/tip.gif"
+                   hspace="5"
+                   alt="Tip"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Вывод от <strong
+                     class="COMMAND">sq</strong> может быть передан по
+                    конвейеру утилите <strong
+                     class="COMMAND">gzip</strong>, для дальнейшего
+                    сжатия.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">zip</strong>, <strong
+           class="COMMAND">unzip</strong></dt>
+
+          <dd>
+            <p>Кроссплатформенная утилита архивирования и сжатия,
+            совместимая, по формату архивного файла, с утилитой DOS --
+            <span
+             class="emphasis"><em
+             class="EMPHASIS">pkzip.exe</em></span>. <span
+             class="QUOTE">&quot;Zip&quot;</span>-архивы, по-моему,
+            более приемлемый вариант для обмена данными через Internet,
+            чем <span
+             class="QUOTE">&quot;tarballs&quot;</span> (тарболлы, или
+            tar-архивы).</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">unarc</strong>, <strong
+           class="COMMAND">unarj</strong>, <strong
+           class="COMMAND">unrar</strong></dt>
+
+          <dd>
+            <p>Этот набор утилит предназначен для распаковки архивов,
+            созданных с помощью DOS архиваторов -- <span
+             class="emphasis"><em
+             class="EMPHASIS">arc.exe</em></span>, <span
+             class="emphasis"><em
+             class="EMPHASIS">arj.exe</em></span> и <span
+             class="emphasis"><em
+             class="EMPHASIS">rar.exe</em></span>.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="FAINFORMATION1"></a>Получение сведений о
+        файлах</strong></p>
+
+        <dl>
+          <dt><a
+           name="FILEREF"></a><strong
+           class="COMMAND">file</strong></dt>
+
+          <dd>
+            <p>Утилита идентификации файлов. Команда <tt
+             class="USERINPUT"><strong>file file-name</strong></tt>
+            верне тип файла <tt
+             class="FILENAME">file-name</tt>, например, <tt
+             class="COMPUTEROUTPUT">ascii text</tt> или <tt
+             class="COMPUTEROUTPUT">data</tt>. Для этого она
+            анализирует сигнатуру, или <a
+             href="c178.html#MAGNUMREF">магическое число</a> и
+            сопоставляет ее со списком известных сигнатур из <tt
+             class="FILENAME">/usr/share/magic</tt>, <tt
+             class="FILENAME">/etc/magic</tt> или <tt
+             class="FILENAME">/usr/lib/magic</tt> (в зависимости от
+            дистрибутива Linux/UNIX).</p>
+
+            <p><tt
+             class="OPTION">-f</tt> -- ключ пакетного режима работы
+            утилиты <strong
+             class="COMMAND">file</strong>, в этом случае утилита
+            принимает список анализируемых имен файлов из заданного
+            файла. Ключ <tt
+             class="OPTION">-z</tt> используется для анализа файлов в
+            архиве.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>file test.tar.gz</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">test.tar.gz: gzip compressed data, deflated, last modified: Sun Sep 16 13:34:51 2001, os: Unix</tt>
+
+<tt
+ class="PROMPT">bash</tt> <tt
+ class="USERINPUT"><strong>file -z test.tar.gz</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">test.tar.gz: GNU tar archive (gzip compressed data, deflated, last modified: Sun Sep 16 13:34:51 2001, os: Unix)</tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="STRIPC"></a>
+
+              <p><strong>Пример 12-24. Удаление комментариев из файла с
+              текстом программы на языке C</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# strip-comment.sh: Удаление комментариев (/* COMMENT */) из исходных текстов программ на языке C.
+
+E_NOARGS=65
+E_ARGERROR=66
+E_WRONG_FILE_TYPE=67
+
+if [ $# -eq &quot;$E_NOARGS&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` C-program-file&quot; &gt;&amp;2 # Вывод сообщения на stderr.
+  exit $E_ARGERROR
+fi
+
+# Проверка типа файла.
+type=`eval file $1 | awk &#39;{ print $2, $3, $4, $5 }&#39;`
+# &quot;file $1&quot; -- выводит тип файла...
+# затем awk удаляет первое поле -- имя файла...
+# после этого результат записывается в переменную &quot;type&quot;.
+correct_type=&quot;ASCII C program text&quot;
+
+if [ &quot;$type&quot; != &quot;$correct_type&quot; ]
+then
+  echo
+  echo &quot;Этот сценарий работает только с исходными текстами программ на языке C.&quot;
+  echo
+  exit $E_WRONG_FILE_TYPE
+fi
+
+
+# Довольно замысловатый сценарий sed :
+#--------
+sed &#39;
+/^\/\*/d
+/.*\/\*/d
+&#39; $1
+#--------
+# Если вы потратите несколько часов на изучение основ sed, то он станет немного понятнее.
+
+
+#  Следовало бы добавить еще обработку
+#+ комментариев, расположенных в одной строке с кодом.
+#  Оставляю это вам, в качестве упражнения.
+
+# Кроме того, этот сценарий удалит все строки, которые содержат комбинации символов &quot;*/&quot; или &quot;/*&quot;,
+# не всегда желаемый результат.
+
+exit 0
+
+
+# ----------------------------------------------------------------
+# Строки, расположенные ниже не будут исполнены из-за стоящей выше команды &#39;exit 0&#39;.
+
+# Stephane Chazelas предложил другой, альтернативный вариант:
+
+usage() {
+  echo &quot;Порядок использования: `basename $0` C-program-file&quot; &gt;&amp;2
+  exit 1
+}
+
+WEIRD=`echo -n -e &#39;\377&#39;`   # или WEIRD=$&#39;\377&#39;
+[[ $# -eq 1 ]] || usage
+case `file &quot;$1&quot;` in
+  *&quot;C program text&quot;*) sed -e &quot;s%/\*%${WEIRD}%g;s%\*/%${WEIRD}%g&quot; &quot;$1&quot; \
+     | tr &#39;\377\n&#39; &#39;\n\377&#39; \
+     | sed -ne &#39;p;n&#39; \
+     | tr -d &#39;\n&#39; | tr &#39;\377&#39; &#39;\n&#39;;;
+  *) usage;;
+esac
+
+# Этот вариант, все еще некорректно обрабатывает такие строки как:
+# printf(&quot;/*&quot;);
+# или
+# /*  /* ошибочный вложенный комментарий */
+#
+# Для обработки специальных случаев (\&quot;, \\&quot; ...) придется написать синтаксический анализатор
+# (может быть с помощью lex или yacc?).
+
+exit 0
+</pre>
+            </div>
+          </dd>
+
+          <dt><a
+           name="WHICHREF"></a><strong
+           class="COMMAND">which</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">which command-xxx</strong> вернет полный
+            путь к <span
+             class="QUOTE">&quot;command-xxx&quot;</span>. Очень
+            полезна для того, чтобы узнать -- установлена ли та или
+            иная утилита в системе.</p>
+
+            <p><tt
+             class="USERINPUT"><strong>$bash which rm</strong></tt></p>
+<pre
+ class="SCREEN">
+<tt
+ class="COMPUTEROUTPUT">/usr/bin/rm</tt>
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">whereis</strong></dt>
+
+          <dd>
+            <p>Очень похожа на <strong
+             class="COMMAND">which</strong>, упоминавшуюся выше.
+            Команда <strong
+             class="COMMAND">whereis command-xxx</strong> вернет полный
+            путь к <span
+             class="QUOTE">&quot;command-xxx&quot;</span>, но кроме
+            того, еще и путь к <span
+             class="emphasis"><em
+             class="EMPHASIS">manpage</em></span> -- файлу, странице
+            справочника по заданной утилите.</p>
+
+            <p><tt
+             class="USERINPUT"><strong>$bash whereis
+            rm</strong></tt></p>
+<pre
+ class="SCREEN">
+<tt
+ class="COMPUTEROUTPUT">rm: /bin/rm /usr/share/man/man1/rm.1.bz2</tt>
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><a
+           name="WHATISREF"></a><strong
+           class="COMMAND">whatis</strong></dt>
+
+          <dd>
+            <p>Утилита <strong
+             class="COMMAND">whatis filexxx</strong> отыщет <span
+             class="QUOTE">&quot;filexxx&quot;</span> в своей базе
+            данных. Может рассматриваться как упрощенный вариант
+            команды <strong
+             class="COMMAND">man</strong>.</p>
+
+            <p><tt
+             class="USERINPUT"><strong>$bash whatis
+            whatis</strong></tt></p>
+<pre
+ class="SCREEN">
+<tt
+ class=
+"COMPUTEROUTPUT">whatis               (1)  - search the whatis database for complete words</tt>
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="WHAT"></a>
+
+              <p><strong>Пример 12-25. Исследование каталога <tt
+               class="FILENAME">/usr/X11R6/bin</tt></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Что находится в каталоге /usr/X11R6/bin?
+
+DIRECTORY=&quot;/usr/X11R6/bin&quot;
+# Попробуйте также &quot;/bin&quot;, &quot;/usr/bin&quot;, &quot;/usr/local/bin&quot;, и т.д.
+
+for file in $DIRECTORY/*
+do
+  whatis `basename $file`   # Вывод информации о файле.
+done
+
+exit 0
+# Вывод этого сценария можно перенаправить в файл:
+# ./what.sh &gt;&gt;whatis.db
+# или включить постраничный просмотр на экране,
+# ./what.sh | less
+</pre>
+            </div>
+
+            <p>См. также <a
+             href="c4875.html#FILEINFO">Пример 10-3</a>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">vdir</strong></dt>
+
+          <dd>
+            <p>Вывод списка файлов в каталоге. Тот же эффект имеет
+            команда <a
+             href="c6407.html#LSREF">ls -l</a>.</p>
+
+            <p>Это одна из утилит GNU <span
+             class="emphasis"><em
+             class="EMPHASIS">fileutils</em></span>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>vdir</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">total 10
+ -rw-r--r--    1 bozo  bozo      4034 Jul 18 22:04 data1.xrolo
+ -rw-r--r--    1 bozo  bozo      4602 May 25 13:58 data1.xrolo.bak
+ -rw-r--r--    1 bozo  bozo       877 Dec 17  2000 employment.xrolo</tt>
+
+<tt
+ class="PROMPT">bash</tt> <tt
+ class="USERINPUT"><strong>ls -l</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">total 10
+ -rw-r--r--    1 bozo  bozo      4034 Jul 18 22:04 data1.xrolo
+ -rw-r--r--    1 bozo  bozo      4602 May 25 13:58 data1.xrolo.bak
+ -rw-r--r--    1 bozo  bozo       877 Dec 17  2000 employment.xrolo</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">locate</strong>, <strong
+           class="COMMAND">slocate</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">locate</strong> определяет местонахождение
+            файла, используя свою базу данных, создаваемую специально
+            для этих целей. Команда <strong
+             class="COMMAND">slocate</strong> -- это защищенная версия
+            <strong
+             class="COMMAND">locate</strong> (которая может оказаться
+            простым псевдонимом команды <strong
+             class="COMMAND">slocate</strong>).</p>
+
+            <p><tt
+             class="USERINPUT"><strong>$bash locate
+            hickson</strong></tt></p>
+<pre
+ class="SCREEN">
+<tt
+ class="COMPUTEROUTPUT">/usr/lib/xephem/catalogs/hickson.edb</tt>
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">readlink</strong></dt>
+
+          <dd>
+            <p>Возвращает имя файла, на который указывает символическая
+            ссылка.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>readlink /usr/bin/awk</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">../../bin/gawk</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">strings</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">strings</strong> используется для поиска
+            печатаемых строк в двоичных файлах. Она выводит
+            последовательности печатаемых символов, обнаруженных в
+            заданном файле. Может использоваться для прикидочного
+            анализа дамп-файлов (core dump) или для отыскания
+            информации о типе файла, например для графических файлов
+            неизвестного формата (например, <tt
+             class="USERINPUT"><strong>strings image-file |
+            more</strong></tt> может вывести такую строчку: <tt
+             class="COMPUTEROUTPUT">JFIF</tt>, что говорит о том, что
+            мы имеем дело с графическим файлом в формате <span
+             class="emphasis"><em
+             class="EMPHASIS">jpeg</em></span>). В сценариях, вероятнее
+            всего, вам придется использовать эту команду в связке с <a
+             href="x7050.html#GREPREF">grep</a> или <a
+             href="a14586.html#SEDREF">sed</a>. См. <a
+             href="c4875.html#BINGREP">Пример 10-7</a> и <a
+             href="c4875.html#FINDSTRING">Пример 10-9</a>.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="WSTRINGS"></a>
+
+              <p><strong>Пример 12-26. <span
+               class="QUOTE">&quot;Расширенная&quot;</span> команда
+              <span
+               class="emphasis"><em
+               class="EMPHASIS">strings</em></span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# wstrings.sh: &quot;word-strings&quot; (расширенная команда &quot;strings&quot;)
+#
+#  Этот сценарий фильтрует вывод команды &quot;strings&quot; путем проверки на соответствие
+#+ выводимых слов по файлу словаря.
+#  Таким способом эффективно &quot;отсекается&quot; весь &quot;мусор&quot;,
+#+ и выводятся только распознанные слова.
+
+# =================================================================
+#                 Стандартная проверка входных аргументов
+ARGS=1
+E_BADARGS=65
+E_NOFILE=66
+
+if [ $# -ne $ARGS ]
+then
+  echo &quot;Порядок использования: `basename $0` filename&quot;
+  exit $E_BADARGS
+fi
+
+if [ ! -f &quot;$1&quot; ]                      # Проверка наличия файла.
+then
+    echo &quot;Файл \&quot;$1\&quot; не найден.&quot;
+    exit $E_NOFILE
+fi
+# =================================================================
+
+
+MINSTRLEN=3                           #  Минимальная длина строки.
+WORDFILE=/usr/share/dict/linux.words  #  Файл словаря.
+                                      #  Можно указать иной
+                                      #+ файл словаря
+                                      #+ в формате -- &quot;одно слово на строке&quot;.
+
+
+wlist=`strings &quot;$1&quot; | tr A-Z a-z | tr &#39;[:space:]&#39; Z | \
+tr -cs &#39;[:alpha:]&#39; Z | tr -s &#39;\173-\377&#39; Z | tr Z &#39; &#39;`
+
+# Трансляция вывода от &#39;strings&#39; с помощью нескольких &#39;tr&#39;.
+#  &quot;tr A-Z a-z&quot;  -- перевод в нижний регистр.
+#  &quot;tr &#39;[:space:]&#39;&quot;  -- конвертирует пробелы в символы Z.
+#  &quot;tr -cs &#39;[:alpha:]&#39; Z&quot;  -- конвертирует неалфавитные символы в символы Z,
+#+ и удаляет повторяющиеся символы Z.
+#  &quot;tr -s &#39;\173-\377&#39; Z&quot;  -- Конвертирует все символы, с кодами выше &#39;z&#39; в Z
+#+ и удаляет повторяющиеся символы Z,
+#+ эта команда удалит все символы, которые не были распознаны предыдущими
+#+ командами трансляции (tr).
+#  Наконец, &quot;tr Z &#39; &#39;&quot; -- преобразует все символы Z в пробелы,
+#+ которые будут рассматриваться в качестве разделителя слов в цикле, приведенном ниже.
+
+#  Обратите внимание на технику многоуровневой обработки с помощью &#39;tr&#39;,
+#+ каждый раз эта команда вызывается с различным набором аргументов.
+
+
+for word in $wlist                    # Важно:
+                                      # переменная $wlist не должна заключаться в кавычки.
+                                      # &quot;$wlist&quot; -- не сработает.
+                                      # Почему?
+do
+
+  strlen=${#word}                     # Дина строки.
+  if [ &quot;$strlen&quot; -lt &quot;$MINSTRLEN&quot; ]   # Не рассматривать короткие строки.
+  then
+    continue
+  fi
+
+  grep -Fw $word &quot;$WORDFILE&quot;          # Проверка слова по словарю.
+
+done
+
+
+exit 0
+</pre>
+            </div>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="COMPARISONN1"></a>Сравнение</strong></p>
+
+        <dl>
+          <dt><a
+           name="DIFFREF"></a><strong
+           class="COMMAND">diff</strong>, <strong
+           class="COMMAND">patch</strong></dt>
+
+          <dd>
+            <p><strong
+             class="COMMAND">diff</strong>: очень гибкая утилита
+            сравнения файлов. Она выполняет построчное сравнение
+            файлов. В отдельных случаях, таких как поиск по словарю,
+            может оказаться полезной фильтрация файлов с помощью <a
+             href="x7050.html#SORTREF">sort</a> и <strong
+             class="COMMAND">uniq</strong> перед тем как отдать поток
+            данных через конвейер утилите <strong
+             class="COMMAND">diff</strong>. <tt
+             class="USERINPUT"><strong>diff file-1 file-2</strong></tt>
+            -- выведет строки, имеющие отличия, указывая -- какому
+            файлу, какая строка принадлежит.</p>
+
+            <p>С ключом <tt
+             class="OPTION">--side-by-side</tt>, команда <strong
+             class="COMMAND">diff</strong> выведет сравниваемые файлы в
+            две колонки, с указанием несовпадающих строк. Ключи <tt
+             class="OPTION">-c</tt> и <tt
+             class="OPTION">-u</tt> так же служат для облегчения
+            интерпретации результатов работы <strong
+             class="COMMAND">diff</strong>.</p>
+
+            <p>Существует ряд интерфейсных оболочек для утилиты <strong
+             class="COMMAND">diff</strong>, среди них можно назвать:
+            <strong
+             class="COMMAND">spiff</strong>, <strong
+             class="COMMAND">wdiff</strong>, <strong
+             class="COMMAND">xdiff</strong> и <strong
+             class="COMMAND">mgdiff</strong>.</p>
+
+            <div
+             class="TIP">
+              <table
+               class="TIP"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/tip.gif"
+                   hspace="5"
+                   alt="Tip"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Команда <strong
+                     class="COMMAND">diff</strong> возвращает код
+                    завершения 0, если сравниваемые файлы идентичны и
+                    1, если они отличаются. Это позволяет использовать
+                    <strong
+                     class="COMMAND">diff</strong> в условных
+                    операторах внутри сценариев на языке командной
+                    оболочки (см. ниже).</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <p>В общем случае, <strong
+             class="COMMAND">diff</strong> используется для генерации
+            файла различий, который используется как аргумент команды
+            <strong
+             class="COMMAND">patch</strong>. Ключ <tt
+             class="OPTION">-e</tt> отвечает за вывод файла различий в
+            формате, пригодном для использования с <strong
+             class="COMMAND">ed</strong> или <strong
+             class="COMMAND">ex</strong>.</p>
+
+            <p><strong
+             class="COMMAND">patch</strong>: гибкая утилита для
+            &quot;наложения заплат&quot;. С помощью файла различий,
+            сгенерированного утилитой <strong
+             class="COMMAND">diff</strong>, утилита <strong
+             class="COMMAND">patch</strong> может использоваться для
+            обновления устаревших версий файлов. Это позволяет
+            распространять относительно небольшие <span
+             class="QUOTE">&quot;diff&quot;</span>-файлы вместо целых
+            пакетов. Распространение <span
+             class="QUOTE">&quot;заплат&quot;</span> к ядру стало
+            наиболее предпочтительным методом распространения более
+            новых версий ядра Linux.</p>
+<pre
+ class="PROGRAMLISTING">
+patch -p1 &lt;patch-file
+# Применит все изменения из &#39;patch-file&#39;
+# к файлам, описанным там же.
+# Так выполняется обновление пакетов до более высоких версий.
+</pre>
+            <br>
+            <br>
+
+            <p>Наложение &quot;заплат&quot; на ядро:</p>
+<pre
+ class="PROGRAMLISTING">
+cd /usr/src
+gzip -cd patchXX.gz | patch -p0
+# Обновление исходных текстов ядра с помощью &#39;patch&#39;.
+# Пример взят из файла &quot;README&quot;,
+# автор не известен (Alan Cox?).
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Кроме того, утилита <strong
+                     class="COMMAND">diff</strong> в состоянии
+                    выполнять рекурсивный обход каталогов.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>diff -r ~/notes1 ~/notes2</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">Only in /home/bozo/notes1: file02
+ Only in /home/bozo/notes1: file03
+ Only in /home/bozo/notes2: file04</tt>
+             
+</pre>
+                    <br>
+                    <br>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div
+             class="TIP">
+              <table
+               class="TIP"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/tip.gif"
+                   hspace="5"
+                   alt="Tip"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Утилита <strong
+                     class="COMMAND">zdiff</strong> сравнивает сжатые,
+                    с помощью <span
+                     class="emphasis"><em
+                     class="EMPHASIS">gzip</em></span>, файлы.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">diff3</strong></dt>
+
+          <dd>
+            <p>Расширенная версия <strong
+             class="COMMAND">diff</strong>, которая сравнивает сразу 3
+            файла. В случае успеха возвращает 0, но, к сожалению, не
+            дает никакой информации о результатах сравнения.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>diff3 file-1 file-2 file-3</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">====
+ 1:1c
+   This is line 1 of &quot;file-1&quot;.
+ 2:1c
+   This is line 1 of &quot;file-2&quot;.
+ 3:1c
+   This is line 1 of &quot;file-3&quot;</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">sdiff</strong></dt>
+
+          <dd>
+            <p>Сравнение и/или редактирование двух файлов перед
+            объединением их в один файл. Это интерактивная утилита, по
+            своей природе, и из-за этого она довольно редко
+            используется в сценариях.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">cmp</strong></dt>
+
+          <dd>
+            <p>Утилита <strong
+             class="COMMAND">cmp</strong> -- это упрощенная версия
+            <strong
+             class="COMMAND">diff</strong>. В то время, как <strong
+             class="COMMAND">diff</strong> выводит подробную информацию
+            об имеющихся различиях, утилита <strong
+             class="COMMAND">cmp</strong> лишь показывет номер строки и
+            позицию в строке, где было встречено различие.</p>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Подобно команде <strong
+                     class="COMMAND">diff</strong>, команда <strong
+                     class="COMMAND">cmp</strong> возвращает код
+                    завершения 0, если файлы идентичны и 1, если они
+                    различны. Это позволяет использовать команду
+                    <strong
+                     class="COMMAND">cmp</strong> в условных
+                    операторах.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="FILECOMP"></a>
+
+              <p><strong>Пример 12-27. Пример сравнения двух файлов с
+              помощью cmp.</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+ARGS=2  # Ожидаются два аргумента командной строки.
+E_BADARGS=65
+E_UNREADABLE=66
+
+if [ $# -ne &quot;$ARGS&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` file1 file2&quot;
+  exit $E_BADARGS
+fi
+
+if [[ ! -r &quot;$1&quot; || ! -r &quot;$2&quot; ]]
+then
+  echo &quot;Оба файла должны существовать и должны быть доступны для чтения.&quot;
+  exit $E_UNREADABLE
+fi
+
+cmp $1 $2 &amp;&gt; /dev/null  # /dev/null -- &quot;похоронит&quot; вывод от команды &quot;cmp&quot;.
+#   cmp -s $1 $2  даст тот же результат (&quot;-s&quot; -- флаг &quot;тишины&quot; для &quot;cmp&quot;)
+#   Спасибо Anders Gustavsson за замечание.
+#
+# Также применимо к &#39;diff&#39;, т.е.,   diff $1 $2 &amp;&gt; /dev/null
+
+if [ $? -eq 0 ]         # Проверка кода возврата команды &quot;cmp&quot;.
+then
+  echo &quot;Файл \&quot;$1\&quot; идентичен файлу \&quot;$2\&quot;.&quot;
+else
+  echo &quot;Файл \&quot;$1\&quot; отличается от файла \&quot;$2\&quot;.&quot;
+fi
+
+exit 0
+</pre>
+            </div>
+
+            <div
+             class="TIP">
+              <table
+               class="TIP"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/tip.gif"
+                   hspace="5"
+                   alt="Tip"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Для работы с <span
+                     class="emphasis"><em
+                     class="EMPHASIS">gzip</em></span> файлами
+                    используется утилита <strong
+                     class="COMMAND">zcmp</strong>.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">comm</strong></dt>
+
+          <dd>
+            <p>Универсальная утилита сравнения. Работает с
+            отсортированными файлами.</p>
+
+            <p><strong
+             class="COMMAND">comm <tt
+             class="REPLACEABLE"><em>-options</em></tt> <tt
+             class="REPLACEABLE"><em>first-file</em></tt> <tt
+             class="REPLACEABLE"><em>second-file</em></tt></strong></p>
+
+            <p><tt
+             class="USERINPUT"><strong>comm file-1 file-2</strong></tt>
+            -- вывод в три колонки:</p>
+
+            <ul>
+              <li>
+                <p>колонка 1 = уникальные строки для <tt
+                 class="FILENAME">file-1</tt></p>
+              </li>
+
+              <li>
+                <p>колонка 2 = уникальные строки для <tt
+                 class="FILENAME">file-2</tt></p>
+              </li>
+
+              <li>
+                <p>колонка 3 = одинаковые строки.</p>
+              </li>
+            </ul>
+            <br>
+            <br>
+
+            <p>Ключи, подавляющие вывод в одной или более колонках.</p>
+
+            <ul>
+              <li>
+                <p><tt
+                 class="OPTION">-1</tt> -- подавление вывода в колонку
+                <tt
+                 class="LITERAL">1</tt></p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="OPTION">-2</tt> -- подавление вывода в колонку
+                <tt
+                 class="LITERAL">2</tt></p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="OPTION">-3</tt> -- подавление вывода в колонку
+                <tt
+                 class="LITERAL">3</tt></p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="OPTION">-12</tt> -- подавление вывода в колонки
+                <tt
+                 class="LITERAL">1</tt> и <tt
+                 class="LITERAL">2</tt>, и т.д.</p>
+              </li>
+            </ul>
+            <br>
+            <br>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="FAUTILS1"></a>Утилиты</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">basename</strong></dt>
+
+          <dd>
+            <p>Выводит только название файла, без каталога размещения.
+            Конструкция <tt
+             class="USERINPUT"><strong>basename $0</strong></tt> --
+            позволяет сценарию узнать свое имя, то есть имя файла,
+            который был запущен. Это имя может быть использовано для
+            вывода сообщений, напрмиер:</p>
+<pre
+ class="PROGRAMLISTING">
+echo &quot;Порядок использования: `basename $0` arg1 arg2 ... argn&quot;
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">dirname</strong></dt>
+
+          <dd>
+            <p>Отсекает <strong
+             class="COMMAND">basename</strong> от полного имени файла и
+            выводит только путь к файлу.</p>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Утилитам <strong
+                     class="COMMAND">basename</strong> и <strong
+                     class="COMMAND">dirname</strong> может быть
+                    передана любая строка, в качестве аргумента. Этот
+                    аргумент необязательно должен быть именем
+                    существующего файла (см. <a
+                     href="a14477.html#DAYSBETWEEN">Пример
+                    A-8</a>).</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX35"></a>
+
+              <p><strong>Пример 12-28. Утилиты basename и
+              dirname</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+a=/home/bozo/daily-journal.txt
+
+echo &quot;Basename для /home/bozo/daily-journal.txt = `basename $a`&quot;
+echo &quot;Dirname для /home/bozo/daily-journal.txt = `dirname $a`&quot;
+echo
+echo &quot;Мой домашний каталог `basename ~/`.&quot;             # Можно указать просто ~.
+echo &quot;Каталог моего домашнего каталога `dirname ~/`.&quot;  # Можно указать просто ~.
+
+exit 0
+</pre>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">split</strong></dt>
+
+          <dd>
+            <p>Утилита разбивает файл на несколько частей. Обычно
+            используется для разбиения больших файлов, чтобы их можно
+            было записать на дискеты или передать по электронной почте
+            по частям.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">sum</strong>, <strong
+           class="COMMAND">cksum</strong>, <a
+           name="MD5SUMREF"></a><strong
+           class="COMMAND">md5sum</strong></dt>
+
+          <dd>
+            <p>Эти утилиты предназначены для вычисления контрольных
+            сумм. Контрольная сумма -- это некоторое число, вычисляемое
+            исходя из содержимого файла, и служит для контроля
+            целостности информации в файле. Сценарий может выполнять
+            проверку контрольных сумм для того, чтобы убедиться, что
+            файл не был изменен или поврежден. Для большей
+            безопасности, рекомендуется использовать 128-битную сумму,
+            генерируемую утилитой <strong
+             class="COMMAND">md5sum</strong> (<strong
+             class="COMMAND">m</strong>essage <strong
+             class="COMMAND">d</strong>igest check<strong
+             class="COMMAND">sum</strong>).</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>cksum /boot/vmlinuz</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">1670054224 804083 /boot/vmlinuz</tt>
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>md5sum /boot/vmlinuz</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">0f43eccea8f09e0a0b2b5cf1dcf333ba  /boot/vmlinuz</tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <p>Обратите внимание: утилита <strong
+             class="COMMAND">cksum</strong> выводит контрольную сумму и
+            размер файла в байтах.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="FILEINTEGRITY"></a>
+
+              <p><strong>Пример 12-29. Проверка целостности
+              файла</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# file-integrity.sh: Проверка целостности файлов в заданном каталоге
+
+E_DIR_NOMATCH=70
+E_BAD_DBFILE=71
+
+dbfile=File_record.md5
+# Файл для хранения контрольных сумм.
+
+
+set_up_database ()
+{
+  echo &quot;&quot;$directory&quot;&quot; &gt; &quot;$dbfile&quot;
+  # Записать название каталога в первую строку файла.
+  md5sum &quot;$directory&quot;/* &gt;&gt; &quot;$dbfile&quot;
+  # Записать контрольные суммы md5 и имена файлов.
+}
+
+check_database ()
+{
+  local n=0
+  local filename
+  local checksum
+
+  # ------------------------------------------- #
+  #  Возможно эта проверка и не нужна,
+  #+ но лучше перестраховаться сейчас, чем жалеть об этом потом.
+
+  if [ ! -r &quot;$dbfile&quot; ]
+  then
+    echo &quot;Не могу прочитать файл с контрольными суммами!&quot;
+    exit $E_BAD_DBFILE
+  fi
+  # ------------------------------------------- #
+
+  while read record[n]
+  do
+
+    directory_checked=&quot;${record[0]}&quot;
+    if [ &quot;$directory_checked&quot; != &quot;$directory&quot; ]
+    then
+      echo &quot;Имя каталога не совпадает с записаным в файле!&quot;
+      # Попытка использовать файл контрольных сумм для другого каталога.
+      exit $E_DIR_NOMATCH
+    fi
+
+    if [ &quot;$n&quot; -gt 0 ]   # Не имя каталога.
+    then
+      filename[n]=$( echo ${record[$n]} | awk &#39;{ print $2 }&#39; )
+      #  md5sum записывает в обратном порядке,
+      #+ сначала контрольную сумму, затем имя файла.
+      checksum[n]=$( md5sum &quot;${filename[n]}&quot; )
+
+      if [ &quot;${record[n]}&quot; = &quot;${checksum[n]}&quot; ]
+      then
+        echo &quot;Файл ${filename[n]} не был изменен.&quot;
+      else
+        echo &quot;ОШИБКА КОНТРОЛЬНОЙ СУММЫ для файла ${filename[n]}!&quot;
+        # Файл был изменен со времени последней проверки.
+      fi
+
+    fi
+
+
+    let &quot;n+=1&quot;
+  done &lt;&quot;$dbfile&quot;       # Чтение контрольных сумм из файла.
+
+}
+
+# =================================================== #
+# main ()
+
+if [ -z  &quot;$1&quot; ]
+then
+  directory=&quot;$PWD&quot;      #  Если каталог не задан,
+else                    #+ то используется текущий каталог.
+  directory=&quot;$1&quot;
+fi
+
+clear                   # Очистка экрана.
+
+# ------------------------------------------------------------------ #
+  if [ ! -r &quot;$dbfile&quot; ] # Необходимо создать файл с контрольными суммами?
+  then
+    echo &quot;Создание файла с контрольными суммами, \&quot;&quot;$directory&quot;/&quot;$dbfile&quot;\&quot;.&quot;; echo
+    set_up_database
+  fi
+# ------------------------------------------------------------------ #
+
+check_database          # Выполнить проверку.
+
+echo
+
+#  Вывод этого сценария можно перенаправить в файл,
+#+ это особенно полезно при проверке большого количества файлов.
+
+#  Более строгая проверка целостности файлов,
+#+ может быть выполнена с помощью пакета &quot;Tripwire&quot;,
+#+ http://sourceforge.net/projects/tripwire/.
+
+exit 0
+</pre>
+            </div>
+
+            <p>Более творческий подход к использованию <strong
+             class="COMMAND">md5sum</strong> вы нйдете в <a
+             href="a14477.html#DIRECTORYINFO">Пример A-21</a>.</p>
+          </dd>
+
+          <dt><a
+           name="SHREDREF"></a><strong
+           class="COMMAND">shred</strong></dt>
+
+          <dd>
+            <p>Надежное, с точки зрения безопасности, стирание файла,
+            посредством предварительной, многократной записи в файл
+            случайной информации, перед тем как удалить его. Эта
+            команда имеет тот же эффект, что и <a
+             href="x9307.html#BLOTOUT">Пример 12-42</a>, но делает это
+            более изящным и безопасным способом.</p>
+
+            <p>Является составной частью пакета GNU <span
+             class="emphasis"><em
+             class="EMPHASIS">fileutils</em></span>.</p>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Имеется ряд технологий, с помощью которых
+                    все-таки возможно восстановить файлы, удаленные
+                    утилитой <strong
+                     class="COMMAND">shred</strong>.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="FAENCENCR1"></a>Кодирование и шифрование</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">uuencode</strong></dt>
+
+          <dd>
+            <p>Эта утилита используется для кодирования двоичных файлов
+            в символы ASCII, после такого кодирования файлы могут, с
+            достаточной степенью безопасности, передаваться по сети,
+            вкладываться в электронные письма и т.п..</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">uudecode</strong></dt>
+
+          <dd>
+            <p>Утилита декодирования файлов, прошедших обработку
+            утилитой uuencode.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX52"></a>
+
+              <p><strong>Пример 12-30. Декодирование
+              файлов</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+lines=35        # 35 строк для заголовка (более чем достаточно).
+
+for File in *   # Обход всех файлов в текущем каталоге...
+do
+  search1=`head -$lines $File | grep begin | wc -w`
+  search2=`tail -$lines $File | grep end | wc -w`
+  #  Закодированные файлы начинаются со слова &quot;begin&quot;,
+  #+ и заканчиваются словом &quot;end&quot;.
+  if [ &quot;$search1&quot; -gt 0 ]
+  then
+    if [ &quot;$search2&quot; -gt 0 ]
+    then
+      echo &quot;декодируется файл - $File -&quot;
+      uudecode $File
+    fi
+  fi
+done
+
+#  Обратите внимание: если передать сценарию самого себя, для декодирования,
+#+ то это введет его в заблуждение
+#+ поскольку в тексте сценария встречаются слова &quot;begin&quot; и &quot;end&quot;.
+
+exit 0
+</pre>
+            </div>
+
+            <div
+             class="TIP">
+              <table
+               class="TIP"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/tip.gif"
+                   hspace="5"
+                   alt="Tip"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>При декодировании и выводе длинных текстовых
+                    сообщений из новостных групп Usenet, очень нелишним
+                    будет передать текст, по конвейеру, команде <a
+                     href="x7050.html#FOLDREF">fold -s</a>.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">mimencode</strong>, <strong
+           class="COMMAND">mmencode</strong></dt>
+
+          <dd>
+            <p>Утилиты <strong
+             class="COMMAND">mimencode</strong> и <strong
+             class="COMMAND">mmencode</strong> предназначены для
+            обработки закодированных мультимедийных вложений в
+            электронные письма. Хотя <span
+             class="emphasis"><em
+             class="EMPHASIS">почтовые программы</em></span> (такие как
+            <strong
+             class="COMMAND">pine</strong> или <strong
+             class="COMMAND">kmail</strong>) имеют возможность
+            автоматической обработки таких вложений, тем не менее эти
+            утилиты позволяют обрабатывать вложения вручную, из
+            командной строки или в пакетном режиме, из сценария на
+            языке командной оболочки.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">crypt</strong></dt>
+
+          <dd>
+            <p>Одно время, это была стандартная, для UNIX, утилита
+            шифрования файлов. <a
+             name="AEN8616"
+             href="#FTN.AEN8616"><span
+             class="footnote">[2]</span></a> Политически
+            мотивированные, правительственные постановления ряда стран,
+            напрямую запрещают экспорт программного обеспечения для
+            шифрования, что, в результате, привело практически к
+            полному исчезновению <strong
+             class="COMMAND">crypt</strong> из большинства UNIX-систем
+            (в том числе и Linux). К счастью, программистами было
+            разработано множество вполне приличных альтернатив, и среди
+            них <a
+             href=
+            "ftp://metalab.unc.edu/pub/Linux/utils/file/cruft-0.2.tar.gz"
+             target="_top">cruft</a> (см. <a
+             href="a14477.html#ENCRYPTEDPW">Пример A-5</a>).</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="FAMISC1"></a>Прочее</strong></p>
+
+        <dl>
+          <dt><a
+           name="MKTEMPREF"></a><strong
+           class="COMMAND">mktemp</strong></dt>
+
+          <dd>
+            <p>Создает временный файл с <span
+             class="QUOTE">&quot;уникальным&quot;</span> именем.</p>
+<pre
+ class="PROGRAMLISTING">
+PREFIX=filename
+tempfile=`mktemp $PREFIX.XXXXXX`
+#                        ^^^^^^ Необходимо по меньшей мере 6 заполнителей
+echo &quot;имя временного файла = $tempfile&quot;
+# имя временного файла = filename.QA2ZpY
+#                 или нечто подобное...
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">make</strong></dt>
+
+          <dd>
+            <p>Утилита для компиляции и сборки программ. Но может
+            использоваться для выполнения любых других операций,
+            основанных на анализе наличия изменений в исходных
+            файлах.</p>
+
+            <p><a
+             name="MAKEFILEREF"></a></p>
+
+            <p>Команда <strong
+             class="COMMAND">make</strong> использует в своей работе
+            <tt
+             class="FILENAME">Makefile</tt>, который содержит перечень
+            зависимостей и операций, которые необходимо выполнить для
+            удовлетворения этих зависимостей.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">install</strong></dt>
+
+          <dd>
+            <p>Своего рода -- утилита копирования файлов, похожа на
+            <strong
+             class="COMMAND">cp</strong>, но дополнительно позволяет
+            изменять права доступа и атрибуты копируемых файлов.
+            Напрямую эта команда практически не используется, чаще
+            всего она встречается в <tt
+             class="FILENAME">Makefile</tt> (в разделе <tt
+             class="REPLACEABLE"><em>make install :</em></tt>). Она
+            может использоваться в сценариях установки ПО.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">dos2unix</strong></dt>
+
+          <dd>
+            <p>Автор утилиты -- Benjamin Lin со-товарищи. Предназначена
+            для преобразования текстовых файлов из формата DOS (в
+            котором строки завершаются комбинацией символов CR-LF) в
+            формат UNIX (в котором строки завершаются одним символом
+            LF) и обратно.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">ptx</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">ptx [targetfile]</strong> выводит a
+            упорядоченный предметный указатель для targetfile, который
+            можно обработать, по мере необходимости, какой либо
+            утилитой форматирования, в конвейере.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">more</strong>, <strong
+           class="COMMAND">less</strong></dt>
+
+          <dd>
+            <p>Команды постраничного просмотра текстовых файлов или
+            потоков на <tt
+             class="FILENAME">stdout</tt>. Могут использоваться в
+            сценариях в качестве фильтров.</p>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN7816"
+         href="x7794.html#AEN7816"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Команда <strong
+           class="COMMAND">tar czvf archive_name.tar.gz *</strong>
+          <span
+           class="emphasis"><em
+           class="EMPHASIS">включит</em></span> в архив все скрытые
+          файлы (имена которых начинаются с точки) из <span
+           class="emphasis"><em
+           class="EMPHASIS">вложенных подкаталогов</em></span>. Это
+          недокументированная <span
+           class="QUOTE">&quot;особенность&quot;</span> GNU-версии
+          <strong
+           class="COMMAND">tar</strong>.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN8616"
+         href="x7794.html#AEN8616"><span
+         class="footnote">[2]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Она реализует алгоритм симметричного блочного шифрования,
+          в противоположность алгоритмам шифрования с <span
+           class="QUOTE">&quot;открытым ключом&quot;</span>, из которых
+          широко известен <strong
+           class="COMMAND">pgp</strong>.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x7050.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x8707.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Команды обработки текста</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c6407.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Команды для работы с сетью</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

@@ -1,0 +1,494 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Bash, версия 2</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Материал повышенной сложности"
+     href="p11889.html">
+    <link
+     rel="PREVIOUS"
+     title="Сценарии командной оболочки под Windows"
+     href="x13930.html">
+    <link
+     rel="NEXT"
+     title="Замечания и дополнения"
+     href="c13962.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x13930.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c13962.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="BASH2"></a>Глава 34. Bash, версия 2</h1>
+
+      <p><a
+       name="BASH2REF"></a></p>
+
+      <p>Текущая версия <span
+       class="emphasis"><em
+       class="EMPHASIS">Bash</em></span>, та, которая скорее всего
+      установлена в вашей системе, фактически -- 2.XX.Y.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $BASH_VERSION</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">2.05.8(1)-release</tt>
+             
+</pre>
+      В этой версии классического языка сценариев Bash были добавлены
+      переменные-массивы, <a
+       name="AEN13946"
+       href="#FTN.AEN13946"><span
+       class="footnote">[1]</span></a> расширение строк и подстановка
+      параметров, улучшен метод косвенных ссылок на переменные.<br>
+      <br>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX77"></a>
+
+        <p><strong>Пример 34-1. Расширение строк</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# &quot;Расширение&quot; строк (String expansion).
+# Введено в Bash, начиная с версии 2.
+
+# Строки вида  $&#39;xxx&#39;
+# могут содержать дополнительные экранированные символы.
+
+echo $&#39;Звонок звенит 3 раза \a \a \a&#39;
+echo $&#39;Три перевода формата \f \f \f&#39;
+echo $&#39;10 новых строк \n\n\n\n\n\n\n\n\n\n&#39;
+
+exit 0
+</pre>
+      </div>
+
+      <p><a
+       name="VARREFNEW"></a></p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX78"></a>
+
+        <p><strong>Пример 34-2. Косвенные ссылки на переменные -- новый
+        метод</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Косвенные ссылки на переменные.
+
+
+a=letter_of_alphabet
+letter_of_alphabet=z
+
+echo &quot;a = $a&quot;           # Прямая ссылка.
+
+echo &quot;Now a = ${!a}&quot;    # Косвенная ссылка.
+# Форма записи ${!variable} намного удобнее старой &quot;eval var1=\$$var2&quot;
+
+echo
+
+t=table_cell_3
+table_cell_3=24
+echo &quot;t = ${!t}&quot;        # t = 24
+table_cell_3=387
+echo &quot;Значение переменной t изменилось на ${!t}&quot;    # 387
+
+# Теперь их можно использовать для ссылок на элементы массива,
+# или для эмуляции многомерных массивов.
+# Было бы здорово, если бы косвенные ссылки допускали индексацию.
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="RESISTOR"></a>
+
+        <p><strong>Пример 34-3. Простая база данных, с применением
+        косвенных ссылок</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# resistor-inventory.sh
+# Простая база данных, с применением косвенных ссылок.
+
+# ============================================================== #
+# Данные
+
+B1723_value=470                                   # сопротивление (Ом)
+B1723_powerdissip=.25                             # рассеиваемая мощность (Вт)
+B1723_colorcode=&quot;желтый-фиолетовый-коричневый&quot;    # цветовая маркировка
+B1723_loc=173                                     # где
+B1723_inventory=78                                # количество (шт)
+
+B1724_value=1000
+B1724_powerdissip=.25
+B1724_colorcode=&quot;коричневый-черный-красный&quot;
+B1724_loc=24N
+B1724_inventory=243
+
+B1725_value=10000
+B1725_powerdissip=.25
+B1725_colorcode=&quot;коричневый-черный-оранжевый&quot;
+B1725_loc=24N
+B1725_inventory=89
+
+# ============================================================== #
+
+
+echo
+
+PS3=&#39;Введите ноиер: &#39;
+
+echo
+
+select catalog_number in &quot;B1723&quot; &quot;B1724&quot; &quot;B1725&quot;
+do
+  Inv=${catalog_number}_inventory
+  Val=${catalog_number}_value
+  Pdissip=${catalog_number}_powerdissip
+  Loc=${catalog_number}_loc
+  Ccode=${catalog_number}_colorcode
+
+  echo
+  echo &quot;Номер по каталогу $catalog_number:&quot;
+  echo &quot;Имеется в наличии ${!Inv} шт. [${!Val} Ом / ${!Pdissip} Вт].&quot;
+  echo &quot;Находятся в лотке # ${!Loc}.&quot;
+  echo &quot;Цветовая маркировка: \&quot;${!Ccode}\&quot;.&quot;
+
+  break
+done
+
+echo; echo
+
+# Упражнение:
+# ----------
+# Переделайте этот сценарий так, чтобы он использовал массивы вместо косвенных ссылок.
+# Какой из вариантов более простой и интуитивный?
+
+
+# Примечание:
+# ----------
+#  Язык командной оболочки не очень удобен для написания приложений,
+#+ работающих с базами данных.
+#  Для этой цели лучше использовать языки программирования, имеющие
+#+ развитые средства для работы со структурами данных,
+#+ такие как C++ или Java (может быть Perl).
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX79"></a>
+
+        <p><strong>Пример 34-4. Массивы и другие хитрости для раздачи
+        колоды карт в четыре руки</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# На старых системах может потребоваться вставить #!/bin/bash2.
+
+# Карты:
+# раздача в четыре руки.
+
+UNPICKED=0
+PICKED=1
+
+DUPE_CARD=99
+
+LOWER_LIMIT=0
+UPPER_LIMIT=51
+CARDS_IN_SUIT=13
+CARDS=52
+
+declare -a Deck
+declare -a Suits
+declare -a Cards
+# Проще и понятнее было бы, имей мы дело
+# с одним 3-мерным массивом.
+# Будем надеяться, что в будущем, поддержка многомерных массивов будет введена в Bash.
+
+
+initialize_Deck ()
+{
+i=$LOWER_LIMIT
+until [ &quot;$i&quot; -gt $UPPER_LIMIT ]
+do
+  Deck[i]=$UNPICKED   # Пометить все карты в колоде &quot;Deck&quot;, как &quot;невыданная&quot;.
+  let &quot;i += 1&quot;
+done
+echo
+}
+
+initialize_Suits ()
+{
+Suits[0]=Т # Трефы
+Suits[1]=Б # Бубны
+Suits[2]=Ч # Червы
+Suits[3]=П # Пики
+}
+
+initialize_Cards ()
+{
+Cards=(2 3 4 5 6 7 8 9 10 В Д K Т)
+# Альтернативный способ инициализации массива.
+}
+
+pick_a_card ()
+{
+card_number=$RANDOM
+let &quot;card_number %= $CARDS&quot;
+if [ &quot;${Deck[card_number]}&quot; -eq $UNPICKED ]
+then
+  Deck[card_number]=$PICKED
+  return $card_number
+else
+  return $DUPE_CARD
+fi
+}
+
+parse_card ()
+{
+number=$1
+let &quot;suit_number = number / CARDS_IN_SUIT&quot;
+suit=${Suits[suit_number]}
+echo -n &quot;$suit-&quot;
+let &quot;card_no = number % CARDS_IN_SUIT&quot;
+Card=${Cards[card_no]}
+printf %-4s $Card
+# Вывод по столбцам.
+}
+
+seed_random ()  # Переустановка генератора случайных чисел.
+{
+seed=`eval date +%s`
+let &quot;seed %= 32766&quot;
+RANDOM=$seed
+}
+
+deal_cards ()
+{
+echo
+
+cards_picked=0
+while [ &quot;$cards_picked&quot; -le $UPPER_LIMIT ]
+do
+  pick_a_card
+  t=$?
+
+  if [ &quot;$t&quot; -ne $DUPE_CARD ]
+  then
+    parse_card $t
+
+    u=$cards_picked+1
+    # Возврат к индексации с 1 (временно).
+    let &quot;u %= $CARDS_IN_SUIT&quot;
+    if [ &quot;$u&quot; -eq 0 ]   # вложенный if/then.
+    then
+     echo
+     echo
+    fi
+    # Смена руки.
+
+    let &quot;cards_picked += 1&quot;
+  fi
+done
+
+echo
+
+return 0
+}
+
+
+# Структурное программирование:
+# вся логика приложения построена на вызове функций.
+
+#================
+seed_random
+initialize_Deck
+initialize_Suits
+initialize_Cards
+deal_cards
+
+exit 0
+#================
+
+
+
+# Упражнение 1:
+# Добавьте комментарии, чтобы до конца задокументировать этот сценарий.
+
+# Упражнение 2:
+# Исправьте сценарий так, чтобы карты в каждой руке выводились отсортированными по масти.
+# Вы можете добавить и другие улучшения.
+
+# Упражнение 3:
+# Упростите логику сценария.
+</pre>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN13946"
+         href="c13936.html#AEN13946"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Chet Ramey обещал ввести в Bash ассоциативные массивы (они
+          хорошо знакомы программистам, работающим с языком Perl) в
+          одном из следующих релизов Bash.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x13930.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c13962.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Сценарии командной оболочки под Windows</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p11889.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Замечания и дополнения</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

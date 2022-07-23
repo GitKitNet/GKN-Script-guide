@@ -1,0 +1,293 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Присваивание значений переменным</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Переменные и параметры. Введение."
+     href="c1613.html">
+    <link
+     rel="PREVIOUS"
+     title="Переменные и параметры. Введение."
+     href="c1613.html">
+    <link
+     rel="NEXT"
+     title="Переменные Bash не имеют типа"
+     href="x1705.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c1613.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 4. Переменные и параметры.
+          Введение.</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x1705.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="VARASSIGNMENT"></a>4.2. Присваивание значений
+      переменным</h1>
+
+      <div
+       class="VARIABLELIST">
+        <dl>
+          <dt><a
+           name="EQREF"></a><span
+           class="TOKEN">=</span></dt>
+
+          <dd>
+            <p>оператор присваивания (<span
+             class="emphasis"><em
+             class="EMPHASIS">пробельные символы до и после оператора
+            -- недопустимы</em></span>)</p>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Не путайте с операторами сравнения <a
+                     href="x2565.html#EQUALSIGNREF">=</a> и <a
+                     href="x2565.html#EQUALREF">-eq</a>!</p>
+
+                    <p>Обратите внимание: символ <span
+                     class="TOKEN">=</span> может использоваться как в
+                    качестве оператора присваивания, так и в качестве
+                    оператора сравнения, конкретная интерпретация
+                    зависит от контекста применения.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX15"></a>
+
+              <p><strong>Пример 4-2. Простое присваивание</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Явные переменные
+
+echo
+
+# Когда перед именем переменной не употребляется символ &#39;$&#39;?
+# В операциях присваивания.
+
+# Присваивание
+a=879
+echo &quot;Значение переменной \&quot;a\&quot; -- $a.&quot;
+
+# Присваивание с помощью ключевого слова &#39;let&#39;
+let a=16+5
+echo &quot;Значение переменной \&quot;a\&quot; теперь стало равным: $a.&quot;
+
+echo
+
+# В заголовке цикла &#39;for&#39; (своего рода неявное присваивание)
+echo -n &quot;Значения переменной \&quot;a\&quot; в цикле: &quot;
+for a in 7 8 9 11
+do
+  echo -n &quot;$a &quot;
+done
+
+echo
+echo
+
+# При использовании инструкции &#39;read&#39; (тоже одна из разновидностей присваивания)
+echo -n &quot;Введите значение переменной \&quot;a\&quot; &quot;
+read a
+echo &quot;Значение переменной \&quot;a\&quot; теперь стало равным: $a.&quot;
+
+echo
+
+exit 0
+</pre>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX16"></a>
+
+              <p><strong>Пример 4-3. Присваивание значений переменным
+              простое и замаскированное</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+a=23              # Простейший случай
+echo $a
+b=$a
+echo $b
+
+# Теперь немного более сложный вариант (подстановка команд).
+
+a=`echo Hello!`   # В переменную &#39;a&#39; попадает результат работы команды &#39;echo&#39;
+echo $a
+#  Обратите внимание на восклицательный знак (!) в подстанавливаемой команде
+#+ этот вариант не будет работать при наборе в командной строке,
+#+ поскольку здесь используется механизм &quot;истории команд&quot; BASH
+#  Однако, в сценариях, механизм истории команд запрещен.
+
+a=`ls -l`         # В переменную &#39;a&#39; записывается результат работы команды &#39;ls -l&#39;
+echo $a           # Кавычки отсутствуют, удаляются лишние пробелы и пустые строки.
+echo
+echo &quot;$a&quot;         # Переменная в кавычках, все пробелы и пустые строки сохраняются.
+                  # (См. главу &quot;Кавычки.&quot;)
+
+exit 0
+</pre>
+            </div>
+
+            <p>Присваивание переменных с использованием <span
+             class="TOKEN">$(...)</span> (более современный метод, по
+            сравнению с <a
+             href="c11441.html#BACKQUOTESREF">обратными
+            кавычками</a>)</p>
+<pre
+ class="PROGRAMLISTING">
+# Взято из /etc/rc.d/rc.local
+R=$(cat /etc/redhat-release)
+arch=$(uname -m)
+</pre>
+            <br>
+            <br>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c1613.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x1705.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Переменные и параметры. Введение.</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c1613.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Переменные Bash не имеют типа</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

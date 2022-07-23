@@ -1,0 +1,365 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Завершение и код завершения</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Основы"
+     href="p299.html">
+    <link
+     rel="PREVIOUS"
+     title="Кавычки"
+     href="c1833.html">
+    <link
+     rel="NEXT"
+     title="Проверка условий"
+     href="c2171.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c1833.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c2171.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="EXIT-STATUS"></a>Глава 6. Завершение и код завершения</h1>
+
+      <table
+       border="0"
+       width="100%"
+       cellspacing="0"
+       cellpadding="0"
+       class="EPIGRAPH">
+        <tr>
+          <td
+           width="45%"> </td>
+
+          <td
+           width="45%"
+           align="left"
+           valign="top">
+            <p><em>...эта часть Bourne shell покрыта мраком, тем не
+            менее все пользуются ею.</em></p>
+          </td>
+        </tr>
+
+        <tr>
+          <td
+           width="45%"> </td>
+
+          <td
+           width="45%"
+           align="right"
+           valign="top"><em><span
+           class="ATTRIBUTION">Chet Ramey</span></em></td>
+        </tr>
+      </table>
+
+      <p><a
+       name="EXITCOMMANDREF"></a>Команда <strong
+       class="COMMAND">exit</strong> может использоваться для
+      завершения работы сценария, точно так же как и в программах на
+      языке C. Кроме того, она может возвращать некоторое значение,
+      которое может быть проанализировано вызывающим процессом.</p>
+
+      <p><a
+       name="EXITSTATUSREF"></a>Каждая команда возвращает <em
+       class="FIRSTTERM">код завершения</em> (иногда код завершения
+      называют <em
+       class="FIRSTTERM">возвращаемым значением</em> ). В случае успеха
+      команда должна возвращать <span
+       class="RETURNVALUE">0</span>, а в случае ошибки -- <span
+       class="RETURNVALUE">ненулевое</span> значение, которое, как
+      правило, интерпретируется как код ошибки. Практически все команды
+      и утилиты UNIX возвращают <span
+       class="RETURNVALUE">0</span> в случае успешного завершения, но
+      имеются и исключения из правил.</p>
+
+      <p>Аналогичным образом ведут себя функции, расположенные внутри
+      сценария, и сам сценарий, возвращая код завершения. Код,
+      возвращаемый функцией или сценарием, определяется кодом возврата
+      последней команды. Команде <tt
+       class="USERINPUT"><strong>exit</strong></tt> можно явно указать
+      код возврата, в виде: <tt
+       class="USERINPUT"><strong>exit</strong></tt> <span
+       class="RETURNVALUE"><tt
+       class="REPLACEABLE"><em>nnn</em></tt></span>, где <span
+       class="RETURNVALUE"><tt
+       class="REPLACEABLE"><em>nnn</em></tt></span> -- это код возврата
+      (число в диапазоне <span
+       class="RETURNVALUE">0</span> - <span
+       class="RETURNVALUE">255</span>).</p>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Когда работа сценария завершается командой <strong
+               class="COMMAND">exit</strong> без параметров, то код
+              возврата сценария определяется кодом возврата последней
+              исполненной командой.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p><a
+       name="EXSREF"></a></p>
+
+      <p>Код возврата последней команды хранится в специальной
+      переменной <tt
+       class="VARNAME">$?</tt>. После исполнения кода функции,
+      переменная <tt
+       class="VARNAME">$?</tt> хранит код завершения последней команды,
+      исполненной в функции. Таким способом в Bash передается <span
+       class="QUOTE">&quot;значение, возвращаемое&quot;</span>
+      функцией. После завершения работы сценария, код возврата можно
+      получить, обратившись из командной строки к переменной <tt
+       class="VARNAME">$?</tt>, т.е. это будет код возврата последней
+      команды, исполненной в сценарии.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX5"></a>
+
+        <p><strong>Пример 6-1. завершение / код завершения</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+echo hello
+echo $?    # код возврата = 0, поскольку команда выполнилась успешно.
+
+lskdf      # Несуществующая команда.
+echo $?    # Ненулевой код возврата, поскольку команду выполнить не удалось.
+
+echo
+
+exit 113   # Явное указание кода возврата 113.
+           # Проверить можно, если набрать в командной строке &quot;echo $?&quot;
+           # после выполнения этого примера.
+
+#  В соответствии с соглашениями, &#39;exit 0&#39; указывает на успешное завершение,
+#+ в то время как ненулевое значение означает ошибку.
+</pre>
+      </div>
+
+      <p>Переменная <a
+       href="c3270.html#XSTATVARREF">$?</a> особенно полезна, когда
+      необходимо проверить результат исполнения команды (см. <a
+       href="x7794.html#FILECOMP">Пример 12-27</a> и <a
+       href="x7050.html#LOOKUP">Пример 12-13</a>).</p>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Символ <a
+               href="c301.html#NOTREF">!</a>, может выступать как
+              логическое &quot;НЕ&quot; для инверсии <a
+               href="c2105.html#EXITSTATUSREF">кода возврата</a>.</p>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="NEGCOND"></a>
+
+                <p><strong>Пример 6-2. Использование символа <span
+                 class="TOKEN">!</span> для логической инверсии кода
+                возврата</strong></p>
+<pre
+ class="PROGRAMLISTING">
+true  # встроенная команда &quot;true&quot;.
+echo &quot;код возврата команды \&quot;true\&quot; = $?&quot;     # 0
+
+! true
+echo &quot;код возврата команды \&quot;! true\&quot; = $?&quot;   # 1
+# Обратите внимание: символ &quot;!&quot; от команды необходимо отделять пробелом.
+#    !true   вызовет сообщение об ошибке &quot;command not found&quot;
+
+# Спасибо S.C.
+</pre>
+              </div>
+              <br>
+              <br>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div
+       class="CAUTION">
+        <table
+         class="CAUTION"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/caution.gif"
+             hspace="5"
+             alt="Caution"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>В отдельных случаях коды возврата должны иметь <a
+               href="a14876.html#EXITCODESREF">предопределенные
+              значения</a> и не должны задаваться пользователем.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c1833.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c2171.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Кавычки</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p299.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Проверка условий</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

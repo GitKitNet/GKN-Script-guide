@@ -1,0 +1,397 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Списки команд</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Материал повышенной сложности"
+     href="p11889.html">
+    <link
+     rel="PREVIOUS"
+     title="Псевдонимы"
+     href="c12683.html">
+    <link
+     rel="NEXT"
+     title="Массивы"
+     href="c12790.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c12683.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c12790.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="LIST-CONS"></a>Глава 24. Списки команд</h1>
+
+      <p><a
+       name="LISTCONSREF"></a></p>
+
+      <p>Средством обработки последовательности из нескольких команд
+      служат списки: <span
+       class="QUOTE">&quot;И-списки&quot;</span> и <span
+       class="QUOTE">&quot;ИЛИ-списки&quot;</span>. Они эффективно
+      могут заменить сложную последовательность вложенных <strong
+       class="COMMAND">if</strong>/<strong
+       class="COMMAND">then</strong> или даже <strong
+       class="COMMAND">case</strong>.</p>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="LCONS1"></a>Объединение команд в цепочки</strong></p>
+
+        <dl>
+          <dt>И-список</dt>
+
+          <dd>
+<pre
+ class="PROGRAMLISTING">
+command-1 &amp;&amp; command-2 &amp;&amp; command-3 &amp;&amp; ... command-n
+</pre>
+            Каждая последующая команда, в таком списке, выполняется
+            только тогда, когда предыдущая команда вернула код
+            завершения <span
+             class="RETURNVALUE">true</span> (ноль). Если какая-либо из
+            команд возвращает <span
+             class="RETURNVALUE">false</span> (не ноль), то исполнение
+            списка команд в этом месте завершается, т.е. следующие
+            далее команды не выполняются.<br>
+            <br>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX64"></a>
+
+              <p><strong>Пример 24-1. Проверка аргументов командной
+              строки с помощью <span
+               class="QUOTE">&quot;И-списка&quot;</span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# &quot;И-список&quot;
+
+if [ ! -z &quot;$1&quot; ] &amp;&amp; echo &quot;Аргумент #1 = $1&quot; &amp;&amp; [ ! -z &quot;$2&quot; ] &amp;&amp; echo &quot;Аргумент #2 = $2&quot;
+then
+  echo &quot;Сценарию передано не менее 2 аргументов.&quot;
+  # Все команды в цепочке возвращают true.
+else
+  echo &quot;Сценарию передано менее 2 аргументов.&quot;
+  # Одна из команд в списке вернула false.
+fi
+# Обратите внимание: &quot;if [ ! -z $1 ]&quot; тоже работает, но, казалось бы эквивалентный вариант
+#  if [ -n $1 ] -- нет. Однако, если добавить кавычки
+#  if [ -n &quot;$1&quot; ] то все работает.  Будьте внимательны!
+# Проверяемые переменные лучше всегда заключать в кавычки.
+
+
+# То же самое, только без списка команд.
+if [ ! -z &quot;$1&quot; ]
+then
+  echo &quot;Аргумент #1 = $1&quot;
+fi
+if [ ! -z &quot;$2&quot; ]
+then
+  echo &quot;Аргумент #2 = $2&quot;
+  echo &quot;Сценарию передано не менее 2 аргументов.&quot;
+else
+  echo &quot;Сценарию передано менее 2 аргументов.&quot;
+fi
+# Получилось менее элегантно и длиннее, чем с использованием &quot;И-списка&quot;.
+
+
+exit 0
+</pre>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="ANDLIST2"></a>
+
+              <p><strong>Пример 24-2. Еще один пример проверки
+              аргументов с помощью <span
+               class="QUOTE">&quot;И-списков&quot;</span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+ARGS=1        # Ожидаемое число аргументов.
+E_BADARGS=65  # Код завершения, если число аргументов меньше ожидаемого.
+
+test $# -ne $ARGS &amp;&amp; echo &quot;Порядок использования: `basename $0` $ARGS аргумент(а)(ов)&quot; &amp;&amp; exit $E_BADARGS
+# Если проверка первого условия возвращает true (неверное число аргументов),
+# то исполняется остальная часть строки, и сценарий завершается.
+
+# Строка ниже выполняется только тогда, когда проверка выше не проходит.
+# обратите внимание на условие &quot;-ne&quot; -- &quot;не равно&quot; (прим. перев.)
+echo &quot;Сценарию передано корректное число аргументов.&quot;
+
+exit 0
+
+# Проверьте код завершения сценария командой &quot;echo $?&quot;.
+</pre>
+            </div>
+
+            <p><a
+             name="ANDDEFAULT"></a></p>
+
+            <p>Конечно же, с помощью <span
+             class="emphasis"><em
+             class="EMPHASIS">И-списка</em></span> можно присваивать
+            переменным значения по-умолчанию.</p>
+<pre
+ class="PROGRAMLISTING">
+arg1=$@       # В $arg1 записать аргументы командной строки.
+
+[ -z &quot;$arg1&quot; ] &amp;&amp; arg1=DEFAULT
+              # Записать DEFAULT, если аргументы командной строки отсутствуют.
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt>ИЛИ-список</dt>
+
+          <dd>
+<pre
+ class="PROGRAMLISTING">
+command-1 || command-2 || command-3 || ... command-n
+</pre>
+            Каждая последующая команда, в таком списке, выполняется
+            только тогда, когда предыдущая команда вернула код
+            завершения <span
+             class="RETURNVALUE">false</span> (не ноль). Если
+            какая-либо из команд возвращает <span
+             class="RETURNVALUE">true</span> (ноль), то исполнение
+            списка команд в этом месте завершается, т.е. следующие
+            далее команды не выполняются. Очевидно, что <span
+             class="QUOTE">&quot;ИЛИ-списки&quot;</span> имеют смысл
+            обратный, по отношению к <span
+             class="QUOTE">&quot;И-спискам&quot;</span><br>
+            <br>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX65"></a>
+
+              <p><strong>Пример 24-3. Комбинирование <span
+               class="QUOTE">&quot;ИЛИ-списков&quot;</span> и <span
+               class="QUOTE">&quot;И-списков&quot;</span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+#  delete.sh, утилита удаления файлов.
+#  Порядок использования: delete имя_файла
+
+E_BADARGS=65
+
+if [ -z &quot;$1&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` имя_файла&quot;
+  exit $E_BADARGS  # Если не задано имя файла.
+else
+  file=$1          # Запомнить имя файла.
+fi
+
+
+[ ! -f &quot;$file&quot; ] &amp;&amp; echo &quot;Файл \&quot;$file\&quot; не найден. \
+Робкий отказ удаления несуществующего файла.&quot;
+# И-СПИСОК, выдать сообщение об ошибке, если файл не существует.
+# Обратите внимание: выводимое сообщение продолжается во второй строке,
+# благодаря экранированию символа перевода строки.
+
+[ ! -f &quot;$file&quot; ] || (rm -f $file; echo &quot;Файл \&quot;$file\&quot; удален.&quot;)
+# ИЛИ-СПИСОК, удаляет существующий файл.
+
+# Обратите внимание на логические условия.
+# И-СПИСОК отрабатывает по true, ИЛИ-СПИСОК -- по false.
+
+exit 0
+</pre>
+            </div>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="IMPORTANT">
+        <table
+         class="IMPORTANT"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/important.gif"
+             hspace="5"
+             alt="Important"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Списки возвращают <a
+               href="c2105.html#EXITSTATUSREF">код завершения</a>
+              последней выполненной команды.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p>Комбинируя <span
+       class="QUOTE">&quot;И&quot;</span> и <span
+       class="QUOTE">&quot;ИЛИ&quot;</span> списки, легко
+      &quot;перемудрить&quot; с логическими условиями, поэтому, в таких
+      случаях может потребоваться детальная отладка.</p>
+<pre
+ class="PROGRAMLISTING">
+false &amp;&amp; true || echo false         # false
+
+# Тот же результат дает
+( false &amp;&amp; true ) || echo false     # false
+# Но не эта комбинация
+false &amp;&amp; ( true || echo false )     # (нет вывода на экран)
+
+#  Обратите внимание на группировку и порядок вычисления условий -- слева-направо,
+#+ поскольку логические операции &quot;&amp;&amp;&quot; и &quot;||&quot; имеют равный приоритет.
+
+#  Если вы не уверены в своих действиях, то лучше избегать таких сложных конструкций.
+
+#  Спасибо S.C.
+</pre>
+      <br>
+      <br>
+
+      <p>См. <a
+       href="a14477.html#DAYSBETWEEN">Пример A-8</a> и <a
+       href="x2389.html#BROKENLINK">Пример 7-4</a>, иллюстрирующие
+      использование <tt
+       class="USERINPUT"><strong>И/ИЛИ-списков</strong></tt> для
+      проверки переменных.</p>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c12683.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c12790.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Псевдонимы</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p11889.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Массивы</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Арифметические подстановки</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Углубленный материал"
+     href="p3268.html">
+    <link
+     rel="PREVIOUS"
+     title="Подстановка команд"
+     href="c11441.html">
+    <link
+     rel="NEXT"
+     title="Перенаправление ввода/вывода"
+     href="c11620.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c11441.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c11620.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="ARITHEXP"></a>Глава 15. Арифметические подстановки</h1>
+
+      <p><a
+       name="ARITHEXPREF"></a>Арифметические подстановки -- это мощный
+      инструмент, предназначенный для выполнения арифметических
+      операций в сценариях. Перевод строки в числовое выражение
+      производится с помощью <a
+       href="c11441.html#BACKQUOTESREF">обратных одиночных кавычек</a>,
+      <a
+       href="x4862.html">двойных круглых скобок</a> или предложения <a
+       href="c5358.html#LETREF">let</a>.</p>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="ARITHEXPVAR1"></a>Вариации</strong></p>
+
+        <dl>
+          <dt>Арифметические подстановки в обратных одиночных кавычках
+          (часто используются совместно с командой <a
+           href="x6646.html#EXPRREF">expr</a>)</dt>
+
+          <dd>
+<pre
+ class="PROGRAMLISTING">
+z=`expr $z + 3`            # Команда &#39;expr&#39; вычисляет значение выражения.
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt>Арифметические подстановки в двойных круглых скобках, и
+          предложение <strong
+           class="COMMAND">let</strong></dt>
+
+          <dd>
+            <p>В арифметических подстановках, обратные одиночные
+            кавычки могут быть заменены на двойные круглые скобки <tt
+             class="USERINPUT"><strong>$((...))</strong></tt> или очень
+            удобной конструкцией, с применением предложения <strong
+             class="COMMAND">let</strong>.</p>
+<pre
+ class="PROGRAMLISTING">
+z=$(($z+3))
+# $((EXPRESSION)) -- это подстановка арифметического выражения.  #  Не путайте с
+                                                                 #+ подстановкой команд.
+
+let z=z+3
+let &quot;z += 3&quot;  # Кавычки позволяют вставляьб пробелы и специальные операторы.
+#  Оператор &#39;let&#39; вычисляет арифметическое выражение,
+#+ это не подстановка арифметического выражения.
+</pre>
+            Все вышеприведенные примеры эквивалентны. Вы можете
+            использовать любую из этих форм записи <span
+             class="QUOTE">&quot;по своему вкусу&quot;</span>. <br>
+            <br>
+
+            <p>Примеры арифметических подстановок в сценариях:</p>
+
+            <ol
+             type="1">
+              <li>
+                <p><a
+                 href="x6646.html#EX45">Пример 12-6</a></p>
+              </li>
+
+              <li>
+                <p><a
+                 href="c4875.html#EX25">Пример 10-14</a></p>
+              </li>
+
+              <li>
+                <p><a
+                 href="c12790.html#EX66">Пример 25-1</a></p>
+              </li>
+
+              <li>
+                <p><a
+                 href="c12790.html#BUBBLE">Пример 25-6</a></p>
+              </li>
+
+              <li>
+                <p><a
+                 href="a14477.html#TREE">Пример A-19</a></p>
+              </li>
+            </ol>
+            <br>
+            <br>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c11441.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c11620.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Подстановка команд</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p3268.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Перенаправление ввода/вывода</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

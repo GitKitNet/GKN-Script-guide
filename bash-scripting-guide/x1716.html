@@ -1,0 +1,625 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Специальные типы переменных</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Переменные и параметры. Введение."
+     href="c1613.html">
+    <link
+     rel="PREVIOUS"
+     title="Переменные Bash не имеют типа"
+     href="x1705.html">
+    <link
+     rel="NEXT"
+     title="Кавычки"
+     href="c1833.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x1705.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 4. Переменные и параметры.
+          Введение.</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c1833.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="OTHERTYPESV"></a>4.4. Специальные типы переменных</h1>
+
+      <div
+       class="VARIABLELIST">
+        <dl>
+          <dt><tt
+           class="REPLACEABLE"><em>локальные переменные</em></tt></dt>
+
+          <dd>
+            <p>переменные, область видимости которых ограничена <a
+             href="c301.html#CODEBLOCKREF">блоком кода</a> или телом
+            функции (см так же <a
+             href="x12644.html">локальные переменные</a> в <a
+             href="c12483.html#FUNCTIONREF">функциях</a>)</p>
+          </dd>
+
+          <dt><a
+           name="ENVREF"></a><tt
+           class="REPLACEABLE"><em>переменные окружения</em></tt></dt>
+
+          <dd>
+            <p>переменные, которые затрагивают командную оболочку и
+            порядок взаимодействия с пользователем</p>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>В более общем контексте, каждый процесс имеет
+                    некоторое <span
+                     class="QUOTE">&quot;окружение&quot;</span> (среду
+                    исполнения), т.е. набор переменных, к которым
+                    процесс может обращаться за получением определенной
+                    информации. В этом смысле командная оболочка
+                    подобна любому другому процессу.</p>
+
+                    <p>Каждый раз, когда запускается командный
+                    интерпретатор, для него создаются переменные,
+                    соответствующие переменным окружения. Изменение
+                    переменных или добавление новых переменных
+                    окружения заставляет оболочку обновить свои
+                    переменные, и все дочерние процессы (и команды,
+                    исполняемые ею) наследуют это окружение.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Пространство, выделяемое под переменные
+                    окружения, ограничено. Создание слишком большого
+                    количества переменных окружения или одной
+                    переменной, которая занимает слишком большое
+                    пространство, может привести к возникновению
+                    определенных проблем.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class=
+"USERINPUT"><strong>eval &quot;`seq 10000 | sed -e &#39;s/.*/export var&amp;=ZZZZZZZZZZZZZZ/&#39;`&quot;</strong></tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>du</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">bash: /usr/bin/du: Argument list too long</tt>
+                 
+</pre>
+                    <br>
+                    <br>
+
+                    <p>(Спасибо S. C. за вышеприведенный пример и
+                    пояснения.)</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <p>Если сценарий изменяет переменные окружения, то они
+            должны <span
+             class="QUOTE">&quot;экспортироваться&quot;</span>, т.е
+            передаваться окружению, локальному по отношению к сценарию.
+            Эта функция возложена на команду <a
+             href="c5358.html#EXPORTREF">export</a>.</p>
+            <a
+             name="CHILDREF"></a>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Сценарий может <strong
+                     class="COMMAND">экспортировать</strong> переменные
+                    только дочернему процессу, т.е. командам и
+                    процессам запускаемым из данного сценария.
+                    Сценарий, запускаемый из командной строки <tt
+                     class="REPLACEABLE"><em>не может</em></tt>
+                    экспортировать переменные &quot;на верх&quot;
+                    командной оболочке. <a
+                     href="c5358.html#FORKREF">Дочерний процесс</a> не
+                    может экспортировать переменные родительскому
+                    процессу.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <p>---</p>
+          </dd>
+
+          <dt><a
+           name="POSPARAMREF1"></a><tt
+           class="REPLACEABLE"><em>позиционные параметры</em></tt></dt>
+
+          <dd>
+            <p>аргументы, передаваемые скрипту из командной строки --
+            $0, $1, $2, $3..., где $0 -- это название файла сценария,
+            $1 -- это первый аргумент, $2 -- второй, $3 -- третий и так
+            далее. <a
+             name="AEN1772"
+             href="#FTN.AEN1772"><span
+             class="footnote">[1]</span></a> <a
+             name="BRACKETNOTATION"></a>Аргументы, следующие за $9,
+            должны заключаться в фигурные скобки, например: ${10},
+            ${11}, ${12}.</p>
+
+            <p>Специальные переменные <a
+             href="c3270.html#APPREF">$* и $@</a> содержат <span
+             class="emphasis"><em
+             class="EMPHASIS">все</em></span> позиционные параметры
+            (аргументы командной строки).</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX17"></a>
+
+              <p><strong>Пример 4-5. Позиционные параметры</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Команда вызова сценария должна содержать по меньшей мере 10 параметров, например
+# ./scriptname 1 2 3 4 5 6 7 8 9 10
+MINPARAMS=10
+
+echo
+
+echo &quot;Имя файла сценария: \&quot;$0\&quot;.&quot;
+# Для текущего каталога добавит ./
+echo &quot;Имя файла сценария: \&quot;`basename $0`\&quot;.&quot;
+# Добавит путь к имени файла (см. &#39;basename&#39;)
+
+echo
+
+if [ -n &quot;$1&quot; ]              # Проверяемая переменная заключена в кавычки.
+then
+ echo &quot;Параметр #1: $1&quot;     # необходимы кавычки для экранирования символа #
+fi
+
+if [ -n &quot;$2&quot; ]
+then
+ echo &quot;Параметр #2: $2&quot;
+fi
+
+if [ -n &quot;$3&quot; ]
+then
+ echo &quot;Параметр #3: $3&quot;
+fi
+
+# ...
+
+
+if [ -n &quot;${10}&quot; ]  # Параметры, следующие за $9 должны заключаться в фигурные скобки
+then
+ echo &quot;Параметр #10: ${10}&quot;
+fi
+
+echo &quot;-----------------------------------&quot;
+echo &quot;Все аргументы командной строки: &quot;$*&quot;&quot;
+
+if [ $# -lt &quot;$MINPARAMS&quot; ]
+then
+  echo
+  echo &quot;Количество аргументов командной строки должно быть не менее $MINPARAMS !&quot;
+fi
+
+echo
+
+exit 0
+</pre>
+            </div>
+
+            <p><span
+             class="emphasis"><em
+             class="EMPHASIS">Скобочная нотация</em></span> позиционных
+            параметров дает довольно простой способ обращения к <span
+             class="emphasis"><em
+             class="EMPHASIS">последнему</em></span> аргументу,
+            переданному в сценарий из командной строки. Такой способ
+            подразумевает использование <a
+             href="c13936.html#VARREFNEW">косвенной адресации</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+args=$#           # Количество переданных аргументов.
+lastarg=${!args}  # Обратите внимание: lastarg=${!$#} неприменимо.
+</pre>
+            <br>
+            <br>
+
+            <p>В сценарии можно предусмотреть различные варианты
+            развития событий, в зависимости от имени сценария. Для
+            этого сценарий должен проанализировать аргумент <tt
+             class="VARNAME">$0</tt> -- имя файла сценария. Это могут
+            быть и имена символических ссылок на файл сценария.</p>
+
+            <div
+             class="TIP">
+              <table
+               class="TIP"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/tip.gif"
+                   hspace="5"
+                   alt="Tip"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Если сценарий ожидает передачи аргументов в
+                    командной строке, то при их отсутствии он получит
+                    &quot;пустые&quot; переменные, что может вызвать
+                    нежелательный побочный эффект. Один из способов
+                    борьбы с подобными ошибками -- добавить
+                    дополнительный символ в обеих частях операции
+                    присваивания, где используются аргументы командной
+                    строки.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+<pre
+ class="PROGRAMLISTING">
+variable1_=$1_
+# Это предотвратит появление ошибок, даже при отсутствии входного аргумента.
+
+critical_argument01=$variable1_
+
+# Дополнительные символы всегда можно &quot;убрать&quot; позднее.
+# Это может быть сделано примерно так:
+variable1=${variable1_/_/}   # Побочный эффект возникает только если имя переменной
+                             # $variable1_ будет начинаться с символа &quot;_&quot;.
+# Здесь используется один из вариантов подстановки параметров, обсуждаемых в Главе 9.
+# Отсутствие шаблона замены приводит к удалению.
+
+# Более простой способ заключается
+#+ в обычной проверке наличия позиционного параметра.
+if [ -z $1 ]
+then
+  exit $POS_PARAMS_MISSING
+fi
+</pre>
+
+            <p>---</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX18"></a>
+
+              <p><strong>Пример 4-6. wh, <a
+               href="x8707.html#WHOISREF">whois</a> выяснение имени
+              домена</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Команда &#39;whois domain-name&#39; выясняет имя домена на одном из 3 серверов:
+#                    ripe.net, cw.net, radb.net
+
+# Разместите этот скрипт под именем &#39;wh&#39; в каталоге /usr/local/bin
+
+# Требуемые символические ссылки:
+# ln -s /usr/local/bin/wh /usr/local/bin/wh-ripe
+# ln -s /usr/local/bin/wh /usr/local/bin/wh-cw
+# ln -s /usr/local/bin/wh /usr/local/bin/wh-radb
+
+
+if [ -z &quot;$1&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` [domain-name]&quot;
+  exit 65
+fi
+
+case `basename $0` in
+# Проверка имени скрипта и, соответственно, имени сервера
+    &quot;wh&quot;     ) whois $1@whois.ripe.net;;
+    &quot;wh-ripe&quot;) whois $1@whois.ripe.net;;
+    &quot;wh-radb&quot;) whois $1@whois.radb.net;;
+    &quot;wh-cw&quot;  ) whois $1@whois.cw.net;;
+    *        ) echo &quot;Порядок использования: `basename $0` [domain-name]&quot;;;
+esac
+
+exit 0
+</pre>
+            </div>
+
+            <p>---</p>
+
+            <p><a
+             name="SHIFTREF"></a></p>
+
+            <p>Команда <strong
+             class="COMMAND">shift</strong> &quot;сдвигает&quot;
+            позиционные параметры, в результате чего парметры
+            &quot;сдвигаются&quot; на одну позицию влево.</p>
+
+            <p><tt
+             class="VARNAME">$1</tt> &lt;--- <tt
+             class="VARNAME">$2</tt>, <tt
+             class="VARNAME">$2</tt> &lt;--- <tt
+             class="VARNAME">$3</tt>, <tt
+             class="VARNAME">$3</tt> &lt;--- <tt
+             class="VARNAME">$4</tt>, и т.д.</p>
+
+            <p>Прежний аргумент <tt
+             class="VARNAME">$1</tt> теряется, но аргумент <span
+             class="emphasis"><em
+             class="EMPHASIS"><tt
+             class="VARNAME">$0</tt> (имя файла сценария) остается без
+            изменений</em></span>. Если вашему сценарию передается
+            большое количество входных аргументов, то команда <strong
+             class="COMMAND">shift</strong> позволит вам получить
+            доступ к аргументам, с порядковым номером больше <tt
+             class="LITERAL">9</tt>, без использования <a
+             href="x1716.html#BRACKETNOTATION">{фигурных
+            скобок}</a>.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX19"></a>
+
+              <p><strong>Пример 4-7. Использование команды
+              shift</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Использование команды &#39;shift&#39; с целью перебора всех аргументов командной строки.
+
+#  Назовите файл с этим сценарием, например &quot;shft&quot;,
+#+ и вызовите его с набором аргументов, например:
+#          ./shft a b c def 23 skidoo
+
+until [ -z &quot;$1&quot; ]  # До тех пор пока не будут разобраны все входные аргументы...
+do
+  echo -n &quot;$1 &quot;
+  shift
+done
+
+echo               # Дополнительная пустая строка.
+
+exit 0
+</pre>
+            </div>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Команда <strong
+                     class="COMMAND">shift</strong> может применяться и
+                    к входным аргументам <a
+                     href="c12483.html#FUNCTIONREF">функций</a>. См. <a
+                     href="x13753.html#MULTIPLICATION">Пример
+                    33-10</a>.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN1772"
+         href="x1716.html#AEN1772"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Аргумент <tt
+           class="REPLACEABLE"><em>$0</em></tt> устанавливается
+          вызывающим процессом. В соответствии с соглашениями, этот
+          параметр содержит имя файла скрипта. См. страницы руководства
+          для <strong
+           class="COMMAND">execv</strong> (man execv).</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x1705.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c1833.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Переменные Bash не имеют типа</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c1613.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Кавычки</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

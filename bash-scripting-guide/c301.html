@@ -1,0 +1,2607 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Служебные символы</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Основы"
+     href="p299.html">
+    <link
+     rel="PREVIOUS"
+     title="Основы"
+     href="p299.html">
+    <link
+     rel="NEXT"
+     title="Переменные и параметры. Введение."
+     href="c1613.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="p299.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c1613.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="SPECIAL-CHARS"></a>Глава 3. Служебные символы</h1>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="SCHARLIST1"></a>Служебные символы, используемые в
+        текстах сценариев.</strong></p>
+
+        <dl>
+          <dt><span
+           class="TOKEN">#</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>Комментарии.</strong> Строки, начинающиеся с
+              символа <span
+               class="TOKEN">#</span> (<a
+               href="c178.html#MAGNUMREF">за исключением комбинации
+              <span
+               class="TOKEN">#!</span></a>) -- являются
+              комментариями.</p>
+            </div>
+<pre
+ class="PROGRAMLISTING">
+# Эта строка -- комментарий.
+</pre>
+            <br>
+            <br>
+
+            <p>Комментарии могут располагаться и в конце строки с
+            исполняемым кодом.</p>
+<pre
+ class="PROGRAMLISTING">
+echo &quot;Далее следует комментарий.&quot; # Это комментарий.
+</pre>
+            <br>
+            <br>
+
+            <p>Комментариям могут предшествовать <a
+             href="c301.html#WHITESPACEREF">пробелы</a> (пробел,
+            табуляция).</p>
+<pre
+ class="PROGRAMLISTING">
+       # Перед комментарием стоит символ табуляции.
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Исполняемые команды не могут следовать за
+                    комментарием в той же самой строке. Пока что еще не
+                    существует способа отделения комментария от <span
+                     class="QUOTE">&quot;исполняемого
+                    кода&quot;</span>, следующего за комментарием в той
+                    же строке.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Само собой разумеется, экранированный символ
+                    <span
+                     class="TOKEN">#</span> в операторе <strong
+                     class="COMMAND">echo</strong> не воспринимается
+                    как начало комментария. Более того, он может
+                    использоваться в <a
+                     href="x4462.html#PSUB2">операциях подстановки
+                    параметров</a> и в <a
+                     href="x3255.html#NUMCONSTANTS">константных
+                    числовых выражениях</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+echo &quot;Символ # не означает начало комментария.&quot;
+echo &#39;Символ # не означает начало комментария.&#39;
+echo Символ \# не означает начало комментария.
+echo А здесь символ # означает начало комментария.
+
+echo ${PATH#*:}       # Подстановка -- не комментарий.
+echo $(( 2#101011 ))  # База системы счисления -- не комментарий.
+
+# Спасибо, S.C.
+</pre>
+                    <a
+                     href="c1833.html#QUOTINGREF">Кавычки &quot; &#39;
+                    и \</a> экранируют действие символа #. <br>
+                    <br>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <p>В операциях <a
+             href="x4462.html#PSOREX1">поиска по шаблону</a> символ
+            <span
+             class="TOKEN">#</span> так же не воспринимается как начало
+            комментария.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">;</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>Разделитель команд.</strong> [Точка-с-запятой]
+              Позволяет записывать две и более команд в одной
+              строке.</p>
+            </div>
+<pre
+ class="PROGRAMLISTING">
+echo hello; echo there
+</pre>
+            <br>
+            <br>
+
+            <p>Следует отметить, что символ <span
+             class="QUOTE">&quot;<span
+             class="TOKEN">;</span>&quot;</span> иногда так же как и #
+            необходимо <a
+             href="c1833.html#ESCP">экранировать</a>.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">;;</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>Ограничитель в операторе выбора <a
+               href="x5210.html#CASEESAC1">case</a> .</strong>
+              [Двойная-точка-с-запятой]</p>
+            </div>
+<pre
+ class="PROGRAMLISTING">
+case &quot;$variable&quot; in
+abc)  echo &quot;$variable = abc&quot; ;;
+xyz)  echo &quot;$variable = xyz&quot; ;;
+esac
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><span
+           class="TOKEN">.</span></dt>
+
+          <dd>
+            <p><a
+             name="DOTREF"></a></p>
+
+            <div
+             class="FORMALPARA">
+              <p><strong>команда <span
+               class="QUOTE">&quot;точка&quot;</span>.</strong>
+              Эквивалент команды <a
+               href="c5358.html#SOURCEREF">source</a> (см. <a
+               href="c5358.html#EX38">Пример 11-18</a>). Это <a
+               href="c5358.html#BUILTINREF">встроенная</a> команда
+              bash.</p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">.</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong><span
+               class="QUOTE">&quot;точка&quot;</span> может являться
+              частью имени файла .</strong> Если имя файла начинается с
+              точки, то это <span
+               class="QUOTE">&quot;скрытый&quot;</span> файл, т.е.
+              команда <a
+               href="c6407.html#LSREF">ls</a> при обычных условиях его
+              не отображает.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>touch .hidden-file</strong></tt>
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ls -l</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">total 10
+ -rw-r--r--    1 bozo      4034 Jul 18 22:04 data1.addressbook
+ -rw-r--r--    1 bozo      4602 May 25 13:58 data1.addressbook.bak
+ -rw-r--r--    1 bozo       877 Dec 17  2000 employment.addressbook</tt>
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ls -al</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">total 14
+ drwxrwxr-x    2 bozo  bozo      1024 Aug 29 20:54 ./
+ drwx------   52 bozo  bozo      3072 Aug 29 20:51 ../
+ -rw-r--r--    1 bozo  bozo      4034 Jul 18 22:04 data1.addressbook
+ -rw-r--r--    1 bozo  bozo      4602 May 25 13:58 data1.addressbook.bak
+ -rw-r--r--    1 bozo  bozo       877 Dec 17  2000 employment.addressbook
+ -rw-rw-r--    1 bozo  bozo         0 Aug 29 20:54 .hidden-file</tt>
+               
+</pre>
+              <br>
+              <br>
+            </div>
+
+            <p>Если подразумевается имя каталога, то <span
+             class="emphasis"><em
+             class="EMPHASIS">одна точка</em></span> означает текущий
+            каталог и <span
+             class="emphasis"><em
+             class="EMPHASIS">две точки</em></span> -- каталог уровнем
+            выше, или родительский каталог.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>pwd</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">/home/bozo/projects</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>cd .</strong></tt>
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>pwd</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">/home/bozo/projects</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>cd ..</strong></tt>
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>pwd</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">/home/bozo/</tt>
+               
+</pre>
+            <br>
+            <br>
+
+            <p>Символ <span
+             class="emphasis"><em
+             class="EMPHASIS">точка</em></span> довольно часто
+            используется для обозначения каталога назначения в
+            операциях копирования/перемещения файлов.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class=
+"USERINPUT"><strong>cp /home/bozo/current_work/junk/* .</strong></tt>
+               
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><span
+           class="TOKEN">.</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>Символ <span
+               class="QUOTE">&quot;точка&quot;</span> в операциях
+              поиска.</strong> При выполнении <a
+               href="c11895.html#REGEXDOT">поиска по шаблону</a> , в <a
+               href="c11895.html#REGEXREF">регулярных выражениях</a>,
+              символ <span
+               class="QUOTE">&quot;точка&quot;</span> обозначает
+              одиночный символ.</p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">&quot;</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong><a
+               href="c1613.html#DBLQUO">Двойные кавычки</a> .</strong>
+              В строке <span
+               class="emphasis"><em
+               class="EMPHASIS">&quot;STRING&quot;</em></span>,
+              ограниченной двойными кавычками не выполняется
+              интерпретация большинства служебных символов, которые
+              могут находиться в строке. см. <a
+               href="c1833.html">Глава 5</a>.</p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">&#39;</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong><a
+               href="c1613.html#SNGLQUO">Одинарные кавычки</a>
+              .</strong> [Одинарные кавычки] <span
+               class="emphasis"><em
+               class="EMPHASIS">&#39;STRING&#39;</em></span> экранирует
+              все служебные символы в строке <span
+               class="emphasis"><em
+               class="EMPHASIS">STRING</em></span>. Это более строгая
+              форма экранирования. Смотрите так же <a
+               href="c1833.html">Глава 5</a>.</p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">,</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong><a
+               href="c2792.html#COMMAOP">Запятая</a> .</strong>
+              Оператор <strong
+               class="COMMAND">запятая</strong> используется для
+              вычисления серии арифметических выражений. Вычисляются
+              все выражения, но возвращается результат последнего
+              выражения.</p>
+<pre
+ class="PROGRAMLISTING">
+let &quot;t2 = ((a = 9, 15 / 3))&quot;  # Присваивает значение переменной &quot;a&quot; и вычисляет &quot;t2&quot;.
+</pre>
+              <br>
+              <br>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">\</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong><a
+               href="c1833.html#ESCP">escape</a>.</strong> [обратный
+              слэш] Комбинация <tt
+               class="USERINPUT"><strong>\X</strong></tt> <span
+               class="QUOTE">&quot;экранирует&quot;</span> символ <span
+               class="emphasis"><em
+               class="EMPHASIS">X</em></span>. Аналогичный эффект имеет
+              комбинация с <span
+               class="QUOTE">&quot;одинарными кавычками&quot;</span>,
+              т.е. <span
+               class="emphasis"><em
+               class="EMPHASIS">&#39;X&#39;</em></span>. Символ <span
+               class="TOKEN">\</span> может использоваться для
+              экранирования кавычек <span
+               class="TOKEN">&quot;</span> и <span
+               class="TOKEN">&#39;</span>.</p>
+            </div>
+
+            <p>Более детальному рассмотрению темы экранирования
+            посвящена <a
+             href="c1833.html">Глава 5</a>.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">/</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>Разделитель, используемый в указании пути к
+              каталогам и файлам.</strong> [слэш] Отделяет элементы
+              пути к каталогам и файлам (например <tt
+               class="FILENAME">/home/bozo/projects/Makefile</tt>).</p>
+            </div>
+
+            <p>В <a
+             href="c2792.html#AROPS1">арифметических операциях</a> --
+            это оператор деления.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">`</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong><a
+               href="c11441.html#COMMANDSUBREF">Подстановка
+              команд</a>.</strong> [обратные кавычки] <a
+               href="c11441.html#BACKQUOTESREF">Обратные кавычки</a>
+              могут использоваться для записи в переменную команды
+              <span
+               class="emphasis"><em
+               class="EMPHASIS">`command`</em></span>.</p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">:</span></dt>
+
+          <dd>
+            <p><a
+             name="NULLREF"></a></p>
+
+            <div
+             class="FORMALPARA">
+              <p><strong>пустая команда.</strong> [двоеточие] Это
+              эквивалент операции <span
+               class="QUOTE">&quot;NOP&quot;</span> (<tt
+               class="REPLACEABLE"><em>no op</em></tt>, нет операции).
+              Может рассматриваться как синоним встроенной команды <a
+               href="c5358.html#TRUEREF">true</a>. Команда <span
+               class="QUOTE">&quot;<span
+               class="TOKEN">:</span>&quot;</span> так же является
+              встроенной командой Bash, которая всегда <a
+               href="c2105.html#EXITSTATUSREF">возвращает</a> <span
+               class="QUOTE">&quot;true&quot;</span> (<span
+               class="RETURNVALUE">0</span>).</p>
+            </div>
+<pre
+ class="PROGRAMLISTING">
+:
+echo $?   # 0
+</pre>
+            <br>
+            <br>
+
+            <p>Бесконечный цикл:</p>
+<pre
+ class="PROGRAMLISTING">
+while :
+do
+   operation-1
+   operation-2
+   ...
+   operation-n
+done
+
+# То же самое:
+#    while true
+#    do
+#      ...
+#    done
+</pre>
+            <br>
+            <br>
+
+            <p>Символ-заполнитель в условном операторе if/then:</p>
+<pre
+ class="PROGRAMLISTING">
+if condition
+then :   # Никаких действий не производится и управление передается дальше
+else
+   take-some-action
+fi
+</pre>
+            <br>
+            <br>
+
+            <p>Как символ-заполнитель в операциях, которые предполагают
+            наличие двух операндов, см. <a
+             href="c2792.html#ARITHOPS">Пример 8-2</a> и <a
+             href="x4462.html#DEFPARAM">параметры по-умолчанию</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+: ${username=`whoami`}
+# ${username=`whoami`}   без символа : выдает сообщение об ошибке,
+#                        если &quot;username&quot; не является командой...
+</pre>
+            <br>
+            <br>
+
+            <p>Как символ-заполнитель для оператора <a
+             href="c11785.html#HEREDOCREF">вложенного документа</a>.
+            См. <a
+             href="c11785.html#ANONHEREDOC">Пример 17-9</a>.</p>
+
+            <p>В операциях с <a
+             href="x4462.html#PARAMSUBREF">подстановкой параметров</a>
+            (см. <a
+             href="x4462.html#EX6">Пример 9-13</a>).</p>
+<pre
+ class="PROGRAMLISTING">
+: ${HOSTNAME?} ${USER?} ${MAIL?}
+#Вывод сообщения об ошибке, если одна или более переменных не определены.
+</pre>
+            <br>
+            <br>
+
+            <p>В операциях <strong
+             class="COMMAND"><a
+             href="x4462.html#EXPREPL1">замены подстроки с подстановкой
+            значений переменных</a></strong>.</p>
+
+            <p>В комбинации с оператором <span
+             class="TOKEN">&gt;</span> (<a
+             href="c11620.html#IOREDIRREF">оператор перенаправления
+            вывода</a>), усекает длину файла до нуля. Если указан
+            несуществующий файл -- то он создается.</p>
+<pre
+ class="PROGRAMLISTING">
+: &gt; data.xxx   # Файл &quot;data.xxx&quot; -- пуст
+
+# Тот же эффект имеет команда cat /dev/null &gt;data.xxx
+# Однако в данном случае не производится создание нового процесса, поскольку &quot;:&quot; является встроенной командой.
+</pre>
+            См. так же <a
+             href="x7050.html#EX12">Пример 12-11</a>.<br>
+            <br>
+
+            <p>В комбинации с оператором <span
+             class="TOKEN">&gt;&gt;</span> -- оператор перенаправления
+            с добавлением в конец файла и обновлением времени
+            последнего доступа (<tt
+             class="USERINPUT"><strong>: &gt;&gt;
+            new_file</strong></tt>). Если задано имя несуществующего
+            файла, то он создается. Эквивалентно команде <a
+             href="x6837.html#TOUCHREF">touch</a>.</p>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Вышеизложенное применимо только к обычным файлам
+                    и неприменимо к конвейерам, символическим ссылкам и
+                    другим специальным файлам.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <p>Символ <span
+             class="TOKEN">:</span> может использоваться для создания
+            комментариев, хотя и не рекомендуется. Если строка
+            комментария начинается с символа <span
+             class="TOKEN">#</span>, то такая строка не проверяется
+            интерпретатором на наличие ошибок. Однако в случае
+            оператора <span
+             class="TOKEN">:</span> это не так.</p>
+<pre
+ class="PROGRAMLISTING">
+: Это комментарий, который генерирует сообщение об ошибке, ( if [ $x -eq 3] ).
+</pre>
+            <br>
+            <br>
+
+            <p>Символ <span
+             class="QUOTE">&quot;<span
+             class="TOKEN">:</span>&quot;</span> может использоваться
+            как разделитель полей в <tt
+             class="FILENAME">/etc/passwd</tt> и переменной <a
+             href="c3270.html#PATHREF">$PATH</a>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $PATH</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/sbin:/usr/sbin:/usr/games</tt>
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><span
+           class="TOKEN">!</span></dt>
+
+          <dd>
+            <p><a
+             name="NOTREF"></a></p>
+
+            <div
+             class="FORMALPARA">
+              <p><strong>инверсия (или логическое отрицание)
+              используемое в условных операторах.</strong> Оператор
+              <span
+               class="TOKEN">!</span> инвертирует <a
+               href="c2105.html#EXITSTATUSREF">код завершения</a>
+              команды, к которой он применен. (см. <a
+               href="c2105.html#NEGCOND">Пример 6-2</a>). Так же
+              используется для логического отрицания в операциях
+              сравнения, например, операция сравнения <span
+               class="QUOTE">&quot;равно&quot;</span> ( <a
+               href="x2565.html#EQUALSIGNREF">=</a> ), при
+              использовании оператора отрицания, преобразуется в
+              операцию сравнения -- <span
+               class="QUOTE">&quot;не равно&quot;</span> ( != ). Символ
+              <span
+               class="TOKEN">!</span> является зарезервированным
+              ключевым словом BASH.</p>
+            </div>
+
+            <p>В некоторых случаях символ <span
+             class="TOKEN">!</span> используется для <a
+             href="x4788.html#IVR2">косвенного обращения к
+            переменным</a>.</p>
+
+            <p>Кроме того, из <span
+             class="emphasis"><em
+             class="EMPHASIS">командной строки</em></span> оператор
+            <span
+             class="TOKEN">!</span> запускает <span
+             class="emphasis"><em
+             class="EMPHASIS">механизм историй</em></span> Bash (см. <a
+             href="a15070.html">Приложение F</a>). Примечательно, что
+            этот механизм недоступен из сценариев (т.е. исключительно
+            из командной строки).</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">*</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>символ-шаблон.</strong> [звездочка] Символ
+              <span
+               class="TOKEN">*</span> служит <span
+               class="QUOTE">&quot;шаблоном&quot;</span> для <a
+               href="x12282.html">подстановки</a> в имена файлов.
+              Одиночный символ <span
+               class="TOKEN">*</span> означает любое имя файла в
+              заданном каталоге.</p>
+            </div>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo *</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">abs-book.sgml add-drive.sh agram.sh alias.sh</tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <p>В <a
+             href="c11895.html#REGEXREF">регулярных выражениях</a>
+            токен <span
+             class="TOKEN">*</span> представляет любое количество (в
+            том числе и 0) символов.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">*</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong><a
+               href="c2792.html#AROPS1">арифметический
+              оператор</a>.</strong> В арифметических выражениях символ
+              <span
+               class="TOKEN">*</span> обозначает операцию
+              умножения.</p>
+            </div>
+
+            <p>Двойная звездочка (два символа звездочки, следующих
+            подряд друг за другом -- <span
+             class="TOKEN">**</span>), обозначает операцию <a
+             href="c2792.html#EXPONENTIATIONREF">возведения в
+            степень</a>.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">?</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>Оператор проверки условия.</strong> В
+              некоторых выражениях символ <span
+               class="TOKEN">?</span> служит для проверки выполнения
+              условия.</p>
+            </div>
+
+            <p>В <a
+             href="x4862.html">конструкциях с двойными скобками</a>,
+            символ <span
+             class="TOKEN">?</span> подобен трехместному оператору
+            языка C. См. <a
+             href="x4862.html#CVARS">Пример 9-28</a>.</p>
+
+            <p>В выражениях с <a
+             href="x4462.html#PARAMSUBREF">подстановкой параметра</a>,
+            символ <span
+             class="TOKEN">?</span> <a
+             href="x4462.html#QERRMSG">проверяет -- установлена ли
+            переменная</a>.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">?</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>сивол-шаблон.</strong> Символ <span
+               class="TOKEN">?</span> обозначает одиночный символ при
+              <a
+               href="x12282.html">подстановке</a> в имена файлов. В <a
+               href="c11895.html#EXTREGEX">регулярных выражениях</a>
+              служит для обозначения <a
+               href="c11895.html#QUEXREGEX">одиночного символа</a>.</p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">$</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong><a
+               href="c1613.html#VARSUBN">Подстановка
+              переменной</a>.</strong></p>
+<pre
+ class="PROGRAMLISTING">
+var1=5
+var2=23skidoo
+
+echo $var1     # 5
+echo $var2     # 23skidoo
+</pre>
+              <br>
+              <br>
+            </div>
+
+            <p>Символ <span
+             class="TOKEN">$</span>, предшествующий имени переменной,
+            указывает на то, что будет получено <span
+             class="emphasis"><em
+             class="EMPHASIS">значение</em></span> переменной.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">$</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>end-of-line (конец строки).</strong> В <a
+               href="c11895.html#REGEXREF">регулярных выражениях</a>,
+              символ <span
+               class="QUOTE">&quot;$&quot;</span> обозначает конец
+              строки.</p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">${}</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong><a
+               href="x4462.html#PARAMSUBREF">Подстановка
+              параметра</a>.</strong></p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">$*</span>, <span
+           class="TOKEN">$@</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong><a
+               href="c3270.html#APPREF">параметры командной
+              строки</a>.</strong></p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">$?</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>код завершения.</strong> <a
+               href="c2105.html#EXSREF">Переменная $?</a> хранит <a
+               href="c2105.html#EXITSTATUSREF">код завершения</a>
+              последней выполненной команды, <a
+               href="c12483.html#FUNCTIONREF">функции</a> или
+              сценария.</p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">$$</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>id процесса.</strong> <a
+               href="c3270.html#PROCCID">Переменная $$</a> хранит <span
+               class="emphasis"><em
+               class="EMPHASIS">id процесса</em></span> сценария.</p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">()</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>группа команд.</strong></p>
+<pre
+ class="PROGRAMLISTING">
+(a=hello; echo $a)
+</pre>
+              <br>
+              <br>
+            </div>
+
+            <div
+             class="IMPORTANT">
+              <table
+               class="IMPORTANT"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/important.gif"
+                   hspace="5"
+                   alt="Important"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Команды, заключенные в <tt
+                     class="REPLACEABLE"><em>круглые скобки</em></tt>
+                    исполняются в дочернем процессе -- <a
+                     href=
+                    "c12330.html#SUBSHELLSREF">subshell-е</a>.</p>
+
+                    <p>Переменные, создаваемые в дочернем процессе не
+                    видны в &quot;родительском&quot; сценарии.
+                    Родительский процесс-сценарий, <a
+                     href="c12330.html#PARVIS">не может обращаться к
+                    переменным, создаваемым в дочернем
+                    процессе</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+a=123
+( a=321; )
+
+echo &quot;a = $a&quot;   # a = 123
+# переменная &quot;a&quot; в скобках подобна локальной переменной.
+</pre>
+                    <br>
+                    <br>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div
+             class="FORMALPARA">
+              <p><strong>инициализация массивов.</strong></p>
+<pre
+ class="PROGRAMLISTING">
+Array=(element1 element2 element3)
+</pre>
+              <br>
+              <br>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">{xxx,yyy,zzz,...}</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>Фигурные скобки.</strong></p>
+<pre
+ class="PROGRAMLISTING">
+grep Linux file*.{txt,htm*}
+# Поиск всех вхождений слова &quot;Linux&quot;
+# в файлах &quot;fileA.txt&quot;, &quot;file2.txt&quot;, &quot;fileR.html&quot;, &quot;file-87.htm&quot;, и пр.
+</pre>
+              <br>
+              <br>
+            </div>
+
+            <p>Команда интерпретируется как список команд, разделенных
+            точкой с запятой, с вариациями, представленными в <tt
+             class="REPLACEABLE"><em>фигурных скобках</em></tt>. <a
+             name="AEN901"
+             href="#FTN.AEN901"><span
+             class="footnote">[1]</span></a> При интерпретации имен
+            файлов (<a
+             href="x12282.html">подстановка</a>) используются
+            параметры, заключенные в фигурные скобки.</p>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Использование <span
+                     class="emphasis"><em
+                     class="EMPHASIS">неэкранированных или
+                    неокавыченных</em></span> пробелов внутри фигурных
+                    скобок недопустимо.</p>
+
+                    <p><tt
+                     class="USERINPUT"><strong>echo {file1,file2}\ :{\
+                    A,&quot; B&quot;,&#39; C&#39;}</strong></tt></p>
+
+                    <p><tt
+                     class="COMPUTEROUTPUT">file1 : A file1 : B file1 :
+                    C file2 : A file2 : B file2 : C</tt></p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">{}</span></dt>
+
+          <dd>
+            <p><a
+             name="CODEBLOCKREF"></a></p>
+
+            <div
+             class="FORMALPARA">
+              <p><strong>Блок кода.</strong> [фигурные скобки] Известен
+              так же как <span
+               class="QUOTE">&quot;вложенный блок&quot;</span>, эта
+              конструкция, фактически, создает анонимную функцию.
+              Однако, в отличии от обычных <a
+               href="c12483.html#FUNCTIONREF">функций</a>, переменные,
+              создаваемые во вложенных блоках кода, доступны
+              объемлющему сценарию.</p>
+            </div>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>{ local a; a=123; }</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">bash: local: can only be used in a function</tt>
+             
+</pre>
+            <br>
+            <br>
+<pre
+ class="PROGRAMLISTING">
+a=123
+{ a=321; }
+echo &quot;a = $a&quot;   # a = 321   (значение, присвоенное во вложенном блоке кода)
+
+# Спасибо, S.C.
+</pre>
+            <br>
+            <br>
+
+            <p>Код, заключенный в фигурные скобки, может выполнять <a
+             href="c11620.html#IOREDIRREF">перенаправление
+            ввода-вывода</a>.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX8"></a>
+
+              <p><strong>Пример 3-1. Вложенные блоки и перенаправление
+              ввода-вывода</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Чтение строк из файла /etc/fstab.
+
+File=/etc/fstab
+
+{
+read line1
+read line2
+} &lt; $File
+
+echo &quot;Первая строка в $File :&quot;
+echo &quot;$line1&quot;
+echo
+echo &quot;Вторая строка в $File :&quot;
+echo &quot;$line2&quot;
+
+exit 0
+</pre>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="RPMCHECK"></a>
+
+              <p><strong>Пример 3-2. Сохранение результата исполнения
+              вложенного блока в файл</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# rpm-check.sh
+
+# Запрашивает описание rpm-архива, список файлов, и проверяется возможность установки.
+# Результат сохраняется в файле.
+#
+# Этот сценарий иллюстрирует порядок работы со вложенными блоками кода.
+
+SUCCESS=0
+E_NOARGS=65
+
+if [ -z &quot;$1&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` rpm-file&quot;
+  exit $E_NOARGS
+fi
+
+{
+  echo
+  echo &quot;Описание архива:&quot;
+  rpm -qpi $1       # Запрос описания.
+  echo
+  echo &quot;Список файлов:&quot;
+  rpm -qpl $1       # Запрос списка.
+  echo
+  rpm -i --test $1  # Проверка возможности установки.
+  if [ &quot;$?&quot; -eq $SUCCESS ]
+  then
+    echo &quot;$1 может быть установлен.&quot;
+  else
+    echo &quot;$1 -- установка невозможна!&quot;
+  fi
+  echo
+} &gt; &quot;$1.test&quot;       # Перенаправление вывода в файл.
+
+echo &quot;Результаты проверки rpm-архива находятся в файле $1.test&quot;
+
+# За дополнительной информацией по ключам команды rpm см. man rpm.
+
+exit 0
+</pre>
+            </div>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>В отличие от групп команд в (круглых скобках),
+                    описаных выше, вложенные блоки кода, заключенные в
+                    {фигурные скобки} исполняются в пределах того же
+                    процесса, что и сам скрипт (т.е. не вызывают запуск
+                    дочернего процесса -- <a
+                     href="c12330.html#SUBSHELLSREF">subshell</a>). <a
+                     name="AEN947"
+                     href="#FTN.AEN947"><span
+                     class="footnote">[2]</span></a></p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">{} \;</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>pathname -- полное имя файла (т.е. путь к
+              файлу и его имя).</strong> Чаще всего используется
+              совместно с командой <a
+               href="x6646.html#FINDREF">find</a>.</p>
+            </div>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Обратите внимание на то, что символ <span
+                     class="QUOTE">&quot;<span
+                     class="TOKEN">;</span>&quot;</span>, которым
+                    завершается ключ <tt
+                     class="OPTION">-exec</tt> команды <strong
+                     class="COMMAND">find</strong>, экранируется
+                    обратным слэшем. Это необходимо, чтобы
+                    предотвратить его интерпретацию.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">[ ]</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>test.</strong></p>
+            </div>
+
+            <p><a
+             name="LEFTBRACKET"></a><a
+             href="c2171.html#IFTHEN">Проверка истинности</a>
+            выражения, заключенного в квадратные скобки <strong
+             class="COMMAND">[ ]</strong>. Примечательно, что <strong
+             class="COMMAND">[</strong> является частью встроенной
+            команды <strong
+             class="COMMAND">test</strong> (и ее синонимом), И <span
+             class="emphasis"><em
+             class="EMPHASIS">не</em></span> имеет никакого отношения к
+            &quot;внешней&quot; утилите <tt
+             class="FILENAME">/usr/bin/test</tt>.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">[[ ]]</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>test.</strong></p>
+            </div>
+
+            <p>Проверка истинности выражения, заключенного между <span
+             class="TOKEN">[[ ]]</span> (<a
+             href="c5358.html#KEYWORDREF">зарезервированное слово</a>
+            интерпретатора).</p>
+
+            <p>См. описание конструкции <a
+             href="c2171.html#DBLBRACKETS">[[ ... ]]</a> ниже.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">[ ]</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>элемент массива.</strong></p>
+            </div>
+
+            <p>При работе с <a
+             href="c12790.html#ARRAYREF">массивами</a> в квадратных
+            скобках указывается порядковый номер того элемента массива,
+            к которому производится обращение.</p>
+<pre
+ class="PROGRAMLISTING">
+Array[1]=slot_1
+echo ${Array[1]}
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><span
+           class="TOKEN">[ ]</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>диапазон символов.</strong></p>
+            </div>
+
+            <p>В <a
+             href="c11895.html#REGEXREF">регулярных выражениях</a>, в
+            квадратных скобках задается <a
+             href="c11895.html#BRACKETSREF">диапазон искомых
+            символов</a>.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">(( ))</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>двойные круглые скобки.</strong></p>
+            </div>
+
+            <p>Вычисляется целочисленное выражение, заключенное между
+            двойными круглыми скобками <span
+             class="TOKEN">(( ))</span>.</p>
+
+            <p>См. обсуждение, посвященное <a
+             href="x4862.html">конструкции (( ... ))</a> .</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">&gt;</span> <span
+           class="TOKEN">&amp;&gt;</span> <span
+           class="TOKEN">&gt;&amp;</span> <span
+           class="TOKEN">&gt;&gt;</span> <span
+           class="TOKEN">&lt;</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong><a
+               href=
+              "c11620.html#IOREDIRREF">перенаправление</a>.</strong></p>
+            </div>
+
+            <p>Конструкция <tt
+             class="USERINPUT"><strong>scriptname
+            &gt;filename</strong></tt> перенаправляет вывод <tt
+             class="FILENAME">scriptname</tt> в файл <tt
+             class="FILENAME">filename</tt>. Если файл <tt
+             class="FILENAME">filename</tt> уже существовал, то его
+            прежнее содержимое будет утеряно.</p>
+
+            <p>Конструкция <tt
+             class="USERINPUT"><strong>command
+            &amp;&gt;filename</strong></tt> перенаправляет вывод
+            команды <tt
+             class="FILENAME">command</tt>, как со <tt
+             class="FILENAME">stdout</tt>, так и с <tt
+             class="FILENAME">stderr</tt>, в файл <tt
+             class="FILENAME">filename</tt>.</p>
+
+            <p>Конструкция <tt
+             class="USERINPUT"><strong>command &gt;&amp;2</strong></tt>
+            перенаправляет вывод со <tt
+             class="FILENAME">stdout</tt> на <tt
+             class="FILENAME">stderr</tt>.</p>
+
+            <p>Конструкция <tt
+             class="USERINPUT"><strong>scriptname
+            &gt;&gt;filename</strong></tt> добавляет вывод <tt
+             class="FILENAME">scriptname</tt> к файлу <tt
+             class="FILENAME">filename</tt>. Если задано имя
+            несуществующего файла, то он создается.</p>
+
+            <div
+             class="FORMALPARA">
+              <p><strong><a
+               href="c12434.html#PROCESSSUBREF">подстановка
+              процесса</a>.</strong></p>
+            </div>
+
+            <p><tt
+             class="USERINPUT"><strong>(command)&gt;</strong></tt></p>
+
+            <p><tt
+             class="USERINPUT"><strong>&lt;(command)</strong></tt></p>
+
+            <p>В <a
+             href="x2565.html#LTREF">операциях сравнения</a>, символы
+            <span
+             class="QUOTE">&quot;<span
+             class="TOKEN">&lt;</span>&quot;</span> и <span
+             class="QUOTE">&quot;<span
+             class="TOKEN">&gt;</span>&quot;</span> обозначают операции
+            <a
+             href="x2565.html#SCOMPARISON1">сравнения строк</a> .</p>
+
+            <p><a
+             href="x2565.html#INTLT">А так же</a> -- операции <a
+             href="x2565.html#ICOMPARISON1">сравнения целых чисел</a>.
+            См. так же <a
+             href="x6646.html#EX45">Пример 12-6</a>.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">&lt;&lt;</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>перенаправление ввода на <a
+               href="c11785.html#HEREDOCREF">встроенный
+              документ</a>.</strong></p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">&lt;</span>, <span
+           class="TOKEN">&gt;</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong><a
+               href="x2565.html#LTREF">Посимвольное
+              ASCII-сравнение</a>.</strong></p>
+<pre
+ class="PROGRAMLISTING">
+veg1=carrots
+veg2=tomatoes
+
+if [[ &quot;$veg1&quot; &lt; &quot;$veg2&quot; ]]
+then
+  echo &quot;Не смотря на то, что в словаре слово $veg1 предшествует слову $veg2,&quot;
+  echo &quot;это никак не отражает мои кулинарные предпочтения.&quot;
+else
+  echo &quot;Интересно. Каким словарем вы пользуетесь?&quot;
+fi
+</pre>
+              <br>
+              <br>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">\&lt;</span>, <span
+           class="TOKEN">\&gt;</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong><a
+               href="c11895.html#ANGLEBRAC">границы отдельных слов</a>
+              в <a
+               href="c11895.html#REGEXREF">регулярных
+              выражениях</a>.</strong></p>
+            </div>
+
+            <p><tt
+             class="PROMPT">bash$</tt> <tt
+             class="USERINPUT"><strong>grep &#39;\&lt;the\&gt;&#39;
+            textfile</strong></tt></p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">|</span></dt>
+
+          <dd>
+            <p><a
+             name="PIPEREF"></a></p>
+
+            <div
+             class="FORMALPARA">
+              <p><strong>конвейер.</strong> Передает вывод предыдущей
+              команды на ввод следующей или на вход командного
+              интерпретатора shell. Этот метод часто используется для
+              связывания последовательности команд в единую
+              цепочку.</p>
+            </div>
+<pre
+ class="PROGRAMLISTING">
+echo ls -l | sh
+#  Передает вывод &quot;echo ls -l&quot; команлному интерпретатору shell,
+#+ тот же результат дает простая команда &quot;ls -l&quot;.
+
+
+cat *.lst | sort | uniq
+# Объединяет все файлы &quot;.lst&quot;, сортирует содержимое и удаляет повторяющиеся строки.
+</pre>
+            <br>
+            <br>
+
+            <table
+             class="SIDEBAR"
+             border="1"
+             cellpadding="5">
+              <tr>
+                <td>
+                  <div
+                   class="SIDEBAR">
+                    <a
+                     name="AEN1202"></a>
+
+                    <p>Конвейеры (еще их называют каналами) -- это
+                    классический способ взаимодействия процессов, с
+                    помощью которого <tt
+                     class="FILENAME">stdout</tt> одного процесса
+                    перенаправляется на <tt
+                     class="FILENAME">stdin</tt> другого. Обычно
+                    используется совместно с командами вывода, такими
+                    как <a
+                     href="c6407.html#CATREF">cat</a> или <a
+                     href="c5358.html#ECHOREF">echo</a>, от которых
+                    поток данных поступает в <span
+                     class="QUOTE">&quot;фильтр&quot;</span> (команда,
+                    которая на входе получает данные, преобразует их и
+                    обрабатывает).</p>
+
+                    <p><tt
+                     class="USERINPUT"><strong>cat $filename | grep
+                    $search_word</strong></tt></p>
+                  </div>
+                </td>
+              </tr>
+            </table>
+
+            <p><a
+             name="UCREF"></a>В конвейер могут объединяться и сценарии
+            на языке командной оболочки.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# uppercase.sh : Преобразование вводимых символов в верхний регистр.
+
+tr &#39;a-z&#39; &#39;A-Z&#39;
+#  Диапазоны символов должны быть заключены в кавычки
+#+ чтобы предотвратить порождение имен файлов от однобуквенных имен файлов.
+
+exit 0
+</pre>
+            А теперь попробуем объединить в конвейер команду <strong
+             class="COMMAND">ls -l</strong> с этим сценарием. 
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ls -l | ./uppercase.sh</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">-RW-RW-R--    1 BOZO  BOZO       109 APR  7 19:49 1.TXT
+ -RW-RW-R--    1 BOZO  BOZO       109 APR 14 16:48 2.TXT
+ -RW-R--R--    1 BOZO  BOZO       725 APR 20 20:56 DATA-FILE</tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Выход <tt
+                     class="FILENAME">stdout</tt> каждого процесса в
+                    конвейере должен читаться на входе <tt
+                     class="FILENAME">stdin</tt> последующим, в
+                    конвейере, процессом. Если этого не делается, то
+                    поток данных <span
+                     class="emphasis"><em
+                     class="EMPHASIS">блокируется</em></span>, в
+                    результате конвейер будет работать не так как
+                    ожидается.</p>
+<pre
+ class="PROGRAMLISTING">
+cat file1 file2 | ls -l | sort
+# Вывод команды &quot;cat file1 file2&quot; будет утерян.
+</pre>
+                    <br>
+                    <br>
+
+                    <p>Конвейер исполняется в <a
+                     href="x1716.html#CHILDREF">дочернем процессе</a>,
+                    а посему -- не имеет доступа к переменным
+                    сценария.</p>
+<pre
+ class="PROGRAMLISTING">
+variable=&quot;initial_value&quot;
+echo &quot;new_value&quot; | read variable
+echo &quot;variable = $variable&quot;     # variable = initial_value
+</pre>
+                    <br>
+                    <br>
+
+                    <p>Если одна из команд в конвейере завершается
+                    аварийно, то это приводит к аварийному завершению
+                    работы всего конвейера.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">&gt;|</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>принудительное перенаправление, даже если
+              установлен ключ <a
+               href="c13228.html#NOCLOBBERREF">noclobber
+              option</a>.</strong></p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">||</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong><a
+               href="c2792.html#ORREF">логическая операция OR
+              (логическое ИЛИ)</a>.</strong> В <a
+               href="c2171.html#TESTCONSTRUCTS1">опрециях проверки
+              условий</a>, оператор <span
+               class="TOKEN">||</span> возвращает <span
+               class="RETURNVALUE">0</span> (success), если один из
+              операндов имеет значение true (ИСТИНА).</p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">&amp;</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>Выполнение задачи в фоне.</strong> Команда, за
+              которой стоит <span
+               class="TOKEN">&amp;</span>, будет исполняться в фоновом
+              режиме.</p>
+            </div>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>sleep 10 &amp;</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">[1] 850</tt>
+<tt
+ class="COMPUTEROUTPUT">[1]+  Done                    sleep 10</tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <p>В сценариях команды, и даже <a
+             href="c4875.html#FORLOOPREF1">циклы</a> могут запускаться
+            в фоновом режиме.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="BGLOOP"></a>
+
+              <p><strong>Пример 3-3. Запуск цикла в фоновом
+              режиме</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# background-loop.sh
+
+for i in 1 2 3 4 5 6 7 8 9 10            # Первый цикл.
+do
+  echo -n &quot;$i &quot;
+done &amp; # Запуск цикла в фоне.
+       # Иногда возможны случаи выполнения этого цикла после второго цикла.
+
+echo   # Этот &#39;echo&#39; иногда не отображается на экране.
+
+for i in 11 12 13 14 15 16 17 18 19 20   # Второй цикл.
+do
+  echo -n &quot;$i &quot;
+done
+
+echo   # Этот &#39;echo&#39; иногда не отображается на экране.
+
+# ======================================================
+
+# Ожидается, что данный сценарий выведет следующую последовательность:
+# 1 2 3 4 5 6 7 8 9 10
+# 11 12 13 14 15 16 17 18 19 20
+
+# Иногда возможен такой вариант:
+# 11 12 13 14 15 16 17 18 19 20
+# 1 2 3 4 5 6 7 8 9 10 bozo $
+# (Второй &#39;echo&#39; не был выполнен. Почему?)
+
+# Изредка возможен такой вариант:
+# 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+# (Первый &#39;echo&#39; не был выполнен. Почему?)
+
+# Крайне редко встречается и такое:
+# 11 12 13 1 2 3 4 5 6 7 8 9 10 14 15 16 17 18 19 20
+# Второй цикл начал исполняться раньше первого.
+
+exit 0
+</pre>
+            </div>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Команда, исполняемая в пределах сценария в фоне,
+                    может подвесить сценарий, ожидая нажатия клавиши. К
+                    счастью, это легко <a
+                     href=
+                    "c5358.html#WAITHANG">&quot;лечится&quot;</a>.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">&amp;&amp;</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong><a
+               href="c2792.html#LOGOPS1">Логическая операция AND
+              (логическое И)</a>.</strong> В <a
+               href="c2171.html#TESTCONSTRUCTS1">операциях проверки
+              условий</a>, оператор <span
+               class="TOKEN">&amp;&amp;</span> возвращает <span
+               class="RETURNVALUE">0</span> (success) тогда, и только
+              тогда, когда <span
+               class="emphasis"><em
+               class="EMPHASIS">оба</em></span> операнда имеют значение
+              true (ИСТИНА).</p>
+            </div>
+          </dd>
+
+          <dt><a
+           name="DASHREF"></a><span
+           class="TOKEN">-</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>префикс ключа.</strong> С этого символа
+              начинаются опциональные ключи команд.</p>
+            </div>
+
+            <p><tt
+             class="USERINPUT"><strong>COMMAND
+            -[Option1][Option2][...]</strong></tt></p>
+
+            <p><tt
+             class="USERINPUT"><strong>ls -al</strong></tt></p>
+
+            <p><tt
+             class="USERINPUT"><strong>sort -dfu
+            $filename</strong></tt></p>
+
+            <p><tt
+             class="USERINPUT"><strong>set --
+            $variable</strong></tt></p>
+<pre
+ class="PROGRAMLISTING">
+if [ $file1 -ot $file2 ]
+then
+  echo &quot;Файл $file1 был создан раньше чем $file2.&quot;
+fi
+
+if [ &quot;$a&quot; -eq &quot;$b&quot; ]
+then
+  echo &quot;$a равно $b.&quot;
+fi
+
+if [ &quot;$c&quot; -eq 24 -a &quot;$d&quot; -eq 47 ]
+then
+  echo &quot;$c равно 24, а $d равно 47.&quot;
+fi
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>перенаправление из/в <tt
+               class="FILENAME">stdin</tt> или <tt
+               class="FILENAME">stdout</tt>.</strong> <a
+               name="COXEX"></a>[дефис]</p>
+            </div>
+<pre
+ class="PROGRAMLISTING">
+(cd /source/directory &amp;&amp; tar cf - . ) | (cd /dest/directory &amp;&amp; tar xpvf -)
+# Перемещение полного дерева файлов и подкаталогов из одной директории в другую
+# [спасибо Алану Коксу (Alan Cox) &lt;a.cox@swansea.ac.uk&gt;, за небольшие поправки]
+
+# 1) cd /source/directory    Переход в исходный каталог, содержимое которого будет перемещено
+# 2) &amp;&amp;                     &quot;И-список&quot;: благодаря этому все последующие команды будут выполнены
+#                            только тогда, когда &#39;cd&#39; завершится успешно
+# 3) tar cf - .              ключом &#39;c&#39; архиватор &#39;tar&#39; создает новый архив,
+#                            ключом &#39;f&#39; (file) и последующим &#39;-&#39; задается файл архива -- stdout,
+#                            в архив помещается текущий каталог (&#39;.&#39;) с вложенными подкаталогами.
+# 4) |                       конвейер с ...
+# 5) ( ... )                 subshell-ом (дочерним экземпляром командной оболочки)
+# 6) cd /dest/directory      Переход в каталог назначения.
+# 7) &amp;&amp;                     &quot;И-список&quot;, см. выше
+# 8) tar xpvf -              Разархивирование (&#39;x&#39;), с сохранением атрибутов &quot;владельца&quot; и прав доступа (&#39;p&#39;) к файлам,
+#                            с выдачей более подробных сообщений на stdout (&#39;v&#39;),
+#                            файл архива -- stdin (&#39;f&#39; с последующим &#39;-&#39;).
+#
+#                            Примечательно, что &#39;x&#39; -- это команда, а &#39;p&#39;, &#39;v&#39; и &#39;f&#39; -- ключи
+# Во как!
+
+
+
+# Более элегантный вариант:
+#   cd source-directory
+#   tar cf - . | (cd ../target-directory; tar xzf -)
+#
+# cp -a /source/directory /dest     имеет тот же эффект.
+</pre>
+            <br>
+            <br>
+<pre
+ class="PROGRAMLISTING">
+bunzip2 linux-2.4.3.tar.bz2 | tar xvf -
+# --разархивирование tar-файла--    | --затем файл передается утилите &quot;tar&quot;--
+# Если у вас утилита &quot;tar&quot; не поддерживает работу с &quot;bunzip2&quot;,
+# тогда придется выполнять работу в два этапа, с использованием конвейера.
+# Целью данного примера является разархивирование тарбола (tar.bz2) с исходными текстами ядра.
+</pre>
+            <br>
+            <br>
+
+            <p>Обратите внимание, что в этом контексте <span
+             class="QUOTE">&quot;-&quot;</span> - не самостоятельный
+            оператор Bash, а скорее опция, распознаваемая некоторыми
+            утилитами UNIX (такими как <strong
+             class="COMMAND">tar</strong>, <strong
+             class="COMMAND">cat</strong> и т.п.), которые выводят
+            результаты своей работы в <tt
+             class="FILENAME">stdout</tt>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class=
+"USERINPUT"><strong>echo &quot;whatever&quot; | cat -</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">whatever</tt>
+</pre>
+            <br>
+            <br>
+
+            <p>В случае, когда ожидается имя файла, тогда <span
+             class="QUOTE">&quot;-&quot;</span> перенаправляет вывод на
+            <tt
+             class="FILENAME">stdout</tt> (вспомните пример с <tt
+             class="USERINPUT"><strong>tar cf</strong></tt>) или
+            принимает ввод с <tt
+             class="FILENAME">stdin</tt>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>file</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">Usage: file [-bciknvzL] [-f namefile] [-m magicfiles] file...</tt>
+             
+</pre>
+            Сама по себе команда <a
+             href="x7794.html#FILEREF">file</a> без параметров
+            завершается с сообщением об ошибке. <br>
+            <br>
+
+            <p>Добавим символ <span
+             class="QUOTE">&quot;-&quot;</span> и получим более
+            полезный результат. Это заставит командный интерпретатор
+            ожидать ввода от пользователя.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>file -</strong></tt>
+<tt
+ class="USERINPUT"><strong>abc</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">standard input:              ASCII text</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>file -</strong></tt>
+<tt
+ class="USERINPUT"><strong>#!/bin/bash</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">standard input:              Bourne-Again shell script text executable</tt>
+             
+</pre>
+            Теперь команда принимает ввод пользователя со <tt
+             class="FILENAME">stdin</tt> и анализирует его. <br>
+            <br>
+
+            <p>Используя передачу <tt
+             class="FILENAME">stdout</tt> по конвейеру другим командам,
+            можно выполнять довольно эффектные трюки, например <a
+             href="x13753.html#PREPENDREF">вставка строк в начало
+            файла</a>.</p>
+
+            <p>С помощью команды <a
+             href="x7794.html#DIFFREF">diff</a> -- находить различия
+            между одним файлом и <span
+             class="emphasis"><em
+             class="EMPHASIS">частью</em></span> другого:</p>
+
+            <p><tt
+             class="USERINPUT"><strong>grep Linux file1 | diff file2
+            -</strong></tt></p>
+
+            <p>И наконец пример использования служебного символа <tt
+             class="REPLACEABLE"><em>&quot;-&quot;</em></tt> с командой
+            <a
+             href="x7794.html#TARREF">tar</a>.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX58"></a>
+
+              <p><strong>Пример 3-4. Резервное архивирование всех
+              файлов, которые были изменены в течение последних
+              суток</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Резервное архивирование (backup) всех файлов в текущем каталоге,
+# которые были изменены в течение последних 24 часов
+#+ в тарболл (tarball) (.tar.gz - файл).
+
+BACKUPFILE=backup
+archive=${1:-$BACKUPFILE}
+#  На случай, если имя архива в командной строке не задано,
+#+ т.е. по-умолчанию имя архива -- &quot;backup.tar.gz&quot;
+
+tar cvf - `find . -mtime -1 -type f -print` &gt; $archive.tar
+gzip $archive.tar
+echo &quot;Каталог $PWD заархивирован в файл \&quot;$archive.tar.gz\&quot;.&quot;
+
+
+#  Stephane Chazelas заметил, что вышеприведенный код будет &quot;падать&quot;
+#+ если будет найдено слишком много файлов
+#+ или если имена файлов будут содержать символы пробела.
+
+# Им предложен альтернативный код:
+# -------------------------------------------------------------------
+#   find . -mtime -1 -type f -print0 | xargs -0 tar rvf &quot;$archive.tar&quot;
+#      используется версия GNU утилиты &quot;find&quot;.
+
+
+#   find . -mtime -1 -type f -exec tar rvf &quot;$archive.tar&quot; &#39;{}&#39; \;
+#         более универсальный вариант, хотя и более медленный,
+#         зато может использоваться в других версиях UNIX.
+# -------------------------------------------------------------------
+
+
+exit 0
+</pre>
+            </div>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Могут возникнуть конфликтные ситуации между
+                    опреатором перенаправления <span
+                     class="QUOTE">&quot;-&quot;</span> и именами
+                    файлов, начинающимися с символа <span
+                     class="QUOTE">&quot;-&quot;</span>. Поэтому
+                    сценарий должен проверять имена файлов и
+                    предаварять их префиксом пути, например, <tt
+                     class="FILENAME">./-FILENAME</tt>, <tt
+                     class="FILENAME">$PWD/-FILENAME</tt> или <tt
+                     class="FILENAME">$PATHNAME/-FILENAME</tt>.</p>
+
+                    <p>Если значение переменной начинается с символа
+                    <span
+                     class="QUOTE">&quot;-&quot;</span>, то это тоже
+                    может быть причиной появления ошибок.</p>
+<pre
+ class="PROGRAMLISTING">
+var=&quot;-n&quot;
+echo $var
+# В данном случае команда приобретет вид &quot;echo -n&quot; и ничего не выведет.
+</pre>
+                    <br>
+                    <br>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>предыдущий рабочий каталог.</strong> [дефис]
+              Команда <strong
+               class="COMMAND">cd -</strong> выполнит переход в
+              предыдущий рабочий каталог, путь к которому хранится в <a
+               href="x1716.html#ENVREF">переменной окружения</a> <a
+               href="c3270.html#OLDPWD">$OLDPWD</a> .</p>
+            </div>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Не путайте оператор <span
+                     class="QUOTE">&quot;-&quot;</span> (предыдущего
+                    рабочего каталога) с оператором <span
+                     class="QUOTE">&quot;-&quot;</span>
+                    (переназначения). Еще раз напомню, что
+                    интерпретация символа <span
+                     class="QUOTE">&quot;-&quot;</span> зависит от
+                    контекста, в котором он употребляется.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>Минус.</strong> Знак минус в <a
+               href="c2792.html#AROPS1">арифметических
+              операциях</a>.</p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">=</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>Символ &quot;равно&quot;.</strong> <a
+               href="x1673.html#EQREF">Оператор присваивания</a></p>
+<pre
+ class="PROGRAMLISTING">
+a=28
+echo $a   # 28
+</pre>
+              <br>
+              <br>
+            </div>
+
+            <p>В зависимости от <a
+             href="x2565.html#EQUALSIGNREF">контекста применения</a>,
+            символ <span
+             class="QUOTE">&quot;<span
+             class="TOKEN">=</span>&quot;</span> может выступать в
+            качестве оператора <a
+             href="x2565.html#SCOMPARISON1">сравнения</a>.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">+</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>Плюс.</strong> Оператор сложения в <a
+               href="c2792.html#AROPS1">арифметических
+              операциях</a>.</p>
+            </div>
+
+            <p>В зависимости от <a
+             href="c11895.html#PLUSREF">контекста применения</a>,
+            символ <span
+             class="TOKEN">+</span> может выступать как оператор <a
+             href="c11895.html">регулярного выражения</a>.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">+</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>Ключ (опция).</strong> Дополнительный флаг для
+              ключей (опций) команд.</p>
+            </div>
+
+            <p>Отдельные внешние и <a
+             href="c5358.html#BUILTINREF">встроенные</a> команды
+            используют символ <span
+             class="QUOTE">&quot;<span
+             class="TOKEN">+</span>&quot;</span> для разрешения
+            некоторой опции, а символ <span
+             class="QUOTE">&quot;<span
+             class="TOKEN">-</span>&quot;</span> -- для запрещения.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">%</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong><a
+               href="c2792.html#MODULOREF">модуль</a>.</strong> Модуль
+              (остаток от деления) -- <a
+               href="c2792.html#AROPS1">арифметическая
+              операция</a>.</p>
+            </div>
+
+            <p>В зависимости от <a
+             href="x4462.html#PCTPATREF">контекста применения</a>,
+            символ <span
+             class="TOKEN">%</span> может выступать в качестве <a
+             href="x4462.html#PSUB2">шаблона</a>.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">~</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>домашний каталог.</strong> [тильда]
+              Соответствует содержимому внутренней переменной <a
+               href="c3270.html#HOMEDIRREF">$HOME</a>. <span
+               class="emphasis"><em
+               class="EMPHASIS">~bozo</em></span> -- домашний каталог
+              пользователя bozo, а команда <strong
+               class="COMMAND">ls ~bozo</strong> выведет содержимое его
+              домашнего каталога. <span
+               class="TOKEN">~/</span> -- это домашний каталог текущего
+              пользователя, а команда <strong
+               class="COMMAND">ls ~/</strong> выведет содержимое
+              домашнего каталога текущего пользователя.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo ~bozo</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">/home/bozo</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo ~</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">/home/bozo</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo ~/</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">/home/bozo/</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo ~:</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">/home/bozo:</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo ~nonexistent-user</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">~nonexistent-user</tt>
+             
+</pre>
+              <br>
+              <br>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">~+</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>текущий рабочий каталог.</strong>
+              Соответствует содержимому внутренней переменной <a
+               href="c3270.html#PWDREF">$PWD</a>.</p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">~-</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>предыдущий рабочий каталог.</strong>
+              Соответствует содержимому внутренней переменной <a
+               href="c3270.html#OLDPWD">$OLDPWD</a>.</p>
+            </div>
+          </dd>
+
+          <dt><span
+           class="TOKEN">^</span></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>начало-строки.</strong> В <a
+               href="c11895.html#REGEXREF">регулярных выражениях</a>
+              символ <span
+               class="QUOTE">&quot;^&quot;</span> задает начало строки
+              текста.</p>
+            </div>
+          </dd>
+
+          <dt>Управляющий символ</dt>
+
+          <dd>
+            <p><a
+             name="CONTROLCHARREF"></a></p>
+
+            <div
+             class="FORMALPARA">
+              <p><strong>изменяет поведение терминала или управляет
+              выводом текста.</strong> Управляющий символ набирается с
+              клавиатуры как комбинация <strong
+               class="KEYCAP">CONTROL</strong> + <strong
+               class="KEYCAP">&lt;клавиша&gt;</strong>.</p>
+            </div>
+
+            <ul>
+              <li>
+                <p><tt
+                 class="USERINPUT"><strong>Ctl-C</strong></tt></p>
+
+                <p>Завершение выполнения процесса.</p>
+              </li>
+
+              <li>
+                <p><a
+                 name="CTLDREF"></a></p>
+
+                <p><tt
+                 class="USERINPUT"><strong>Ctl-D</strong></tt></p>
+
+                <p>Выход из командного интерпретатора (log out) (аналог
+                команды <a
+                 href="c2105.html#EXITCOMMANDREF">exit</a>).</p>
+
+                <p><span
+                 class="QUOTE">&quot;EOF&quot;</span> (признак конца
+                файла). Этот символ может выступать в качестве
+                завершающего при вводе с <tt
+                 class="FILENAME">stdin</tt>.</p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="USERINPUT"><strong>Ctl-G</strong></tt></p>
+
+                <p><span
+                 class="QUOTE">&quot;BEL&quot;</span> (звуковой сигнал
+                -- &quot;звонок&quot;).</p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="USERINPUT"><strong>Ctl-H</strong></tt></p>
+
+                <p>Backspace -- удаление предыдущего символа.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Вставка символа Ctl-H в строку.
+
+a=&quot;^H^H&quot;                  # Два символа Ctl-H (backspace).
+echo &quot;abcdef&quot;             # abcdef
+echo -n &quot;abcdef$a &quot;       # abcd f
+# Пробел в конце ^              ^ двойной шаг назад.
+echo -n &quot;abcdef$a&quot;        # abcdef
+# Пробела в конце нет             backspace не работает (почему?).
+# Результаты могут получиться совсем не те, что вы ожидаете.
+echo; echo
+</pre>
+                <br>
+                <br>
+              </li>
+
+              <li>
+                <p><tt
+                 class="USERINPUT"><strong>Ctl-J</strong></tt></p>
+
+                <p>Возврат каретки.</p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="USERINPUT"><strong>Ctl-L</strong></tt></p>
+
+                <p>Перевод формата (очистка экрана (окна) терминала).
+                Аналогична команде <a
+                 href="x9117.html#CLEARREF">clear</a>.</p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="USERINPUT"><strong>Ctl-M</strong></tt></p>
+
+                <p>Перевод строки.</p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="USERINPUT"><strong>Ctl-U</strong></tt></p>
+
+                <p>Стирание строки ввода.</p>
+              </li>
+
+              <li>
+                <p><tt
+                 class="USERINPUT"><strong>Ctl-Z</strong></tt></p>
+
+                <p>Приостановка процесса.</p>
+              </li>
+            </ul>
+          </dd>
+
+          <dt>Пробельный символ</dt>
+
+          <dd>
+            <p><a
+             name="WHITESPACEREF"></a></p>
+
+            <div
+             class="FORMALPARA">
+              <p><strong>используется как разделитель команд или
+              переменных.</strong> В качестве пробельного символа могут
+              выступать -- собственно пробел (space), символ табуляции,
+              символ перевода строки, символ возврата каретки или
+              комбинация из вышеперечисленных символов. В некоторых
+              случаях, таких как <a
+               href="c13371.html#WSBAD">присваивание значений
+              переменным</a>, использование пробельных символов
+              недопустимо.</p>
+            </div>
+
+            <p>Пустые строки никак не обрабатываются командным
+            интерпретатором и могут свободно использоваться для
+            визуального выделения отдельных блоков сценария.</p>
+
+            <p><a
+             href="c3270.html#IFSREF">$IFS</a> -- переменная
+            специального назначения. Содержит символы-разделители
+            полей, используемые некоторыми командами. По-умолчанию --
+            пробельные символы.</p>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN901"
+         href="c301.html#AEN901"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Интерпретатор, встретив фигурные скобки, раскрывает их и
+          возвращает полученный список команд, которые затем и
+          исполняет.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN947"
+         href="c301.html#AEN947"><span
+         class="footnote">[2]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Исключение: блок кода, являющийся частью конвейера, <span
+           class="emphasis"><em
+           class="EMPHASIS">может</em></span> быть запущен в дочернем
+          процессе (<a
+           href="c12330.html#SUBSHELLSREF">subshell-е</a>).</p>
+<pre
+ class="PROGRAMLISTING">
+ls | { read firstline; read secondline; }
+# Ошибка! Вложенный блок будет запущен в дочернем процессе,
+# таким образом, вывод команды &quot;ls&quot; не может быть записан в переменные
+# находящиеся внутри блока.
+echo &quot;Первая строка: $firstline; вторая строка: $secondline&quot;  # Не работает!
+
+# Спасибо S.C.
+</pre>
+          <br>
+          <br>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="p299.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c1613.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Основы</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p299.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Переменные и параметры. Введение.</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

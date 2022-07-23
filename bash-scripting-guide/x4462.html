@@ -1,0 +1,1038 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Подстановка параметров</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="К вопросу о переменных"
+     href="c3270.html">
+    <link
+     rel="PREVIOUS"
+     title="Работа со строками"
+     href="x4171.html">
+    <link
+     rel="NEXT"
+     title="Объявление переменных: declare и typeset"
+     href="x4704.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x4171.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 9. К вопросу о переменных</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x4704.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="PARAMETER-SUBSTITUTION"></a>9.3. Подстановка
+      параметров</h1>
+
+      <p><a
+       name="PARAMSUBREF"></a></p>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="PSSUB1"></a>Работа с переменными и/или подстановка их
+        значений</strong></p>
+
+        <dl>
+          <dt><tt
+           class="USERINPUT"><strong>${parameter}</strong></tt></dt>
+
+          <dd>
+            <p>То же самое, что и <tt
+             class="REPLACEABLE"><em>$parameter</em></tt>, т.е.
+            значение переменной <tt
+             class="REPLACEABLE"><em>parameter</em></tt>. В отдельных
+            случаях, при возникновении неоднозначности интерпретации,
+            корректно будет работать только такая форма записи: <tt
+             class="REPLACEABLE"><em>${parameter}</em></tt>.</p>
+
+            <p>Может использоваться для конкатенации (слияния)
+            строковых переменных.</p>
+<pre
+ class="PROGRAMLISTING">
+your_id=${USER}-on-${HOSTNAME}
+echo &quot;$your_id&quot;
+#
+echo &quot;Старый \$PATH = $PATH&quot;
+PATH=${PATH}:/opt/bin  #Добавление /opt/bin в $PATH.
+echo &quot;Новый \$PATH = $PATH&quot;
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><tt
+           class=
+          "USERINPUT"><strong>${parameter-default}</strong></tt>, <tt
+           class=
+          "USERINPUT"><strong>${parameter:-default}</strong></tt></dt>
+
+          <dd>
+            <p>Если параметр отсутствует, то используется значение
+            по-умолчанию.</p>
+<pre
+ class="PROGRAMLISTING">
+echo ${username-`whoami`}
+# Вывод результата работы команды `whoami`, если переменная $username не установлена.
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Формы записи <tt
+                     class=
+                    "REPLACEABLE"><em>${parameter-default}</em></tt> и
+                    <tt
+                     class=
+                    "REPLACEABLE"><em>${parameter:-default}</em></tt> в
+                    большинстве случаев можно считать эквивалентными.
+                    Дополнительный символ <span
+                     class="TOKEN">:</span> имеет значение только
+                    тогда, когда <span
+                     class="emphasis"><em
+                     class="EMPHASIS">parameter</em></span> определен,
+                    но имеет &quot;пустое&quot; (null) значение.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+username0=
+# переменная username0 объявлена, но инициализирована &quot;пустым&quot; значением.
+echo &quot;username0 = ${username0-`whoami`}&quot;
+# Вывод после символа &quot;=&quot; отсутствует.
+
+echo &quot;username1 = ${username1-`whoami`}&quot;
+# Переменная username1 не была объявлена.
+# Выводится имя пользователя, выданное командой `whoami`.
+
+username2=
+# переменная username2 объявлена, но инициализирована &quot;пустым&quot; значением.
+echo &quot;username2 = ${username2:-`whoami`}&quot;
+# Выводится имя пользователя, выданное командой `whoami`, поскольку
+#+здесь употребляется конструкция &quot;:-&quot; , а не  &quot;-&quot;.
+
+exit 0
+</pre>
+            <br>
+            <br>
+
+            <p><span
+             class="emphasis"><em
+             class="EMPHASIS">Параметры по-умолчанию</em></span> очень
+            часто находят применение в случаях, когда сценарию
+            необходимы какие либо входные аргументы, передаваемые из
+            командной строки, но такие аргументы не были переданы.</p>
+<pre
+ class="PROGRAMLISTING">
+DEFAULT_FILENAME=generic.data
+filename=${1:-$DEFAULT_FILENAME}
+#  Если имя файла не задано явно, то последующие операторы будут работать
+#+ с файлом &quot;generic.data&quot;.
+#
+</pre>
+            <br>
+            <br>
+
+            <p>см. так же <a
+             href="c301.html#EX58">Пример 3-4</a>, <a
+             href="c13041.html#EX73">Пример 28-2</a> и <a
+             href="a14477.html#COLLATZ">Пример A-7</a>.</p>
+
+            <p>Сравните этот подход с <a
+             href="c12716.html#ANDDEFAULT">методом списков <span
+             class="emphasis"><em
+             class="EMPHASIS">and list</em></span>, для задания
+            параметров командной строки по-умолчанию</a> .</p>
+          </dd>
+
+          <dt><tt
+           class=
+          "USERINPUT"><strong>${parameter=default}</strong></tt>, <tt
+           class=
+          "USERINPUT"><strong>${parameter:=default}</strong></tt></dt>
+
+          <dd>
+            <p><a
+             name="DEFPARAM"></a></p>
+
+            <p>Если значения параметров не задананы явно, то они
+            принимают значения по-умолчанию.</p>
+
+            <p>Оба метода задания значений по-умолчанию до определенной
+            степени идентичны. Символ <span
+             class="TOKEN">:</span> имеет значение только когда <span
+             class="emphasis"><em
+             class="EMPHASIS">$parameter</em></span> был
+            инициализирован &quot;пустым&quot; (null) значением, <a
+             name="AEN4520"
+             href="#FTN.AEN4520"><span
+             class="footnote">[1]</span></a> как показано выше.</p>
+<pre
+ class="PROGRAMLISTING">
+echo ${username=`whoami`}
+# Переменная &quot;username&quot; принимает значение, возвращаемое командой `whoami`.
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><tt
+           class=
+          "USERINPUT"><strong>${parameter+alt_value}</strong></tt>, <tt
+           class=
+          "USERINPUT"><strong>${parameter:+alt_value}</strong></tt></dt>
+
+          <dd>
+            <p>Если параметр имеет какое либо значение, то используется
+            <tt
+             class="USERINPUT"><strong>alt_value</strong></tt>, иначе
+            -- null (&quot;пустая&quot; строка).</p>
+
+            <p>Оба варианта до определенной степени идентичны. Символ
+            <span
+             class="TOKEN">:</span> имеет значение только если <span
+             class="emphasis"><em
+             class="EMPHASIS">parameter</em></span> объявлен и
+            &quot;пустой&quot;, см. ниже.</p>
+<pre
+ class="PROGRAMLISTING">
+echo &quot;###### \${parameter+alt_value} ########&quot;
+echo
+
+a=${param1+xyz}
+echo &quot;a = $a&quot;      # a =
+
+param2=
+a=${param2+xyz}
+echo &quot;a = $a&quot;      # a = xyz
+
+param3=123
+a=${param3+xyz}
+echo &quot;a = $a&quot;      # a = xyz
+
+echo
+echo &quot;###### \${parameter:+alt_value} ########&quot;
+echo
+
+a=${param4:+xyz}
+echo &quot;a = $a&quot;      # a =
+
+param5=
+a=${param5:+xyz}
+echo &quot;a = $a&quot;      # a =
+# Вывод отличается от a=${param5+xyz}
+
+param6=123
+a=${param6+xyz}
+echo &quot;a = $a&quot;      # a = xyz
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><a
+           name="QERRMSG"></a><tt
+           class=
+          "USERINPUT"><strong>${parameter?err_msg}</strong></tt>, <tt
+           class=
+          "USERINPUT"><strong>${parameter:?err_msg}</strong></tt></dt>
+
+          <dd>
+            <p>Если parameter инициализирован, то используется его
+            значение, в противном случае -- выводится err_msg.</p>
+
+            <p>Обе формы записи можно, до определенной степени, считать
+            идентичными. Символ <span
+             class="TOKEN">:</span> имеет значение только когда <span
+             class="emphasis"><em
+             class="EMPHASIS">parameter</em></span> инициализирован
+            &quot;пустым&quot; значением, см. ниже.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX6"></a>
+
+        <p><strong>Пример 9-13. Подстановка параметров и сообщения об
+        ошибках</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+#  Проверка отдельных переменных окружения.
+#  Если переменная, к примеру $USER, не установлена,
+#+ то выводится сообщение об ошибке.
+
+: ${HOSTNAME?} ${USER?} ${HOME?} ${MAIL?}
+  echo
+  echo &quot;Имя машины: $HOSTNAME.&quot;
+  echo &quot;Ваше имя: $USER.&quot;
+  echo &quot;Ваш домашний каталог: $HOME.&quot;
+  echo &quot;Ваш почтовый ящик: $MAIL.&quot;
+  echo
+  echo &quot;Если перед Вами появилось это сообщение,&quot;
+  echo &quot;то это значит, что все критические переменные окружения установлены.&quot;
+  echo
+  echo
+
+# ------------------------------------------------------
+
+#  Конструкция ${variablename?} так же выполняет проверку
+#+ наличия переменной в сценарии.
+
+ThisVariable=Value-of-ThisVariable
+#  Обратите внимание, в строковые переменные могут быть записаны
+#+ символы, которые запрещено использовать в именах переменных.
+: ${ThisVariable?}
+echo &quot;Value of ThisVariable is $ThisVariable&quot;.
+echo
+echo
+
+
+: ${ZZXy23AB?&quot;Переменная ZZXy23AB не инициализирована.&quot;}
+#  Если ZZXy23AB не инициализирована,
+#+ то сценарий завершается с сообщением об ошибке.
+
+# Текст сообщения об ошибке можно задать свой.
+# : ${ZZXy23AB?&quot;Переменная ZZXy23AB не инициализирована.&quot;}
+
+
+# То же самое:  dummy_variable=${ZZXy23AB?}
+#               dummy_variable=${ZZXy23AB?&quot;Переменная ZXy23AB не инициализирована.&quot;}
+#
+#               echo ${ZZXy23AB?} &gt;/dev/null
+
+
+
+echo &quot;Это сообщение не будет напечатано, поскольку сценарий завершится раньше.&quot;
+
+HERE=0
+exit $HERE   # Сценарий завершит работу не здесь.
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="USAGEMESSAGE"></a>
+
+        <p><strong>Пример 9-14. Подстановка параметров и сообщение о
+        <span
+         class="QUOTE">&quot;порядке
+        использования&quot;</span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# usage-message.sh
+
+: ${1?&quot;Порядок использования: $0 ARGUMENT&quot;}
+#  Сценарий завершит свою работу здесь, если входные аргументы отсутствуют,
+#+ со следующим сообщением.
+#    usage-message.sh: 1: Порядок использования: usage-message.sh ARGUMENT
+
+echo &quot;Эти две строки появятся, только когда задан аргумент в командной строке.&quot;
+echo &quot;Входной аргумент командной строки = \&quot;$1\&quot;&quot;
+
+exit 0 # Точка выхода находится здесь, только когда задан аргумент командной строки.
+
+# Проверьте код возврата в обеих случаях, с и без аргумента командной строки.
+# Если аргумент задан, то код возврата будет равен 0.
+# Иначе -- 1.
+</pre>
+      </div>
+
+      <div
+       class="FORMALPARA">
+        <p><strong>Подстановка параметров и/или экспансия.</strong> <a
+         name="PSUB2"></a>Следующие выражения могут служить
+        дополнениями оператора <strong
+         class="COMMAND">match</strong> команды <strong
+         class="COMMAND">expr</strong>, применяемой к строкам (см. <a
+         href="x6646.html#EX45">Пример 12-6</a>). Как правило, они
+        используются при разборе имен файлов и каталогов.</p>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="PSOREX1"></a>Длина переменной / Удаление
+        подстроки</strong></p>
+
+        <dl>
+          <dt><tt
+           class="USERINPUT"><strong>${#var}</strong></tt></dt>
+
+          <dd>
+            <p><tt
+             class="USERINPUT"><strong>String length</strong></tt>
+            (число символов в переменной <tt
+             class="VARNAME">$var</tt>). В случае <a
+             href="c12790.html#ARRAYREF">массивов</a>, команда <strong
+             class="COMMAND">${#array}</strong> возвращает длину
+            первого элемента массива.</p>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Исключения:</p>
+
+                    <ul>
+                      <li>
+                        <p><strong
+                         class="COMMAND">${#*}</strong> и <strong
+                         class="COMMAND">${#@}</strong> возвращает
+                        <span
+                         class="emphasis"><em
+                         class="EMPHASIS">количество аргументов
+                        (позиционных параметров)</em></span>.</p>
+                      </li>
+
+                      <li>
+                        <p>Для массивов, <strong
+                         class="COMMAND">${#array[*]}</strong> и
+                        <strong
+                         class="COMMAND">${#array[@]}</strong>
+                        возвращает количество элементов в массиве.</p>
+                      </li>
+                    </ul>
+                    <br>
+                    <br>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="LENGTH"></a>
+
+              <p><strong>Пример 9-15. Длина переменной</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# length.sh
+
+E_NO_ARGS=65
+
+if [ $# -eq 0 ]  # Для работы скрипта необходим хотя бы один входной параметр.
+then
+  echo &quot;Вызовите сценарий с одним или более параметром командной строки.&quot;
+  exit $E_NO_ARGS
+fi
+
+var01=abcdEFGH28ij
+
+echo &quot;var01 = ${var01}&quot;
+echo &quot;Length of var01 = ${#var01}&quot;
+
+echo &quot;Количество входных параметров = ${#@}&quot;
+echo &quot;Количество входных параметров = ${#*}&quot;
+
+exit 0
+</pre>
+            </div>
+          </dd>
+
+          <dt><tt
+           class="USERINPUT"><strong>${var#Pattern}</strong></tt>, <tt
+           class="USERINPUT"><strong>${var##Pattern}</strong></tt></dt>
+
+          <dd>
+            <p>Удаляет из переменной <tt
+             class="VARNAME">$var</tt> наименьшую/наибольшую подстроку,
+            совпадающую с шаблоном <tt
+             class="VARNAME">$Pattern</tt>. Поиск ведется с начала
+            строки <tt
+             class="VARNAME">$var</tt>.</p>
+
+            <p>Пример использования из <a
+             href="a14477.html#DAYSBETWEEN">Пример A-8</a>:</p>
+<pre
+ class="PROGRAMLISTING">
+# Функцмя из сценария &quot;days-between.sh&quot;.
+# Удаляет нули, стоящие в начале аргумента-строки.
+
+strip_leading_zero () # Ведущие нули, которые согут находиться в номере дня/месяца,
+                      # лучше удалить
+  val=${1#0}          # В противном случае Bash будет интерпретировать числа
+  return $val         # как восьмеричные (POSIX.2, sect 2.9.2.1).
+}
+</pre>
+            <br>
+            <br>
+
+            <p>Другой пример:</p>
+<pre
+ class="PROGRAMLISTING">
+echo `basename $PWD`        # Имя текущего рабочего каталога.
+echo &quot;${PWD##*/}&quot;           # Имя текущего рабочего каталога.
+echo
+echo `basename $0`          # Имя файла-сценария.
+echo $0                     # Имя файла-сценария.
+echo &quot;${0##*/}&quot;             # Имя файла-сценария.
+echo
+filename=test.data
+echo &quot;${filename##*.}&quot;      # data
+                            # Расширение файла.
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><a
+           name="PCTPATREF"></a><tt
+           class="USERINPUT"><strong>${var%Pattern}</strong></tt>, <tt
+           class="USERINPUT"><strong>${var%%Pattern}</strong></tt></dt>
+
+          <dd>
+            <p>Удаляет из переменной <tt
+             class="VARNAME">$var</tt> наименьшую/наибольшую подстроку,
+            совпадающую с шаблоном <tt
+             class="VARNAME">$Pattern</tt>. Поиск ведется с конца
+            строки <tt
+             class="VARNAME">$var</tt>.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <p>Bash <a
+       href="c13936.html#BASH2REF">версии 2</a> имеет ряд
+      дополнительных возможностей.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="PATTMATCHING"></a>
+
+        <p><strong>Пример 9-16. Поиск по шаблону в подстановке
+        параметров</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Поиск по шаблону в операциях подстановки параметров # ## % %%.
+
+var1=abcd12345abc6789
+pattern1=a*c  # * (символ шаблона), означает любые символы между a и c.
+
+echo
+echo &quot;var1 = $var1&quot;           # abcd12345abc6789
+echo &quot;var1 = ${var1}&quot;         # abcd12345abc6789   (альтернативный вариант)
+echo &quot;Число символов в ${var1} = ${#var1}&quot;
+echo &quot;pattern1 = $pattern1&quot;   # a*c  (между &#39;a&#39; и &#39;c&#39; могут быть любые символы)
+echo
+
+
+echo &#39;${var1#$pattern1}  =&#39; &quot;${var1#$pattern1}&quot;    #         d12345abc6789
+# Наименьшая подстрока, удаляются первые 3 символа  abcd12345abc6789
+                                  ^^^^^^            |-|
+echo &#39;${var1##$pattern1} =&#39; &quot;${var1##$pattern1}&quot;   #                  6789
+# Наибольшая подстрока, удаляются первые 12 символов abcd12345abc6789
+#                                 ^^^^^^             |----------|
+
+echo; echo
+
+pattern2=b*9            # все, что между &#39;b&#39; и &#39;9&#39;
+echo &quot;var1 = $var1&quot;     # abcd12345abc6789
+echo &quot;pattern2 = $pattern2&quot;
+echo
+
+echo &#39;${var1%pattern2}  =&#39; &quot;${var1%$pattern2}&quot;     #     abcd12345a
+# Наименьшая подстрока, удаляются последние 6 символов  abcd12345abc6789
+#                                 ^^^^^^^^^                       |----|
+echo &#39;${var1%%pattern2} =&#39; &quot;${var1%%$pattern2}&quot;    #     a
+# Наибольшая подстрока, удаляются последние 12 символов  abcd12345abc6789
+#                                 ^^^^^^^^^               |-------------|
+
+# Запомните, # и ## используются для поиска с начала строки,
+#            % и %% используются для поиска с конца строки.
+
+echo
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="RFE"></a>
+
+        <p><strong>Пример 9-17. Изменение расширений в именах
+        файлов<span
+         class="TOKEN">:</span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+#                 rfe
+#                 ---
+
+# Изменение расширений в именах файлов.
+#
+#         rfe old_extension new_extension
+#
+# Пример:
+# Изменить все расширения *.gif в именах файлов на *.jpg, в текущем каталоге
+#          rfe gif jpg
+
+ARGS=2
+E_BADARGS=65
+
+if [ $# -ne &quot;$ARGS&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` old_file_suffix new_file_suffix&quot;
+  exit $E_BADARGS
+fi
+
+for filename in *.$1
+# Цикл прохода по списку имен файлов, имеющих расширение равное первому аргументу.
+do
+  mv $filename ${filename%$1}$2
+  #  Удалить первое расширение и добавить второе,
+done
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="EXPREPL1"></a>Подстановка значений переменных / Замена
+        подстроки</strong></p>
+
+        <dl>
+          <dd>
+            <p>Эти конструкции перекочевали в Bash из <span
+             class="emphasis"><em
+             class="EMPHASIS">ksh</em></span>.</p>
+          </dd>
+
+          <dt><tt
+           class="USERINPUT"><strong>${var:pos}</strong></tt></dt>
+
+          <dd>
+            <p>Подстанавливается значение переменной <tt
+             class="REPLACEABLE"><em>var</em></tt>, начиная с позиции
+            <tt
+             class="REPLACEABLE"><em>pos</em></tt>.</p>
+          </dd>
+
+          <dt><tt
+           class="USERINPUT"><strong>${var:pos:len}</strong></tt></dt>
+
+          <dd>
+            <p>Подстанавливается значение переменной <tt
+             class="REPLACEABLE"><em>var</em></tt>, начиная с позиции
+            <tt
+             class="REPLACEABLE"><em>pos</em></tt>, не более <tt
+             class="REPLACEABLE"><em>len</em></tt> символов. См. <a
+             href="a14477.html#PW">Пример A-16</a>.</p>
+          </dd>
+
+          <dt><tt
+           class=
+          "USERINPUT"><strong>${var/Pattern/Replacement}</strong></tt></dt>
+
+          <dd>
+            <p>Первое совпадение с шаблоном <tt
+             class="REPLACEABLE"><em>Pattern</em></tt>, в переменной
+            <tt
+             class="REPLACEABLE"><em>var</em></tt> замещается
+            подстрокой <tt
+             class="REPLACEABLE"><em>Replacement</em></tt>.</p>
+
+            <p>Если подстрока <tt
+             class="REPLACEABLE"><em>Replacement</em></tt> отсутствует,
+            то найденное совпадение будет удалено.</p>
+          </dd>
+
+          <dt><tt
+           class=
+          "USERINPUT"><strong>${var//Pattern/Replacement}</strong></tt></dt>
+
+          <dd>
+            <div
+             class="FORMALPARA">
+              <p><strong>Глобальная замена.</strong> Все найденные
+              совпадения с шаблоном <tt
+               class="REPLACEABLE"><em>Pattern</em></tt>, в переменной
+              <tt
+               class="REPLACEABLE"><em>var</em></tt>, будут замещены
+              подстрокой <tt
+               class="REPLACEABLE"><em>Replacement</em></tt>.</p>
+            </div>
+
+            <p>Как и в первом случае, если подстрока <tt
+             class="REPLACEABLE"><em>Replacement</em></tt> отсутствует,
+            то все найденные совпадения будут удалены.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX7"></a>
+
+              <p><strong>Пример 9-18. Поиск по шаблону при анализе
+              произвольных строк</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+var1=abcd-1234-defg
+echo &quot;var1 = $var1&quot;
+
+t=${var1#*-*}
+echo &quot;var1 (все, от начала строки по первый символ \&quot;-\&quot;, включительно, удаляется) = $t&quot;
+#  t=${var1#*-}  то же самое,
+#+ поскольку оператор # ищет кратчайшее совпадение,
+#+ а * соответствует любым предшествующим символам, включая пустую строку.
+# (Спасибо S. C. за разъяснения.)
+
+t=${var1##*-*}
+echo &quot;Если var1 содержит \&quot;-\&quot;, то возвращается пустая строка...   var1 = $t&quot;
+
+
+t=${var1%*-*}
+echo &quot;var1 (все, начиная с последнего \&quot;-\&quot; удаляется) = $t&quot;
+
+echo
+
+# -------------------------------------------
+path_name=/home/bozo/ideas/thoughts.for.today
+# -------------------------------------------
+echo &quot;path_name = $path_name&quot;
+t=${path_name##/*/}
+echo &quot;Из path_name удален путь к файлу = $t&quot;
+#  В данном случае, тот эе эффект можно получить так:  t=`basename $path_name`
+#  t=${path_name%/}; t=${t##*/}   более общее решение,
+#+ но имеет некоторые ограничения.
+#  Если $path_name заканчивается символом перевода строки, то `basename $path_name` не будет работать,
+#+ но для данного случая вполне применимо.
+# (Спасибо S.C.)
+
+t=${path_name%/*.*}
+# Тот же эффект дает    t=`dirname $path_name`
+echo &quot;Из path_name удалено имя файла = $t&quot;
+# Этот вариант будет терпеть неудачу в случаях: &quot;../&quot;, &quot;/foo////&quot;, # &quot;foo/&quot;, &quot;/&quot;.
+#  Удаление имени файла, особенно когда его нет,
+#+ использование dirname имеет свои особенности.
+# (Спасибо S.C.)
+
+echo
+
+t=${path_name:11}
+echo &quot;Из $path_name удалены первые 11 символов = $t&quot;
+t=${path_name:11:5}
+echo &quot;Из $path_name удалены первые 11 символов, выводится 5 символов = $t&quot;
+
+echo
+
+t=${path_name/bozo/clown}
+echo &quot;В $path_name подстрока \&quot;bozo\&quot; заменена на \&quot;clown\&quot; = $t&quot;
+t=${path_name/today/}
+echo &quot;В $path_name подстрока \&quot;today\&quot; удалена = $t&quot;
+t=${path_name//o/O}
+echo &quot;В $path_name все символы \&quot;o\&quot; переведены в верхний регистр, = $t&quot;
+t=${path_name//o/}
+echo &quot;Из $path_name удалены все символы \&quot;o\&quot; = $t&quot;
+
+exit 0
+</pre>
+            </div>
+          </dd>
+
+          <dt><tt
+           class=
+          "USERINPUT"><strong>${var/#Pattern/Replacement}</strong></tt></dt>
+
+          <dd>
+            <p>Если в переменной <tt
+             class="REPLACEABLE"><em>var</em></tt> найдено совпадение с
+            <tt
+             class="REPLACEABLE"><em>Pattern</em></tt>, причем
+            совпадающая подстрока расположена в начале строки
+            (префикс), то оно заменяется на <tt
+             class="REPLACEABLE"><em>Replacement</em></tt>. Поиск
+            ведется с начала строки</p>
+          </dd>
+
+          <dt><tt
+           class=
+          "USERINPUT"><strong>${var/%Pattern/Replacement}</strong></tt></dt>
+
+          <dd>
+            <p>Если в переменной <tt
+             class="REPLACEABLE"><em>var</em></tt> найдено совпадение с
+            <tt
+             class="REPLACEABLE"><em>Pattern</em></tt>, причем
+            совпадающая подстрока расположена в конце строки (суффикс),
+            то оно заменяется на <tt
+             class="REPLACEABLE"><em>Replacement</em></tt>. Поиск
+            ведется с конца строки</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="VARMATCH"></a>
+
+              <p><strong>Пример 9-19. Поиск префиксов и суффиксов с
+              заменой по шаблону</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Поиск с заменой по шаблону.
+
+v0=abc1234zip1234abc    # Начальное значение переменной.
+echo &quot;v0 = $v0&quot;         # abc1234zip1234abc
+echo
+
+# Поиск совпадения с начала строки.
+v1=${v0/#abc/ABCDEF}    # abc1234zip1234abc
+                        # |-|
+echo &quot;v1 = $v1&quot;         # ABCDE1234zip1234abc
+                        # |---|
+
+# Поиск совпадения с конца строки.
+v2=${v0/%abc/ABCDEF}    # abc1234zip123abc
+                        #              |-|
+echo &quot;v2 = $v2&quot;         # abc1234zip1234ABCDEF
+                        #               |----|
+
+echo
+
+#  ----------------------------------------------------
+#  Если совпадение находится не с начала/конца строки,
+#+ то замена не производится.
+#  ----------------------------------------------------
+v3=${v0/#123/000}       # Совпадение есть, но не в начале строки.
+echo &quot;v3 = $v3&quot;         # abc1234zip1234abc
+                        # ЗАМЕНА НЕ ПРОИЗВОДТСЯ!
+v4=${v0/%123/000}       # Совпадение есть, но не в конце строки.
+echo &quot;v4 = $v4&quot;         # abc1234zip1234abc
+                        # ЗАМЕНА НЕ ПРОИЗВОДТСЯ!
+
+exit 0
+</pre>
+            </div>
+          </dd>
+
+          <dt><tt
+           class="USERINPUT"><strong>${!varprefix*}</strong></tt>, <tt
+           class="USERINPUT"><strong>${!varprefix@}</strong></tt></dt>
+
+          <dd>
+            <p>Поиск по шаблону всех, ранее объявленных переменных,
+            имена которых начинаются с <span
+             class="emphasis"><em
+             class="EMPHASIS">varprefix</em></span>.</p>
+<pre
+ class="PROGRAMLISTING">
+xyz23=whatever
+xyz24=
+
+a=${!xyz*}      # Подстановка имен объявленных переменных, которые начинаются с &quot;xyz&quot;.
+echo &quot;a = $a&quot;   # a = xyz23 xyz24
+a=${!xyz@}      # То же самое.
+echo &quot;a = $a&quot;   # a = xyz23 xyz24
+
+# Эта возможность была добавлена в Bash, в версии 2.04.
+</pre>
+            <br>
+            <br>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN4520"
+         href="x4462.html#AEN4520"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Если $parameter &quot;пустой&quot;,в неинтерактивных
+          сценариях, то это будет приводить к завершению с <a
+           href="a14876.html#EXITCODESREF">кодом возврата <span
+           class="RETURNVALUE">127</span></a> (<span
+           class="QUOTE">&quot;command not found&quot;</span>).</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x4171.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x4704.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Работа со строками</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c3270.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Объявление переменных: <strong
+           class="COMMAND">declare</strong> и <strong
+           class="COMMAND">typeset</strong></td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

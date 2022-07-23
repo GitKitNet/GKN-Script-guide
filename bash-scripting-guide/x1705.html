@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Переменные Bash не имеют типа</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Переменные и параметры. Введение."
+     href="c1613.html">
+    <link
+     rel="PREVIOUS"
+     title="Присваивание значений переменным"
+     href="x1673.html">
+    <link
+     rel="NEXT"
+     title="Специальные типы переменных"
+     href="x1716.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x1673.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 4. Переменные и параметры.
+          Введение.</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x1716.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="UNTYPED"></a>4.3. Переменные Bash не имеют типа</h1>
+
+      <p><a
+       name="BVUNTYPED"></a></p>
+
+      <p>В отличие от большинства других языков программирования, Bash
+      не производит разделения переменных по <span
+       class="QUOTE">&quot;типам&quot;</span>. По сути, переменные Bash
+      являются строковыми переменными, но, в зависимости от контекста,
+      Bash допускает целочисленную арифметику с переменными.
+      Определяющим фактором здесь служит содержимое переменных.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="INTORSTRING"></a>
+
+        <p><strong>Пример 4-4. Целое число или строка?</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# int-or-string.sh: Целое число или строка?
+
+a=2334                   # Целое число.
+let &quot;a += 1&quot;
+echo &quot;a = $a &quot;           # a = 2335
+echo                     # Все еще целое число.
+
+
+b=${a/23/BB}             # замена &quot;23&quot; на &quot;BB&quot;.
+                         # Происходит трансформация числа в строку.
+echo &quot;b = $b&quot;            # b = BB35
+declare -i b             # Явное указание типа здесь не поможет.
+echo &quot;b = $b&quot;            # b = BB35
+
+let &quot;b += 1&quot;             # BB35 + 1 =
+echo &quot;b = $b&quot;            # b = 1
+echo
+
+c=BB34
+echo &quot;c = $c&quot;            # c = BB34
+d=${c/BB/23}             # замена &quot;BB&quot; на &quot;23&quot;.
+                         # Переменная $d становится целочисленной.
+echo &quot;d = $d&quot;            # d = 2334
+let &quot;d += 1&quot;             # 2334 + 1 =
+echo &quot;d = $d&quot;            # d = 2335
+echo
+
+# А что происходит с &quot;пустыми&quot; переменными?
+e=&quot;&quot;
+echo &quot;e = $e&quot;            # e =
+let &quot;e += 1&quot;             # Арифметические операции допускают использование &quot;пустых&quot; переменных?
+echo &quot;e = $e&quot;            # e = 1
+echo                     # &quot;Пустая&quot; переменная становится целочисленной.
+
+# А что происходит с необъявленными переменными?
+echo &quot;f = $f&quot;            # f =
+let &quot;f += 1&quot;             # Арифметические операции допустимы?
+echo &quot;f = $f&quot;            # f = 1
+echo                     # Необъявленная переменная трансформируется в целочисленную.
+
+
+
+# Переменные Bash не имеют типов.
+
+exit 0
+</pre>
+      </div>
+
+      <p>Отсутствие типов -- это и благословение и проклятие. С одной
+      стороны -- отсутствие типов делает сценарии более гибкими (чтобы
+      повеситься -- достаточно иметь веревку!) и облегчает чтение кода.
+      С другой -- является источником потенциальных ошибок и поощряет
+      привычку к &quot;неряшливому&quot; программированию.</p>
+
+      <p>Бремя отслеживания типа той или иной переменной полностью
+      лежит на плечах программиста. Bash не будет делать это за
+      вас!</p>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x1673.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x1716.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Присваивание значений переменным</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c1613.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Специальные типы переменных</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

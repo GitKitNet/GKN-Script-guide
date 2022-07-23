@@ -1,0 +1,671 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Цветные сценарии</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Разное"
+     href="c13505.html">
+    <link
+     rel="PREVIOUS"
+     title="Рекурсия"
+     href="x13609.html">
+    <link
+     rel="NEXT"
+     title="Оптимизация"
+     href="x13734.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x13609.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 33. Разное</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x13734.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="COLORIZING"></a>33.5. <span
+       class="QUOTE">&quot;Цветные&quot;</span> сценарии</h1>
+
+      <p>Для установки атрибутов отображения информации на экране,
+      таких как: жирный текст, цвет символов, цвет фона и т.п., с
+      давних пор используются ANSI <a
+       name="AEN13625"
+       href="#FTN.AEN13625"><span
+       class="footnote">[1]</span></a> escape-последовательности. Эти
+      последовательности широко используются в <a
+       href="a15138.html#DOSBATCH1">пакетных файлах DOS</a>, эти же
+      последовательности используются и в сценариях Bash.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX30A"></a>
+
+        <p><strong>Пример 33-8. <span
+         class="QUOTE">&quot;Цветная&quot;</span> адресная
+        книга</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# ex30a.sh: Версия сценария ex30.sh, с добавлением цвета .
+#           Грубый пример базы данных
+
+
+clear                                   # Очистка экрана
+
+echo -n &quot;          &quot;
+echo -e &#39;\E[37;44m&#39;&quot;\033[1mСписок\033[0m&quot;
+                                        # Белый текст на синем фоне
+echo; echo
+echo -e &quot;\033[1mВыберите интересующую Вас персону:\033[0m&quot;
+                                        # Жирный шрифт
+tput sgr0
+echo &quot;(Введите только первую букву имени.)&quot;
+echo
+echo -en &#39;\E[47;34m&#39;&quot;\033[1mE\033[0m&quot;   # Синий
+tput sgr0                               # сброс цвета
+echo &quot;vans, Roland&quot;                     # &quot;[E]vans, Roland&quot;
+echo -en &#39;\E[47;35m&#39;&quot;\033[1mJ\033[0m&quot;   # Пурпурный
+tput sgr0
+echo &quot;ones, Mildred&quot;
+echo -en &#39;\E[47;32m&#39;&quot;\033[1mS\033[0m&quot;   # Зеленый
+tput sgr0
+echo &quot;mith, Julie&quot;
+echo -en &#39;\E[47;31m&#39;&quot;\033[1mZ\033[0m&quot;   # Красный
+tput sgr0
+echo &quot;ane, Morris&quot;
+echo
+
+read person
+
+case &quot;$person&quot; in
+# Обратите внимание: переменная взята в кавычки.
+
+  &quot;E&quot; | &quot;e&quot; )
+  # Пользователь может ввести как заглавную, так и строчную букву.
+  echo
+  echo &quot;Roland Evans&quot;
+  echo &quot;4321 Floppy Dr.&quot;
+  echo &quot;Hardscrabble, CO 80753&quot;
+  echo &quot;(303) 734-9874&quot;
+  echo &quot;(303) 734-9892 fax&quot;
+  echo &quot;revans@zzy.net&quot;
+  echo &quot;Старый друг и партнер по бизнесу&quot;
+  ;;
+
+  &quot;J&quot; | &quot;j&quot; )
+  echo
+  echo &quot;Mildred Jones&quot;
+  echo &quot;249 E. 7th St., Apt. 19&quot;
+  echo &quot;New York, NY 10009&quot;
+  echo &quot;(212) 533-2814&quot;
+  echo &quot;(212) 533-9972 fax&quot;
+  echo &quot;milliej@loisaida.com&quot;
+  echo &quot;Подружка&quot;
+  echo &quot;День рождения: 11 февраля&quot;
+  ;;
+
+# Информация о Smith и Zane будет добавлена позднее.
+
+          * )
+   # Выбор по-умолчанию.
+   # &quot;Пустой&quot; ввод тоже обрабатывается здесь.
+   echo
+   echo &quot;Нет данных.&quot;
+  ;;
+
+esac
+
+tput sgr0                               # Сброс цвета
+
+echo
+
+exit 0
+</pre>
+      </div>
+
+      <p>Самая простая и, на мой взгляд, самая полезная
+      escape-последовательность -- это &quot;жирный текст&quot;,
+      <strong
+       class="COMMAND">\033[1m ... \033[0m</strong>. Здесь, комбинация
+      <span
+       class="TOKEN">\033</span> представляет <span
+       class="emphasis"><em
+       class="EMPHASIS">escape</em></span>-символ, кобинация <span
+       class="QUOTE">&quot;[1&quot;</span> -- включает вывод жирным
+      текстом, а <span
+       class="QUOTE">&quot;[0&quot;</span> -- выключает. Символ <span
+       class="QUOTE">&quot;m&quot;</span> -- завершает каждую из
+      escape-последовательностей.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class=
+"USERINPUT"><strong>echo -e &quot;\033[1mЭто жирный текст.\033[0m&quot;</strong></tt>
+             
+</pre>
+      <br>
+      <br>
+
+      <p>Простая escape-последовательность, которая управляет атрибутом
+      подчеркивания (в <span
+       class="emphasis"><em
+       class="EMPHASIS">rxvt</em></span> и <span
+       class="emphasis"><em
+       class="EMPHASIS">aterm</em></span>).</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class=
+"USERINPUT"><strong>echo -e &quot;\033[4mЭто подчеркнутый текст.\033[0m&quot;</strong></tt>
+             
+</pre>
+      <br>
+      <br>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Ключ <tt
+               class="OPTION">-e</tt>, в команде <strong
+               class="COMMAND">echo</strong>, разрешает интерпретацию
+              escape-последовательностей.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p>Другие escape-последовательности, изменяющие атрибуты
+      цвета:</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class=
+"USERINPUT"><strong>echo -e &#39;\E[34;47mЭтот текст выводится синим цветом.&#39;; tput sgr0</strong></tt>
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class=
+"USERINPUT"><strong>echo -e &#39;\E[33;44m&#39;&quot;желтый текст на синем фоне&quot;; tput sgr0</strong></tt>
+             
+</pre>
+      Команда <strong
+       class="COMMAND">tput sgr0</strong> возвращает настройки
+      терминала в первоначальное состояние.<br>
+      <br>
+
+      <table
+       class="SIDEBAR"
+       border="1"
+       cellpadding="5">
+        <tr>
+          <td>
+            <div
+             class="SIDEBAR">
+              <a
+               name="AEN13659"></a>
+
+              <p>Вывод цветного текста осуществляется по следующему
+              шаблону:.</p>
+
+              <p><tt
+               class="USERINPUT"><strong>echo -e
+              &#39;\E[COLOR1;COLOR2mКакой либо
+              текст.&#39;</strong></tt></p>
+
+              <p>Где <span
+               class="QUOTE">&quot;\E[&quot;</span> -- начало
+              escape-последовательности. Числа <span
+               class="QUOTE">&quot;COLOR1&quot;</span> и <span
+               class="QUOTE">&quot;COLOR2&quot;</span>, разделенные
+              точкой с запятой, задают цвет символов и цвет фона, в
+              соответствии с таблицей цветов, приведенной ниже.
+              (Порядок указания цвета текста и фона не имеет значения,
+              поскольку диапазоны числовых значений цвета для текста и
+              фона не пересекаются). Символ <span
+               class="QUOTE">&quot;m&quot;</span> -- должен завершать
+              escape-последовательность.</p>
+
+              <p>Обратите внимание: <a
+               href="c1613.html#SNGLQUO">одиночные кавычки</a> окружают
+              все, что следует за <strong
+               class="COMMAND">echo -e</strong>.</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <p>Числовые значения цвета, приведенные ниже, справедливы для
+      <span
+       class="emphasis"><em
+       class="EMPHASIS">rxvt</em></span>. Для других эмуляторов они
+      могут несколько отличаться.</p>
+
+      <div
+       class="TABLE">
+        <a
+         name="AEN13673"></a>
+
+        <p><strong>Таблица 33-1. Числовые значения цвета в
+        escape-последовательностях</strong></p>
+
+        <table
+         border="1"
+         class="CALSTABLE">
+          <thead>
+            <tr>
+              <th
+               align="left"
+               valign="top">Цвет</th>
+
+              <th
+               align="left"
+               valign="top">Текст</th>
+
+              <th
+               align="left"
+               valign="top">Фон</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">черный</tt></td>
+
+              <td
+               align="left"
+               valign="top">30</td>
+
+              <td
+               align="left"
+               valign="top">40</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">красный</tt></td>
+
+              <td
+               align="left"
+               valign="top">31</td>
+
+              <td
+               align="left"
+               valign="top">41</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">зеленый</tt></td>
+
+              <td
+               align="left"
+               valign="top">32</td>
+
+              <td
+               align="left"
+               valign="top">42</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">желтый</tt></td>
+
+              <td
+               align="left"
+               valign="top">33</td>
+
+              <td
+               align="left"
+               valign="top">43</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">синий</tt></td>
+
+              <td
+               align="left"
+               valign="top">34</td>
+
+              <td
+               align="left"
+               valign="top">44</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">пурпурный</tt></td>
+
+              <td
+               align="left"
+               valign="top">35</td>
+
+              <td
+               align="left"
+               valign="top">45</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">зеленовато-голубой</tt></td>
+
+              <td
+               align="left"
+               valign="top">36</td>
+
+              <td
+               align="left"
+               valign="top">46</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">белый</tt></td>
+
+              <td
+               align="left"
+               valign="top">37</td>
+
+              <td
+               align="left"
+               valign="top">47</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="COLORECHO"></a>
+
+        <p><strong>Пример 33-9. Вывод цветного текста</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# color-echo.sh: Вывод цветных сообщений.
+
+black=&#39;\E[30;47m&#39;
+red=&#39;\E[31;47m&#39;
+green=&#39;\E[32;47m&#39;
+yellow=&#39;\E[33;47m&#39;
+blue=&#39;\E[34;47m&#39;
+magenta=&#39;\E[35;47m&#39;
+cyan=&#39;\E[36;47m&#39;
+white=&#39;\E[37;47m&#39;
+
+
+cecho ()                     # Color-echo.
+                             # Аргумент $1 = текст сообщения
+                             # Аргумент $2 = цвет
+{
+local default_msg=&quot;Нет сообщений.&quot;
+                             # Не обязательно должна быть локальной.
+
+message=${1:-$default_msg}   # Текст сообщения по-умолчанию.
+color=${2:-$black}           # Цвет по-умолчанию черный.
+
+  echo -e &quot;$color&quot;
+  echo &quot;$message&quot;
+  tput sgr0                  # Восстановление первоначальных настроек терминала.
+  return
+}
+
+
+# Попробум что-нибудь вывести.
+# ----------------------------------------------------
+cecho &quot;Синий текст...&quot; $blue
+cecho &quot;Пурпурный текст.&quot; $magenta
+cecho &quot;Позеленевший от зависти.&quot; $green
+cecho &quot;Похоже на красный?&quot; $red
+cecho &quot;Циан, более известный как цвет морской волны.&quot; $cyan
+cecho &quot;Цвет не задан (по-умолчанию черный).&quot;
+       # Аргумент $color отсутствует.
+cecho &quot;\&quot;Пустой\&quot; цвет (по-умолчанию черный).&quot; &quot;&quot;
+       # Передан &quot;пустой&quot; аргумент цвета.
+cecho
+       # Ни сообщение ни цвет не переданы.
+cecho &quot;&quot; &quot;&quot;
+       # Функции переданы &quot;пустые&quot; аргументы $message и $color.
+# ----------------------------------------------------
+
+echo
+
+exit 0
+
+# Упражнения:
+# ---------
+# 1) Добавьте в функцию &#39;cecho ()&#39; возможность вывода &quot;жирного текста&quot;.
+# 2) Добавьте возможность управления цветом фона.
+</pre>
+      </div>
+
+      <div
+       class="CAUTION">
+        <table
+         class="CAUTION"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/caution.gif"
+             hspace="5"
+             alt="Caution"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Однако, как обычно, в бочке меда есть ложка дегтя.
+              <span
+               class="emphasis"><em
+               class="EMPHASIS">Escape-последовательности ANSI
+              совершенно не переносимы</em></span>. Вывод в одном
+              эмуляторе терминала (или в консоли) может разительно
+              отличаться от вывода в другом эмуляторе. <span
+               class="QUOTE">&quot;Расцвеченные&quot;</span> сценарии,
+              дающие изумительно красивый вывод текста на одном
+              терминале, могут давать совершенно нечитаемый текст на
+              другом. Это ставит под сомнение практическую ценность
+              <span
+               class="QUOTE">&quot;расцвечивания&quot;</span> вывода в
+              сценариях, низводя ее до уровня никчемной <span
+               class="QUOTE">&quot;игрушки&quot;</span>.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p>Moshe Jacobson разработал утилиту <strong
+       class="COMMAND">color</strong> (<a
+       href="http://runslinux.net/projects/color"
+       target="_top">http://runslinux.net/projects/color</a>), которая
+      значительно упрощает работу с ANSI escape-последовательностями,
+      заменяя, только что обсуждавшиеся, неуклюжие конструкции,
+      логичным и понятным синтаксисом.</p>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN13625"
+         href="x13621.html#AEN13625"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>ANSI -- аббревиатура от American National Standards
+          Institute.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x13609.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x13734.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Рекурсия</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c13505.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Оптимизация</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

@@ -1,0 +1,867 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Проверка условий</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Основы"
+     href="p299.html">
+    <link
+     rel="PREVIOUS"
+     title="Завершение и код завершения"
+     href="c2105.html">
+    <link
+     rel="NEXT"
+     title="Операции проверки файлов"
+     href="x2389.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c2105.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x2389.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="TESTS"></a>Глава 7. Проверка условий</h1>
+
+      <p><a
+       name="IFTHEN"></a></p>
+
+      <p>практически любой язык программирования включает в себя
+      условные операторы, предназначенные для проверки условий, чтобы
+      выбрать тот или иной путь развития событий в зависимости от этих
+      условий. В Bash, для проверки условий, имеется команда <strong
+       class="COMMAND">test</strong>, различного вида скобочные
+      операторы и условный оператор <strong
+       class="COMMAND">if/then</strong>.</p>
+
+      <div
+       class="SECT1">
+        <h1
+         class="SECT1"><a
+         name="TESTCONSTRUCTS"></a>7.1. Конструкции проверки
+        условий</h1>
+
+        <p><a
+         name="TESTCONSTRUCTS1"></a></p>
+
+        <ul>
+          <li>
+            <p>Оператор <strong
+             class="COMMAND">if/then</strong> проверяет -- является ли
+            <a
+             href="c2105.html#EXITSTATUSREF">код завершения</a> списка
+            команд <span
+             class="RETURNVALUE">0</span> (поскольку 0 означает <span
+             class="QUOTE">&quot;успех&quot;</span>), и если это так,
+            то выполняет одну, или более, команд, следующие за словом
+            then.</p>
+          </li>
+
+          <li>
+            <p>Существует специальная команда -- <strong
+             class="COMMAND">[</strong> (<a
+             href="c301.html#LEFTBRACKET">левая квадратная скобка</a>).
+            Она является синонимом команды <strong
+             class="COMMAND">test</strong>, и является <a
+             href="c5358.html#BUILTINREF">встроенной</a> командой (т.е.
+            более эффективной, в смысле производительности). Эта
+            команда воспринимает свои аргументы как выражение сравнения
+            или как файловую проверку и возвращает код завершения в
+            соответствии с результатами проверки (0 -- истина, 1 --
+            ложь).</p>
+          </li>
+
+          <li>
+            <p>Начиная с версии 2.02, Bash предоставляет в распоряжение
+            программиста конструкцию <a
+             href="c2171.html#DBLBRACKETS">[[ ... ]]</a> <span
+             class="emphasis"><em
+             class="EMPHASIS">расширенный вариант команды
+            test</em></span>, которая выполняет сравнение способом
+            более знакомым программистам, пишущим на других языках
+            программирования. Обратите внимание: <strong
+             class="COMMAND">[[</strong> -- это <a
+             href="c5358.html#KEYWORDREF">зарезервированное слово</a>,
+            а не команда.</p>
+
+            <p>Bash исполняет <tt
+             class="USERINPUT"><strong>[[ $a -lt $b ]]</strong></tt>
+            как один элемент, который имеет код возврата.</p>
+
+            <p>Круглые скобки <a
+             href="x4862.html">(( ... ))</a> и предложение <a
+             href="c5358.html#LETREF">let ...</a> так же возвращают код
+            <span
+             class="RETURNVALUE">0</span>, если результатом
+            арифметического выражения является ненулевое значение.
+            Таким образом, <a
+             href="c11565.html#ARITHEXPREF">арифметические
+            выражения</a> могут учавствовать в операциях сравнения.</p>
+<pre
+ class="PROGRAMLISTING">
+Предложение let &quot;1&lt;2&quot; возвращает 0 (так как результат сравнения &quot;1&lt;2&quot; -- &quot;1&quot;, или &quot;истина&quot;)
+(( 0 &amp;&amp; 1 )) возвращает 1 (так как результат операции &quot;0 &amp;&amp; 1&quot; -- &quot;0&quot;, или &quot;ложь&quot;)
+</pre>
+            <br>
+            <br>
+          </li>
+
+          <li>
+            <p>Условный оператор <strong
+             class="COMMAND">if</strong> проверяет код завершения любой
+            команды, а не только результат выражения, заключенного в
+            квадратные скобки.</p>
+<pre
+ class="PROGRAMLISTING">
+if cmp a b &amp;&gt; /dev/null  # Подавление вывода.
+then echo &quot;Файлы a и b идентичны.&quot;
+else echo &quot;Файлы a и b имеют различия.&quot;
+fi
+
+if grep -q Bash file
+then echo &quot;Файл содержит, как минимум, одно слово Bash.&quot;
+fi
+
+if COMMAND_WHOSE_EXIT_STATUS_IS_0_UNLESS_ERROR_OCCURRED
+then echo &quot;Команда выполнена успешно.&quot;
+else echo &quot;Обнаружена ошибка при выполнении команды.&quot;
+fi
+</pre>
+            <br>
+            <br>
+          </li>
+
+          <li>
+            <p>Оператор <strong
+             class="COMMAND">if/then</strong> допускает наличие
+            вложенных проверок.</p>
+<pre
+ class="PROGRAMLISTING">
+if echo &quot;Следующий *if* находится внутри первого *if*.&quot;
+
+  if [[ $comparison = &quot;integer&quot; ]]
+    then (( a &lt; b ))
+  else
+    [[ $a &lt; $b ]]
+  fi
+
+then
+  echo &#39;$a меньше $b&#39;
+fi
+</pre>
+            <br>
+            <br>
+
+            <p><span
+             class="emphasis"><em
+             class="EMPHASIS">Это детальное описание конструкции <span
+             class="QUOTE">&quot;if-test&quot;</span> любезно
+            предоставлено Stephane Chazelas.</em></span></p>
+          </li>
+        </ul>
+
+        <div
+         class="EXAMPLE">
+          <a
+           name="EX10"></a>
+
+          <p><strong>Пример 7-1. Что есть
+          &quot;истина&quot;?</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+echo
+
+echo &quot;Проверяется \&quot;0\&quot;&quot;
+if [ 0 ]      # ноль
+then
+  echo &quot;0 -- это истина.&quot;
+else
+  echo &quot;0 -- это ложь.&quot;
+fi            # 0 -- это истина.
+
+echo
+
+echo &quot;Проверяется \&quot;1\&quot;&quot;
+if [ 1 ]      # единица
+then
+  echo &quot;1 -- это истина.&quot;
+else
+  echo &quot;1 -- это ложь.&quot;
+fi            # 1 -- это ложь.
+
+echo
+
+echo &quot;Testing \&quot;-1\&quot;&quot;
+if [ -1 ]     # минус один
+then
+  echo &quot;-1 -- это истина.&quot;
+else
+  echo &quot;-1 -- это ложь.&quot;
+fi            # -1 -- это истина.
+
+echo
+
+echo &quot;Проверяется \&quot;NULL\&quot;&quot;
+if [ ]        # NULL (пустое условие)
+then
+  echo &quot;NULL -- это истина.&quot;
+else
+  echo &quot;NULL -- это ложь.&quot;
+fi            # NULL -- это ложь.
+
+echo
+
+echo &quot;Проверяется \&quot;xyz\&quot;&quot;
+if [ xyz ]    # строка
+then
+  echo &quot;Случайная строка -- это истина.&quot;
+else
+  echo &quot;Случайная строка -- это ложь.&quot;
+fi            # Случайная строка -- это истина.
+
+echo
+
+echo &quot;Проверяется \&quot;\$xyz\&quot;&quot;
+if [ $xyz ]   # Проверка, если $xyz это null, но...
+              # только для неинициализированных переменных.
+then
+  echo &quot;Неинициализированная переменная -- это истина.&quot;
+else
+  echo &quot;Неинициализированная переменная -- это ложь.&quot;
+fi            # Неинициализированная переменная -- это ложь.
+
+echo
+
+echo &quot;Проверяется \&quot;-n \$xyz\&quot;&quot;
+if [ -n &quot;$xyz&quot; ]            # Более корректный вариант.
+then
+  echo &quot;Неинициализированная переменная -- это истина.&quot;
+else
+  echo &quot;Неинициализированная переменная -- это ложь.&quot;
+fi            # Неинициализированная переменная -- это ложь.
+
+echo
+
+
+xyz=          # Инициализирована пустым значением.
+
+echo &quot;Проверяется \&quot;-n \$xyz\&quot;&quot;
+if [ -n &quot;$xyz&quot; ]
+then
+  echo &quot;Пустая переменная -- это истина.&quot;
+else
+  echo &quot;Пустая переменная -- это ложь.&quot;
+fi            # Пустая переменная -- это ложь.
+
+
+echo
+
+
+# Кргда &quot;ложь&quot; истинна?
+
+echo &quot;Проверяется \&quot;false\&quot;&quot;
+if [ &quot;false&quot; ]              #  это обычная строка &quot;false&quot;.
+then
+  echo &quot;\&quot;false\&quot; -- это истина.&quot; #+ и она истинна.
+else
+  echo &quot;\&quot;false\&quot; -- это ложь.&quot;
+fi            # &quot;false&quot; -- это истина.
+
+echo
+
+echo &quot;Проверяется \&quot;\$false\&quot;&quot;  # Опять неинициализированная переменная.
+if [ &quot;$false&quot; ]
+then
+  echo &quot;\&quot;\$false\&quot; -- это истина.&quot;
+else
+  echo &quot;\&quot;\$false\&quot; -- это ложь.&quot;
+fi            # &quot;$false&quot; -- это ложь.
+              # Теперь мв получили ожидаемый результат.
+
+
+echo
+
+exit 0
+</pre>
+        </div>
+
+        <div
+         class="FORMALPARA">
+          <p><strong>Упражнение.</strong> Объясните результаты,
+          полученные в <a
+           href="c2171.html#EX10">Пример 7-1</a>.</p>
+        </div>
+<pre
+ class="PROGRAMLISTING">
+if [ condition-true ]
+then
+   command 1
+   command 2
+   ...
+else
+   # Необязательная ветка (можно опустить, если в ней нет необходимости).
+   # Дополнительный блок кода,
+   # исполняемый в случае, когда результат проверки -- &quot;ложь&quot;.
+   command 3
+   command 4
+   ...
+fi
+</pre>
+        <br>
+        <br>
+
+        <div
+         class="NOTE">
+          <table
+           class="NOTE"
+           width="100%"
+           border="0">
+            <tr>
+              <td
+               width="25"
+               align="center"
+               valign="top"><img
+               src="misc/abs-book/images/note.gif"
+               hspace="5"
+               alt="Note"></td>
+
+              <td
+               align="left"
+               valign="top">
+                <p>Когда <span
+                 class="emphasis"><em
+                 class="EMPHASIS">if</em></span> и <span
+                 class="emphasis"><em
+                 class="EMPHASIS">then</em></span> располагаются в
+                одной строке, то конструкция <span
+                 class="emphasis"><em
+                 class="EMPHASIS">if</em></span> должна завершаться
+                точкой с запятой. И <span
+                 class="emphasis"><em
+                 class="EMPHASIS">if</em></span>, и <span
+                 class="emphasis"><em
+                 class="EMPHASIS">then</em></span> -- это <a
+                 href="c5358.html#KEYWORDREF">зарезервированные
+                слова</a>. Зарезервированные слова начинают инструкцию,
+                которая должна быть завершена прежде, чем в той же
+                строке появится новая инструкция.</p>
+<pre
+ class="PROGRAMLISTING">
+if [ -x &quot;$filename&quot; ]; then
+</pre>
+                <br>
+                <br>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div
+         class="VARIABLELIST">
+          <p><strong><a
+           name="ELIFREF1"></a>Else if и elif</strong></p>
+
+          <dl>
+            <dt><span
+             class="TOKEN">elif</span></dt>
+
+            <dd>
+              <p><tt
+               class="USERINPUT"><strong>elif</strong></tt> -- это
+              краткая форма записи конструкции <span
+               class="TOKEN">else if</span>. Применяется для построения
+              многоярусных инструкций <span
+               class="TOKEN">if/then</span>.</p>
+<pre
+ class="PROGRAMLISTING">
+if [ condition1 ]
+then
+   command1
+   command2
+   command3
+elif [ condition2 ]
+# То же самое, что и else if
+then
+   command4
+   command5
+else
+   default-command
+fi
+</pre>
+              <br>
+              <br>
+            </dd>
+          </dl>
+        </div>
+
+        <p>Конструкция <tt
+         class="USERINPUT"><strong>if test condition-true</strong></tt>
+        является точным эквивалентом конструкции <tt
+         class="USERINPUT"><strong>if [ condition-true ]</strong></tt>,
+        где левая квадратная скобка <strong
+         class="COMMAND">[</strong> выполняет те же действия, что и
+        команда <strong
+         class="COMMAND">test</strong>. Закрывающая правая квадратная
+        скобка <strong
+         class="COMMAND">]</strong> не является абсолютно необходимой,
+        однако, более новые версии Bash требуют ее наличие.</p>
+
+        <div
+         class="NOTE">
+          <table
+           class="NOTE"
+           width="100%"
+           border="0">
+            <tr>
+              <td
+               width="25"
+               align="center"
+               valign="top"><img
+               src="misc/abs-book/images/note.gif"
+               hspace="5"
+               alt="Note"></td>
+
+              <td
+               align="left"
+               valign="top">
+                <p>Команда <strong
+                 class="COMMAND">test</strong> -- это <a
+                 href="c5358.html#BUILTINREF">встроенная</a> команда
+                Bash, которая выполняет проверки файлов и производит
+                сравнение строк. Таким образом, в Bash-скриптах,
+                команда <strong
+                 class="COMMAND">test</strong> <span
+                 class="emphasis"><em
+                 class="EMPHASIS">не</em></span> вызывает внешнюю (<tt
+                 class="FILENAME">/usr/bin/test</tt>) утилиту, которая
+                является частью пакета <span
+                 class="emphasis"><em
+                 class="EMPHASIS">sh-utils</em></span>. Аналогично,
+                <span
+                 class="TOKEN">[</span> не производит вызов утилиты <tt
+                 class="FILENAME">/usr/bin/[</tt>, которая является
+                символической ссылкой на <tt
+                 class="FILENAME">/usr/bin/test</tt>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>type test</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">test is a shell builtin</tt>
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>type &#39;[&#39;</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">[ is a shell builtin</tt>
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>type &#39;[[&#39;</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">[[ is a shell keyword</tt>
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>type &#39;]]&#39;</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">]] is a shell keyword</tt>
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>type &#39;]&#39;</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">bash: type: ]: not found</tt>
+             
+</pre>
+                <br>
+                <br>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div
+         class="EXAMPLE">
+          <a
+           name="EX11"></a>
+
+          <p><strong>Пример 7-2. Эквиваленты команды <span
+           class="TOKEN">test</span> -- <tt
+           class="FILENAME">/usr/bin/test</tt>, <span
+           class="TOKEN">[ ]</span>, и <tt
+           class="FILENAME">/usr/bin/[</tt></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+echo
+
+if test -z &quot;$1&quot;
+then
+  echo &quot;Аргументы командной строки отсутствуют.&quot;
+else
+  echo &quot;Первый аргумент командной строки: $1.&quot;
+fi
+
+echo
+
+if /usr/bin/test -z &quot;$1&quot;      # Дает тот же рузультат, что и встроенная команда &quot;test&quot;.
+then
+  echo &quot;Аргументы командной строки отсутствуют.&quot;
+else
+  echo &quot;Первый аргумент командной строки: $1.&quot;
+fi
+
+echo
+
+if [ -z &quot;$1&quot; ]                # Функционально идентично вышеприведенному блоку кода.
+#   if [ -z &quot;$1&quot;                эта конструкция должна работать, но...
+#+  Bash выдает сообщение об отсутствующей закрывающей скобке.
+then
+  echo &quot;Аргументы командной строки отсутствуют.&quot;
+else
+  echo &quot;Первый аргумент командной строки: $1.&quot;
+fi
+
+echo
+
+if /usr/bin/[ -z &quot;$1&quot;         # Функционально идентично вышеприведенному блоку кода.
+# if /usr/bin/[ -z &quot;$1&quot; ]     # Работает, но выдает сообщение об ошибке.
+then
+  echo &quot;Аргументы командной строки отсутствуют.&quot;
+else
+  echo &quot;Первый аргумент командной строки: $1.&quot;
+fi
+
+echo
+
+exit 0
+</pre>
+        </div>
+
+        <p><a
+         name="DBLBRACKETS"></a>Конструкция <span
+         class="TOKEN">[[ ]]</span> более универсальна, по сравнению с
+        <span
+         class="TOKEN">[ ]</span>. Этот <span
+         class="emphasis"><em
+         class="EMPHASIS">расширенный вариант команды test</em></span>
+        перекочевал в Bash из <span
+         class="emphasis"><em
+         class="EMPHASIS">ksh88</em></span>.</p>
+
+        <div
+         class="NOTE">
+          <table
+           class="NOTE"
+           width="100%"
+           border="0">
+            <tr>
+              <td
+               width="25"
+               align="center"
+               valign="top"><img
+               src="misc/abs-book/images/note.gif"
+               hspace="5"
+               alt="Note"></td>
+
+              <td
+               align="left"
+               valign="top">
+                <p>Внутри этой конструкции не производится никакой
+                дополнительной интерпретации имен файлов и не
+                производится разбиение аргументов на отдельные слова,
+                но допускается подстановка параметров и команд.</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+<pre
+ class="PROGRAMLISTING">
+file=/etc/passwd
+
+if [[ -e $file ]]
+then
+  echo &quot;Файл паролей найден.&quot;
+fi
+</pre>
+        <br>
+        <br>
+
+        <div
+         class="TIP">
+          <table
+           class="TIP"
+           width="100%"
+           border="0">
+            <tr>
+              <td
+               width="25"
+               align="center"
+               valign="top"><img
+               src="misc/abs-book/images/tip.gif"
+               hspace="5"
+               alt="Tip"></td>
+
+              <td
+               align="left"
+               valign="top">
+                <p>Конструкция <strong
+                 class="COMMAND">[[ ... ]]</strong> более
+                предпочтительна, нежели <strong
+                 class="COMMAND">[ ... ]</strong>, поскольку поможет
+                избежать некоторых логических ошибок. Например,
+                операторы <span
+                 class="TOKEN">&amp;&amp;</span>, <span
+                 class="TOKEN">||</span>, <span
+                 class="TOKEN">&lt;</span> и <span
+                 class="TOKEN">&gt;</span> внутри <span
+                 class="TOKEN">[[ ]]</span> вполне допустимы, в то
+                время как внутри <span
+                 class="TOKEN">[ ]</span> порождают сообщения об
+                ошибках.</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div
+         class="NOTE">
+          <table
+           class="NOTE"
+           width="100%"
+           border="0">
+            <tr>
+              <td
+               width="25"
+               align="center"
+               valign="top"><img
+               src="misc/abs-book/images/note.gif"
+               hspace="5"
+               alt="Note"></td>
+
+              <td
+               align="left"
+               valign="top">
+                <p>Строго говоря, после оператора <strong
+                 class="COMMAND">if</strong>, ни команда <strong
+                 class="COMMAND">test</strong>, ни квадратные скобки (
+                [ ] или [[ ]] ) не являются обязательными.</p>
+<pre
+ class="PROGRAMLISTING">
+dir=/home/bozo
+
+if cd &quot;$dir&quot; 2&gt;/dev/null; then   # &quot;2&gt;/dev/null&quot; подавление вывода сообщений об ошибках.
+  echo &quot;Переход в каталог $dir выполнен.&quot;
+else
+  echo &quot;Невозможно перейти в каталог $dir.&quot;
+fi
+</pre>
+                Инструкция &quot;if COMMAND&quot; возвращает код
+                возврата команды COMMAND.<br>
+                <br>
+
+                <p>Точно так же, условие, находящееся внутри квадратных
+                скобок может быть проверено без использования оператора
+                <strong
+                 class="COMMAND">if</strong>.</p>
+<pre
+ class="PROGRAMLISTING">
+var1=20
+var2=22
+[ &quot;$var1&quot; -ne &quot;$var2&quot; ] &amp;&amp; echo &quot;$var1 не равно $var2&quot;
+
+home=/home/bozo
+[ -d &quot;$home&quot; ] || echo &quot;каталог $home не найден.&quot;
+</pre>
+                <br>
+                <br>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <p>Внутри <a
+         href="x4862.html">(( ))</a> производится вычисление
+        арифметического выражения. Если результатом вычислений является
+        ноль, то возвращается <span
+         class="RETURNVALUE">1</span>, или <span
+         class="QUOTE">&quot;ложь&quot;</span>. Ненулевой результат
+        дает код возврата <span
+         class="RETURNVALUE">0</span>, или <span
+         class="QUOTE">&quot;истина&quot;</span>. То есть полная
+        противоположность инструкциям <strong
+         class="COMMAND">test</strong> и <span
+         class="TOKEN">[ ]</span>, обсуждавшимся выше.</p>
+
+        <div
+         class="EXAMPLE">
+          <a
+           name="ARITHTESTS"></a>
+
+          <p><strong>Пример 7-3. Арифметические выражения внутри <span
+           class="TOKEN">(( ))</span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Проверка арифметических выражений.
+
+# Инструкция (( ... )) вычисляет арифметические выражения.
+# Код возврата противоположен коду возврата инструкции [ ... ] !
+
+(( 0 ))
+echo &quot;Код возврата \&quot;(( 0 ))\&quot;:  $?.&quot;         # 1
+
+(( 1 ))
+echo &quot;Код возврата \&quot;(( 1 ))\&quot;:  $?.&quot;         # 0
+
+(( 5 &gt; 4 ))                                   # true
+echo &quot;Код возврата \&quot;(( 5 &gt; 4 ))\&quot;:  $?.&quot;     # 0
+
+(( 5 &gt; 9 ))                                   # false
+echo &quot;Код возврата \&quot;(( 5 &gt; 9 ))\&quot;:  $?.&quot;     # 1
+
+(( 5 - 5 ))                                   # 0
+echo &quot;Код возврата \&quot;(( 5 - 5 ))\&quot;:  $?.&quot;     # 1
+
+(( 5 / 4 ))                                   # Деление, все в порядке
+echo &quot;Код возврата \&quot;(( 5 / 4 ))\&quot;:  $?.&quot;     # 0
+
+(( 1 / 2 ))                                   # Результат деления &lt; 1.
+echo &quot;Код возврата \&quot;(( 1 / 2 ))\&quot;:  $?.&quot;     # Округляется до 0.
+                                              # 1
+
+(( 1 / 0 )) 2&gt;/dev/null                       # Деление на 0.
+echo &quot;Код возврата \&quot;(( 1 / 0 ))\&quot;:  $?.&quot;     # 1
+
+# Для чего нужна инструкция &quot;2&gt;/dev/null&quot; ?
+# Что произойдет, если ее убрать?
+# Попробуйте убрать ее и выполнить сценарий.
+
+exit 0
+</pre>
+        </div>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c2105.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x2389.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Завершение и код завершения</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p299.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Операции проверки файлов</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

@@ -1,0 +1,456 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Управление ходом выполнения цикла</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Циклы и ветвления"
+     href="c4875.html">
+    <link
+     rel="PREVIOUS"
+     title="Вложенные циклы"
+     href="x5140.html">
+    <link
+     rel="NEXT"
+     title="Операторы выбора"
+     href="x5210.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x5140.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 10. Циклы и ветвления</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x5210.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="LOOPCONTROL"></a>10.3. Управление ходом выполнения
+      цикла</h1>
+
+      <div
+       class="VARIABLELIST">
+        <dl>
+          <dt><strong
+           class="COMMAND">break</strong>, <strong
+           class="COMMAND">continue</strong></dt>
+
+          <dd>
+            <p>Для управления ходом выполнения цикла служат команды
+            <strong
+             class="COMMAND">break</strong> и <strong
+             class="COMMAND">continue</strong> <a
+             name="AEN5175"
+             href="#FTN.AEN5175"><span
+             class="footnote">[1]</span></a> и точно соответствуют
+            своим аналогам в других языках программирования. Команда
+            <strong
+             class="COMMAND">break</strong> прерывает исполнение цикла,
+            в то время как <strong
+             class="COMMAND">continue</strong> передает управление в
+            начало цикло, минуя все последующие команды в теле
+            цикла.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX28"></a>
+
+              <p><strong>Пример 10-20. Команды break и continue в
+              цикле</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+LIMIT=19  # Верхний предел
+
+echo
+echo &quot;Печать чисел от 1 до 20 (исключая 3 и 11).&quot;
+
+a=0
+
+while [ $a -le &quot;$LIMIT&quot; ]
+do
+ a=$(($a+1))
+
+ if [ &quot;$a&quot; -eq 3 ] || [ &quot;$a&quot; -eq 11 ]  # Исключить 3 и 11
+ then
+   continue  # Переход в начало цикла.
+ fi
+
+ echo -n &quot;$a &quot;
+done
+
+# Упражнение:
+# Почему число 20 тоже выводится?
+
+echo; echo
+
+echo Печать чисел от 1 до 20, но взгляните, что происходит после вывода числа 2
+
+##################################################################
+
+# Тот же цикл, только &#39;continue&#39; заменено на &#39;break&#39;.
+
+a=0
+
+while [ &quot;$a&quot; -le &quot;$LIMIT&quot; ]
+do
+ a=$(($a+1))
+
+ if [ &quot;$a&quot; -gt 2 ]
+ then
+   break  # Завершение работы цикла.
+ fi
+
+ echo -n &quot;$a &quot;
+done
+
+echo; echo; echo
+
+exit 0
+</pre>
+            </div>
+
+            <p>Команде <strong
+             class="COMMAND">break</strong> может быть передан
+            необязательный параметр. Команда <strong
+             class="COMMAND">break</strong> без параметра прерывает тот
+            цикл, в который она вставлена, а <strong
+             class="COMMAND">break N</strong> прерывает цикл, стоящий
+            на N уровней выше (причем 1-й уровень -- это уровень
+            текущего цикла, прим. перев.).</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="BREAKLEVELS"></a>
+
+              <p><strong>Пример 10-21. Прерывание многоуровневых
+              циклов</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# break-levels.sh: Прерывание циклов.
+
+# &quot;break N&quot; прерывает исполнение цикла, стоящего на N уровней выше текущего.
+
+for outerloop in 1 2 3 4 5
+do
+  echo -n &quot;Группа $outerloop:   &quot;
+
+  for innerloop in 1 2 3 4 5
+  do
+    echo -n &quot;$innerloop &quot;
+
+    if [ &quot;$innerloop&quot; -eq 3 ]
+    then
+      break  # Попробуйте &quot;break 2&quot;,
+             # тогда будут прерываться как вложенный, так и внешний циклы
+    fi
+  done
+
+  echo
+done  
+
+echo
+
+exit 0
+</pre>
+            </div>
+
+            <p>Команда <strong
+             class="COMMAND">continue</strong>, как и команда <strong
+             class="COMMAND">break</strong>, может иметь необязательный
+            параметр. В простейшем случае, команда <strong
+             class="COMMAND">continue</strong> передает управление в
+            начало текущего цикла, а команда <strong
+             class="COMMAND">continue N</strong> прерывает исполнение
+            текущего цикла и передает управление в начало внешнего
+            цикла, отстоящего от текущего на N уровней (причем 1-й
+            уровень -- это уровень текущего цикла, прим. перев.).</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="CONTINUELEVELS"></a>
+
+              <p><strong>Пример 10-22. Передача управление в начало
+              внешнего цикла</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Команда &quot;continue N&quot; передает управление в начало внешнего цикла, отстоящего от текущего на N уровней.
+
+for outer in I II III IV V           # внешний цикл
+do
+  echo; echo -n &quot;Группа $outer: &quot;
+
+  for inner in 1 2 3 4 5 6 7 8 9 10  # вложенный цикл
+  do
+
+    if [ &quot;$inner&quot; -eq 7 ]
+    then
+      continue 2  # Передача управления в начало цикла 2-го уровня.
+                  # попробуйте убрать параметр 2 команды &quot;continue&quot;
+    fi
+
+    echo -n &quot;$inner &quot;  # 8 9 10 никогда не будут напечатаны.
+  done
+
+done
+
+echo; echo
+
+# Упражнение:
+# Подумайте, где реально можно использовать &quot;continue N&quot; в сценариях.
+
+exit 0
+</pre>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="CONTINUENEX"></a>
+
+              <p><strong>Пример 10-23. Живой пример использования <span
+               class="QUOTE">&quot;continue N&quot;</span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+# Albert Reiner привел пример использования &quot;continue N&quot;:
+# ---------------------------------------------------------
+
+#  Допустим, у меня есть большое количество задач, обрабатывающие некоторые данные,
+#+ которые хранятся в некоторых файлах, с именами, задаваемыми по шаблону,
+#+ в заданном каталоге.
+#+ Есть несколько машин, которым открыт доступ к этому каталогу
+#+ и я хочу распределить обработку информации между машинами.
+#+ тогда я обычно для каждой машины пишу нечто подобное:
+
+while true
+do
+  for n in .iso.*
+  do
+    [ &quot;$n&quot; = &quot;.iso.opts&quot; ] &amp;&amp; continue
+    beta=${n#.iso.}
+    [ -r .Iso.$beta ] &amp;&amp; continue
+    [ -r .lock.$beta ] &amp;&amp; sleep 10 &amp;&amp; continue
+    lockfile -r0 .lock.$beta || continue
+    echo -n &quot;$beta: &quot; `date`
+    run-isotherm $beta
+    date
+    ls -alF .Iso.$beta
+    [ -r .Iso.$beta ] &amp;&amp; rm -f .lock.$beta
+    continue 2
+  done
+  break
+done
+
+#  Конкретная реализация цикла, особенно sleep N, зависит от конкретных применений,
+#+ но в общем случае он строится по такой схеме:
+
+while true
+do
+  for job in {шаблон}
+  do
+    {файл уже обработан или обрабатывается} &amp;&amp; continue
+    {пометить файл как обрабатываемый, обработать, пометить как обработанный}
+    continue 2
+  done
+  break        # Или что нибудь подобное `sleep 600&#39;, чтобы избежать завершения.
+done
+
+#  Этот сценарий завершит работу после того как все данные будут обработаны
+#+ (включая данные, которые поступили во время обработки). Использование
+#+ соответствующих lock-файлоа позволяет вести обработку на нескольких машинах
+#+ одновременно, не производя дублирующих вычислений [которые, в моем случае,
+#+ выполняются в течении нескольких часов, так что для меня это очень важно].
+#+ Кроме того, поскольку поиск необработанных файлов всегда начинается с
+#+ самого начала, можно задавать приоритеты в именах файлов. Конечно, можно
+#+ обойтись и без `continue 2&#39;, но тогда придется ввести дополнительную
+#+ проверку -- действительно ли был обработан тот или иной файл
+#+ (чтобы перейти к поиску следующего необработанного файла).
+</pre>
+            </div>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Конструкция <strong
+                     class="COMMAND">continue N</strong> довольно
+                    сложна в понимании и применении, поэтому, вероятно
+                    лучше будет постараться избегать ее
+                    использования.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN5175"
+         href="x5153.html#AEN5175"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Эти команды являются <a
+           href="c5358.html#BUILTINREF">встроенными командами</a> языка
+          сценариев командной оболочки (shell), в то время как <a
+           href="c4875.html#WHILELOOPREF">while</a>, <a
+           href="x5210.html#CASEESAC1">case</a> и т.п. -- являются <a
+           href="c5358.html#KEYWORDREF">зарезервированными
+          словами</a>.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x5140.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x5210.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Вложенные циклы</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c4875.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Операторы выбора</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

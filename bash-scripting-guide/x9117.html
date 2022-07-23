@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Команды управления терминалом</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Внешние команды, программы и утилиты"
+     href="c6407.html">
+    <link
+     rel="PREVIOUS"
+     title="Команды для работы с сетью"
+     href="x8707.html">
+    <link
+     rel="NEXT"
+     title="Команды выполнения математических операций"
+     href="x9199.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x8707.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 12. Внешние команды, программы и
+          утилиты</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x9199.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="TERMINALCCMDS"></a>12.7. Команды управления
+      терминалом</h1>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="TERMCOMMANDLISTING1"></a>Команды, имеющие отношение к
+        консоли или терминалу</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">tput</strong></dt>
+
+          <dd>
+            <p>инициализация терминала или выполнение запроса к базе
+            данных терминалов <tt
+             class="FILENAME">terminfo</tt>. С помощью <strong
+             class="COMMAND">tput</strong> можно выполнять различные
+            операции. <strong
+             class="COMMAND">tput clear</strong> -- эквивалентно
+            команде <strong
+             class="COMMAND">clear</strong>. <strong
+             class="COMMAND">tput reset</strong> -- эквивалентно
+            команде <strong
+             class="COMMAND">reset</strong>. <strong
+             class="COMMAND">tput sgr0</strong> -- так же сбрасывет
+            настройки терминал, но без очистки экрана.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>tput longname</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">xterm terminal emulator (XFree86 4.0 Window System)</tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <p>Команда <strong
+             class="COMMAND">tput cup X Y</strong> перемещает курсор в
+            координаты (X,Y). Обычно этой команде предшествует <strong
+             class="COMMAND">clear</strong>, очищающая экран.</p>
+
+            <p>Обратите внимание: <a
+             href="c9708.html#STTYREF">stty</a> предлагает более
+            широкий диапазон возможностей.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">infocmp</strong></dt>
+
+          <dd>
+            <p>Cравнение или печать информации о характеристиках
+            терминалов, хранящейся в базе данных <span
+             class="emphasis"><em
+             class="EMPHASIS">terminfo</em></span>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>infocmp</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">#       Reconstructed via infocmp from file:
+ /usr/share/terminfo/r/rxvt
+ rxvt|rxvt terminal emulator (X Window System),
+         am, bce, eo, km, mir, msgr, xenl, xon,
+         colors#8, cols#80, it#8, lines#24, pairs#64,
+         acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
+         bel=^G, blink=\E[5m, bold=\E[1m,
+         civis=\E[?25l,
+         clear=\E[H\E[2J, cnorm=\E[?25h, cr=^M,
+         ...</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">reset</strong></dt>
+
+          <dd>
+            <p>Сбрасывает настройки терминала и очищает экран. Как и в
+            случае команды <strong
+             class="COMMAND">clear</strong>, курсор и приглашение к
+            вводу (prompt) выводятся в верхнем левом углу
+            терминала.</p>
+          </dd>
+
+          <dt><a
+           name="CLEARREF"></a><strong
+           class="COMMAND">clear</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">clear</strong> просто очищает экран
+            терминала или окно xterm. Курсор и приглашение к вводу
+            (prompt) выводятся в верхнем левом углу терминала. Эта
+            команда может запускаться как из командной строки, так и из
+            сценария. См. <a
+             href="x5210.html#EX30">Пример 10-25</a>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">script</strong></dt>
+
+          <dd>
+            <p>Эта утилита позволяет сохранять в файле все символы,
+            введенные пользователем c клавиатуры (вывод тоже). Получая,
+            фактически, подробнейший синхронный протокол сессии.</p>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x8707.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x9199.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Команды для работы с сетью</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c6407.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Команды выполнения математических операций</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

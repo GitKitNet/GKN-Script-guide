@@ -1,0 +1,556 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Операции проверки файлов</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Проверка условий"
+     href="c2171.html">
+    <link
+     rel="PREVIOUS"
+     title="Проверка условий"
+     href="c2171.html">
+    <link
+     rel="NEXT"
+     title="Операции сравнения"
+     href="x2565.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c2171.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 7. Проверка условий</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x2565.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="FTO"></a>7.2. Операции проверки файлов</h1>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="RTIF"></a>Возвращает true если...</strong></p>
+
+        <dl>
+          <dt><span
+           class="TOKEN">-e</span></dt>
+
+          <dd>
+            <p>файл существует</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-f</span></dt>
+
+          <dd>
+            <p><tt
+             class="REPLACEABLE"><em>обычный</em></tt> файл (не каталог
+            и не файл устройства)</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-s</span></dt>
+
+          <dd>
+            <p>ненулевой размер файла</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-d</span></dt>
+
+          <dd>
+            <p>файл является каталогом</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-b</span></dt>
+
+          <dd>
+            <p>файл является блочным устройством (floppy, cdrom и
+            т.п.)</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-c</span></dt>
+
+          <dd>
+            <p>файл является символьным устройством (клавиатура, модем,
+            звуковая карта и т.п.)</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-p</span></dt>
+
+          <dd>
+            <p>файл является каналом</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-h</span></dt>
+
+          <dd>
+            <p>файл является символической ссылкой</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-L</span></dt>
+
+          <dd>
+            <p>файл является символической ссылкой</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-S</span></dt>
+
+          <dd>
+            <p>файл является сокетом</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-t</span></dt>
+
+          <dd>
+            <p>файл (<a
+             href="c11620.html#FDREF">дескриптор</a>) связан с
+            терминальным устройством</p>
+
+            <p>Этот ключ может использоваться для проверки -- является
+            ли файл стандартным устройством ввода <tt
+             class="FILENAME">stdin</tt> (<tt
+             class="USERINPUT"><strong>[ -t 0 ]</strong></tt>) или
+            стандартным устройством вывода <tt
+             class="FILENAME">stdout</tt> (<tt
+             class="USERINPUT"><strong>[ -t 1 ]</strong></tt>).</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-r</span></dt>
+
+          <dd>
+            <p>файл доступен для чтения (<span
+             class="emphasis"><em
+             class="EMPHASIS">пользователю, запустившему
+            сценарий</em></span>)</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-w</span></dt>
+
+          <dd>
+            <p>файл доступен для записи (пользователю, запустившему
+            сценарий)</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-x</span></dt>
+
+          <dd>
+            <p>файл доступен для исполнения (пользователю, запустившему
+            сценарий)</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-g</span></dt>
+
+          <dd>
+            <p>set-group-id (sgid) флаг для файла или каталога
+            установлен</p>
+
+            <p>Если для каталога установлен флаг <tt
+             class="REPLACEABLE"><em>sgid</em></tt>, то файлы,
+            создаваемые в таком каталоге, наследуют идентификатор
+            группы каталога, который может не совпадать с
+            идентификатором группы, к которой принадлежит пользователь,
+            создавший файл. Это может быть полезно для каталогов, в
+            которых хранятся файлы, общедоступные для группы
+            пользователей.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-u</span></dt>
+
+          <dd>
+            <p>set-user-id (suid) флаг для файла установлен</p>
+
+            <p>Установленный флаг suid приводит к изменению привилегий
+            запущенного процесса на привилегии владельца исполняемого
+            файла. Исполняемые файлы, владельцем которых является <span
+             class="emphasis"><em
+             class="EMPHASIS">root</em></span>, с установленным флагом
+            <tt
+             class="REPLACEABLE"><em>set-user-id</em></tt> запускаются
+            с привилегиями <span
+             class="emphasis"><em
+             class="EMPHASIS">root</em></span>, даже если их запускает
+            обычный пользователь. <a
+             name="AEN2488"
+             href="#FTN.AEN2488"><span
+             class="footnote">[1]</span></a> Это может оказаться
+            полезным для некоторых программ (таких как <strong
+             class="COMMAND">pppd</strong> и <strong
+             class="COMMAND">cdrecord</strong>), которые осуществляют
+            доступ к аппаратной части компьютера. В случае отсутствия
+            флага <span
+             class="emphasis"><em
+             class="EMPHASIS">suid</em></span>, программы не смогут
+            быть запущены рядовым пользователем, не обладающим
+            привилегиями root.</p>
+<pre
+ class="SCREEN">
+             <tt
+ class=
+"COMPUTEROUTPUT">-rwsr-xr-t    1 root       178236 Oct  2  2000 /usr/sbin/pppd</tt>
+             
+</pre>
+            Файл с установленным флагом <tt
+             class="REPLACEABLE"><em>suid</em></tt> отображается с
+            включенным флагом <span
+             class="emphasis"><em
+             class="EMPHASIS">s</em></span> в поле прав доступа.<br>
+            <br>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-k</span></dt>
+
+          <dd>
+            <p>флаг <tt
+             class="REPLACEABLE"><em>sticky bit</em></tt> (бит
+            фиксации) установлен</p>
+
+            <p>Общеизвестно, что флаг <span
+             class="QUOTE">&quot;sticky bit&quot;</span> -- это
+            специальный тип прав доступа к файлам. Программы с
+            установленным флагом <span
+             class="QUOTE">&quot;sticky bit&quot;</span> остаются в
+            системном кэше после своего завершения, обеспечивая тем
+            самым более быстрый запуск программы. <a
+             name="AEN2508"
+             href="#FTN.AEN2508"><span
+             class="footnote">[2]</span></a> Если флаг установлен для
+            каталога, то это приводит к ограничению прав на запись.
+            Установленный флаг &quot;sticky bit&quot; отображается в
+            виде символа <span
+             class="emphasis"><em
+             class="EMPHASIS">t</em></span> в поле прав доступа.</p>
+<pre
+ class="SCREEN">
+             <tt
+ class=
+"COMPUTEROUTPUT">drwxrwxrwt    7 root         1024 May 19 21:26 tmp/</tt>
+             
+</pre>
+            Если пользователь не является владельцем каталога, с
+            установленным &quot;sticky bit&quot;, но имеет право на
+            запись в каталог, то он может удалять только те файлы в
+            каталоге, владельцем которых он является. Это предотвращает
+            удаление и перезапись &quot;чужих&quot; файлов в
+            общедоступных каталогах, таких как <tt
+             class="FILENAME">/tmp</tt>.<br>
+            <br>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-O</span></dt>
+
+          <dd>
+            <p>вы являетесь владельцем файла</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-G</span></dt>
+
+          <dd>
+            <p>вы принадлежите к той же группе, что и файл</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">-N</span></dt>
+
+          <dd>
+            <p>файл был модифицирован с момента последнего чтения</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">f1 -nt f2</span></dt>
+
+          <dd>
+            <p>файл <tt
+             class="REPLACEABLE"><em>f1</em></tt> более новый, чем <tt
+             class="REPLACEABLE"><em>f2</em></tt></p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">f1 -ot f2</span></dt>
+
+          <dd>
+            <p>файл <tt
+             class="REPLACEABLE"><em>f1</em></tt> более старый, чем <tt
+             class="REPLACEABLE"><em>f2</em></tt></p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">f1 -ef f2</span></dt>
+
+          <dd>
+            <p>файлы <tt
+             class="REPLACEABLE"><em>f1</em></tt> и <tt
+             class="REPLACEABLE"><em>f2</em></tt> являются
+            &quot;жесткими&quot; ссылками на один и тот же файл</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">!</span></dt>
+
+          <dd>
+            <p><span
+             class="QUOTE">&quot;НЕ&quot;</span> -- логическое
+            отрицание (инверсия) результатов всех вышеприведенных
+            проверок (возвращается true если условие отсутствует).</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="BROKENLINK"></a>
+
+        <p><strong>Пример 7-4. Проверка &quot;битых&quot;
+        ссылок</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# broken-link.sh
+# Автор Lee Bigelow &lt;ligelowbee@yahoo.com&gt;
+# Используется с его разрешения.
+
+#Сценарий поиска &quot;битых&quot; ссылок и их вывод в &quot;окавыченном&quot; виде
+#таким образом они могут передаваться утилите xargs для дальнейшей обработки :)
+#например. broken-link.sh /somedir /someotherdir|xargs rm
+#
+#На всякий случай приведу лучший метод:
+#
+#find &quot;somedir&quot; -type l -print0|\
+#xargs -r0 file|\
+#grep &quot;broken symbolic&quot;|
+#sed -e &#39;s/^\|: *broken symbolic.*$/&quot;/g&#39;
+#
+#но это не чисто BASH-евский метод, а теперь сам сценарий.
+#Внимание! будьте осторожны с файловой системой /proc и циклическими ссылками!
+##############################################################
+
+
+#Если скрипт не получает входных аргументов,
+#то каталогом поиска является текущая директория
+#В противном случае, каталог поиска задается из командной строки
+####################
+[ $# -eq 0 ] &amp;&amp; directorys=`pwd` || directorys=$@
+
+#Функция linkchk проверяет каталог поиска
+#на наличие в нем ссылок на несуществующие файлы, и выводит их имена.
+#Если анализируемый файл является каталогом,
+#то он передается функции linkcheck рекурсивно.
+##########
+linkchk () {
+    for element in $1/*; do
+    [ -h &quot;$element&quot; -a ! -e &quot;$element&quot; ] &amp;&amp; echo \&quot;$element\&quot;
+    [ -d &quot;$element&quot; ] &amp;&amp; linkchk $element
+    # Само собой, &#39;-h&#39; проверяет символические ссылки, &#39;-d&#39; -- каталоги.
+    done
+}
+
+#Вызов функции linkchk для каждого аргумента командной строки,
+#если он является каталогом.  Иначе выводится сообщение об ошибке
+#и информация о порядке пользования скриптом.
+################
+for directory in $directorys; do
+    if [ -d $directory ]
+        then linkchk $directory
+        else
+            echo &quot;$directory не является каталогом&quot;
+            echo &quot;Порядок использования: $0 dir1 dir2 ...&quot;
+    fi
+done
+
+exit 0
+</pre>
+      </div>
+
+      <p><a
+       href="c13041.html#COOKIES">Пример 28-1</a>, <a
+       href="c4875.html#BINGREP">Пример 10-7</a>, <a
+       href="c4875.html#FILEINFO">Пример 10-3</a>, <a
+       href="c13041.html#RAMDISK">Пример 28-3</a> и <a
+       href="a14477.html#MAILFORMAT">Пример A-2</a> так же иллюстрируют
+      операции проверки файлов.</p>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN2488"
+         href="x2389.html#AEN2488"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>С флагом <span
+           class="emphasis"><em
+           class="EMPHASIS">suid</em></span>, на двоичных исполняемых
+          файлах, надо быть очень осторожным, поскольку это может быть
+          небезопасным. Установка флага <span
+           class="emphasis"><em
+           class="EMPHASIS">suid</em></span> на файлы-сценарии не имеет
+          никакого эффекта.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN2508"
+         href="x2389.html#AEN2508"><span
+         class="footnote">[2]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>В современных UNIX-системах, &quot;sticky bit&quot; больше
+          не используется для файлов, только для каталогов.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c2171.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x2565.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Проверка условий</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c2171.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Операции сравнения</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

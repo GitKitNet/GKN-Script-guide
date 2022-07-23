@@ -1,0 +1,300 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Awk</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Маленький учебник по Sed и Awk"
+     href="a14586.html">
+    <link
+     rel="PREVIOUS"
+     title="Маленький учебник по Sed и Awk"
+     href="a14586.html">
+    <link
+     rel="NEXT"
+     title="Коды завершения, имеющие предопределенный смысл"
+     href="a14876.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="a14586.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Приложение B. Маленький учебник по Sed и
+          Awk</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="a14876.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="AWK"></a>B.2. Awk</h1>
+
+      <p><a
+       name="AWKREF"></a></p>
+
+      <p><strong
+       class="COMMAND">Awk</strong> -- это полноценный язык обработки
+      текстовой информации с синтаксисом, напоминающим синтаксис языка
+      <strong
+       class="COMMAND">C</strong>. Он обладает довольно широким набором
+      возможностей, однако, мы рассмотрим лишь некоторые из них --
+      наиболее употребимые в сценариях командной оболочки.</p>
+
+      <p>Awk &quot;разбивает&quot; каждую строку на отдельные <span
+       class="emphasis"><em
+       class="EMPHASIS">поля</em></span>. По-умолчанию, поля -- это
+      последовательности символов, отделенные друг от друга <a
+       href="c301.html#WHITESPACEREF">пробелами</a>, однако имеется
+      возможность назначения других символов, в качестве разделителя
+      полей. Awk анализирует и обрабатывает каждое поле в отдельности.
+      Это делает его идеальным инструментом для работы со
+      структурированными текстовыми файлами, осбенно с таблицами.</p>
+
+      <p>Внутри сценариев командной оболочки, код awk, заключается в
+      &quot;строгие&quot; (одиночные) кавычки и фигурные скобки.</p>
+<pre
+ class="PROGRAMLISTING">
+awk &#39;{print $3}&#39; $filename
+# Выводит содержимое 3-го поля из файла $filename на устройство stdout.
+
+awk &#39;{print $1 $5 $6}&#39; $filename
+# Выводит содержимое 1-го, 5-го и 6-го полей из файла $filename.
+</pre>
+      <br>
+      <br>
+
+      <p>Только что, мы рассмотрели действие команды <strong
+       class="COMMAND">print</strong>. Еще, на чем мы остановимся --
+      это переменные. Awk работает с переменными подобно сценариям
+      командной оболочки, но более гибко.</p>
+<pre
+ class="PROGRAMLISTING">
+{ total += ${column_number} }
+</pre>
+      Эта команда добавит содержимое переменной <span
+       class="emphasis"><em
+       class="EMPHASIS">column_number</em></span> к переменной <span
+       class="QUOTE">&quot;total&quot;</span>. Чтобы, в завершение
+      вывести <span
+       class="QUOTE">&quot;total&quot;</span>, можно использовать
+      команду <strong
+       class="COMMAND">END</strong>, которая открывает блок кода,
+      отрабатывающий после того, как будут обработаны все входные
+      данные. 
+<pre
+ class="PROGRAMLISTING">
+END { print total }
+</pre>
+      <br>
+      <br>
+
+      <p>Команде <strong
+       class="COMMAND">END</strong>, соответствует команда <strong
+       class="COMMAND">BEGIN</strong>, которая открывает блок кода,
+      отрабатывающий перед началом обработки входных данных.</p>
+
+      <p>Примеры использования awk в сценариях командной оболочки, вы
+      найдете в:</p>
+
+      <ol
+       type="1">
+        <li>
+          <p><a
+           href="c5358.html#EX44">Пример 11-10</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x11731.html#REDIR4">Пример 16-7</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x7794.html#STRIPC">Пример 12-24</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x13541.html#COLTOTALER">Пример 33-3</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x4788.html#COLTOTALER2">Пример 9-22</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="c5358.html#COLTOTALER3">Пример 11-16</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x12987.html#PIDID">Пример 27-1</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x12987.html#CONSTAT">Пример 27-2</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="c4875.html#FILEINFO">Пример 10-3</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x9307.html#BLOTOUT">Пример 12-42</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x4812.html#SEEDINGRANDOM">Пример 9-26</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x6646.html#IDELETE">Пример 12-3</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x4171.html#SUBSTRINGEX">Пример 9-12</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x13753.html#SUMPRODUCT">Пример 33-11</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="c4875.html#USERLIST">Пример 10-8</a></p>
+        </li>
+      </ol>
+      <br>
+      <br>
+
+      <p>Это все, что я хотел рассказать об awk. Дополнительные ссылки
+      на информацию об awk, вы найдете в разделе <a
+       href="b14059.html"><em>Литература</em></a>.</p>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="a14586.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="a14876.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Маленький учебник по Sed и Awk</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="a14586.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Коды завершения, имеющие предопределенный
+          смысл</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

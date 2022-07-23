@@ -1,0 +1,300 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Globbing -- Подстановка имен файлов</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Регулярные выражения"
+     href="c11895.html">
+    <link
+     rel="PREVIOUS"
+     title="Регулярные выражения"
+     href="c11895.html">
+    <link
+     rel="NEXT"
+     title="Подоболочки, или Subshells"
+     href="c12330.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c11895.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 18. Регулярные выражения</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c12330.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="GLOBBINGREF"></a>18.2. Globbing -- Подстановка имен
+      файлов</h1>
+
+      <p>Bash, сам по себе, не распознает регулярные выражения. Но в
+      сценариях можно использовать команды и утилиты, такие как <a
+       href="a14586.html#SEDREF">sed</a> и <a
+       href="x14802.html#AWKREF">awk</a>, которые прекрасно справляются
+      с обработкой регулярных выражений.</p>
+
+      <p>Фактически, Bash может выполнять подстановку имен файлов, этот
+      процесс называется <span
+       class="QUOTE">&quot;globbing&quot;</span>, но при этом <span
+       class="emphasis"><em
+       class="EMPHASIS">не</em></span> используется стандартный набор
+      регулярных выражений. Вместо этого, при выполнении подстановки
+      имен файлов, производится распознавание и интерпретация шаблонных
+      символов. В число интерпретируемых шаблонов входят символы <span
+       class="TOKEN">*</span> и <span
+       class="TOKEN">?</span>, списки символов в квадратных скобках и
+      некоторые специальные символы (например <span
+       class="TOKEN">^</span>, используемый для выполнения операции
+      отрицания). Применение шаблонных символов имеет ряд важных
+      ограничений. Например, если имена файлов начинаются с точки
+      (например так: <tt
+       class="FILENAME">.bashrc</tt>), то они не будут соответствовать
+      шаблону, содержащему символ <tt
+       class="REPLACEABLE"><em>*</em></tt>. <a
+       name="AEN12295"
+       href="#FTN.AEN12295"><span
+       class="footnote">[1]</span></a> Аналогично, символ <tt
+       class="REPLACEABLE"><em>?</em></tt> в операции подстановки имен
+      файлов имеет иной смысл, нежели в регулярных выражениях.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ls -l</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">total 2
+ -rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 a.1
+ -rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 b.1
+ -rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 c.1
+ -rw-rw-r--    1 bozo  bozo       466 Aug  6 17:48 t2.sh
+ -rw-rw-r--    1 bozo  bozo       758 Jul 30 09:02 test1.txt</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ls -l t?.sh</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">-rw-rw-r--    1 bozo  bozo       466 Aug  6 17:48 t2.sh</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ls -l [ab]*</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">-rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 a.1
+ -rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 b.1</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ls -l [a-c]*</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">-rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 a.1
+ -rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 b.1
+ -rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 c.1</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ls -l [^ab]*</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">-rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 c.1
+ -rw-rw-r--    1 bozo  bozo       466 Aug  6 17:48 t2.sh
+ -rw-rw-r--    1 bozo  bozo       758 Jul 30 09:02 test1.txt</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ls -l {b*,c*,*est*}</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">-rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 b.1
+ -rw-rw-r--    1 bozo  bozo         0 Aug  6 18:42 c.1
+ -rw-rw-r--    1 bozo  bozo       758 Jul 30 09:02 test1.txt</tt>
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo *</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">a.1 b.1 c.1 t2.sh test1.txt</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo t*</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">t2.sh test1.txt</tt>
+             
+</pre>
+      <br>
+      <br>
+
+      <p>Даже команда <a
+       href="c5358.html#ECHOREF">echo</a> может интерпретировать
+      шаблонные символы в именах файлов.</p>
+
+      <p>См. также <a
+       href="c4875.html#LISTGLOB">Пример 10-4</a>.</p>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN12295"
+         href="x12282.html#AEN12295"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Подстановка таких имен файлов <span
+           class="emphasis"><em
+           class="EMPHASIS">возможна</em></span>, но только при
+          условии, что символ точки будет явно присутствовать в
+          шаблоне.</p>
+<pre
+ class="PROGRAMLISTING">
+~/[.]bashrc    # Не будет соответствовать имени ~/.bashrc
+~/?bashrc      # То же самое.
+               # Метасимволы не могут соответствовать символу точки при подстановке имен файлов.
+
+~/.[b]ashrc    # Имя ~./bashrc будет соответствовать данному шаблону
+~/.ba?hrc      # Аналогично.
+~/.bashr*      # Аналогично.
+
+# Установка ключа &quot;dotglob&quot; отключает такое поведение интерпретатора.
+# Спасибо S.C.
+</pre>
+          <br>
+          <br>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c11895.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c12330.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Регулярные выражения</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c11895.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Подоболочки, или Subshells</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

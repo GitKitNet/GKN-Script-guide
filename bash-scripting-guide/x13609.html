@@ -1,0 +1,271 @@
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Рекурсия</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Разное"
+     href="c13505.html">
+    <link
+     rel="PREVIOUS"
+     title="Операции сравнения: Альтернативные решения"
+     href="x13602.html">
+    <link
+     rel="NEXT"
+     title="Цветные сценарии"
+     href="x13621.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x13602.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 33. Разное</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x13621.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="RECURSIONSCT"></a>33.4. Рекурсия</h1>
+
+      <p>Может ли сценарий <a
+       href="x12644.html#RECURSIONREF">рекурсивно</a> вызывать себя
+      самого? Да, может!</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="RECURSE"></a>
+
+        <p><strong>Пример 33-6. Сценарий (бесполезный), который
+        вызывает себя сам</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# recurse.sh
+
+#  Может ли сценарий вызвать себя сам?
+#  Да, но есть ли в этом смысл?
+
+RANGE=10
+MAXVAL=9
+
+i=$RANDOM
+let &quot;i %= $RANGE&quot;  # Генерация псевдослучайного числа в диапазоне 0 .. $MAXVAL.
+
+if [ &quot;$i&quot; -lt &quot;$MAXVAL&quot; ]
+then
+  echo &quot;i = $i&quot;
+  ./$0             #  Сценарий запускает новый экземпляр себя самого.
+fi                 #  если число $i больше или равно $MAXVAL.
+
+#  Если конструкцию &quot;if/then&quot; заменить на цикл &quot;while&quot;, то это вызовет определенные проблемы.
+#  Объясните -- почему?.
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="PBOOK"></a>
+
+        <p><strong>Пример 33-7. Сценарий имеющий практическую
+        ценность), который вызывает себя сам</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# pb.sh: телефонная книга
+
+# Автор: Rick Boivie
+# используется с его разрешения.
+# Дополнен автором документа.
+
+MINARGS=1     # Сценарию должен быть передан, по меньшей мере, один аргумент.
+DATAFILE=./phonebook
+PROGNAME=$0
+E_NOARGS=70   # Ошибка, нет аргументов.
+
+if [ $# -lt $MINARGS ]; then
+      echo &quot;Порядок использования: &quot;$PROGNAME&quot; data&quot;
+      exit $E_NOARGS
+fi
+
+
+if [ $# -eq $MINARGS ]; then
+      grep $1 &quot;$DATAFILE&quot;
+else
+      ( shift; &quot;$PROGNAME&quot; $* ) | grep $1
+      # Рекурсивный вызов.
+fi
+
+exit 0        #  Сценарий завершает свою работу здесь.
+              #  Далее следует пример файла телефонной книги
+              #+ в котором не используются символы комментария.
+
+# ------------------------------------------------------------------------
+# Пример файла телефонной книги
+
+John Doe        1555 Main St., Baltimore, MD 21228          (410) 222-3333
+Mary Moe        9899 Jones Blvd., Warren, NH 03787          (603) 898-3232
+Richard Roe     856 E. 7th St., New York, NY 10009          (212) 333-4567
+Sam Roe         956 E. 8th St., New York, NY 10009          (212) 444-5678
+Zoe Zenobia     4481 N. Baker St., San Franciso, SF 94338   (415) 501-1631
+# ------------------------------------------------------------------------
+
+$bash pb.sh Roe
+Richard Roe     856 E. 7th St., New York, NY 10009          (212) 333-4567
+Sam Roe         956 E. 8th St., New York, NY 10009          (212) 444-5678
+
+$bash pb.sh Roe Sam
+Sam Roe         956 E. 8th St., New York, NY 10009          (212) 444-5678
+
+#  Если сценарию передаются несколько аргументов,
+#+ то выводятся только те строки, которые содержат их все.
+</pre>
+      </div>
+
+      <div
+       class="CAUTION">
+        <table
+         class="CAUTION"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/caution.gif"
+             hspace="5"
+             alt="Caution"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Слишком глубокая рекурсия может привести к исчерпанию
+              пространства, выделенного под стек, и
+              &quot;вываливанию&quot; сценария по
+              &quot;segfault&quot;.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x13602.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x13621.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Операции сравнения: Альтернативные решения</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c13505.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><span
+           class="QUOTE">&quot;Цветные&quot;</span> сценарии</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

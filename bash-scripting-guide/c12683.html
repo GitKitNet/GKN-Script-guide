@@ -1,0 +1,330 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Псевдонимы</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Материал повышенной сложности"
+     href="p11889.html">
+    <link
+     rel="PREVIOUS"
+     title="Локальные переменные"
+     href="x12644.html">
+    <link
+     rel="NEXT"
+     title="Списки команд"
+     href="c12716.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x12644.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c12716.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="ALIASES"></a>Глава 23. Псевдонимы</h1>
+
+      <p><a
+       name="ALIASREF"></a></p>
+
+      <p><span
+       class="emphasis"><em
+       class="EMPHASIS">Псевдонимы</em></span> в Bash -- это ни что
+      иное, как &quot;горячие клавиши&quot;, средство, позволяющее
+      избежать набора длинных строк в командной строке. Если, к
+      примеру, в файл <a
+       href="c12891.html#FILESREF1"><tt
+       class="FILENAME">~/.bashrc</tt></a> вставить строку <strong
+       class="COMMAND">alias lm=&quot;ls -l | more&quot;</strong>, то
+      потом вы сможете экономить свои силы и время, набирая команду <tt
+       class="USERINPUT"><strong>lm</strong></tt>, вместо более длинной
+      <strong
+       class="COMMAND">ls -l | more</strong>. Установив <strong
+       class="COMMAND">alias rm=&quot;rm -i&quot;</strong>
+      (интерактивный режим удаления файлов), вы сможете избежать многих
+      неприятностей, потому что сократится вероятность удаления важных
+      файлов по неосторожности.</p>
+
+      <p>Псевдонимы в сценариях могут иметь весьма ограниченную область
+      применения. Было бы здорово, если бы псевдонимы имели
+      функциональность, присущую макроопределениям в языке C, но, к
+      сожалению, Bash не может &quot;разворачивать&quot; аргументы в
+      теле псевдонима. <a
+       name="AEN12698"
+       href="#FTN.AEN12698"><span
+       class="footnote">[1]</span></a> Кроме того, попытка обратиться к
+      псевдониму, созданному внутри <span
+       class="QUOTE">&quot;составных конструкций&quot;</span>, таких
+      как <a
+       href="c2171.html#IFTHEN">if/then</a>, циклы и функции, будет
+      приводить к появлению ошибок. Практически всегда, действия,
+      возлагаемые на псевдоним, более эффективно могут быть выполнены с
+      помощью <a
+       href="c12483.html#FUNCTIONREF">функций</a>.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="AL"></a>
+
+        <p><strong>Пример 23-1. Псевдонимы в сценарии</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+shopt -s expand_aliases
+# Эта опция должна быть включена, иначе сценарий не сможет &quot;разворачивать&quot; псевдонимы.
+
+alias ll=&quot;ls -l&quot;
+# В определении псевдонима можно использовать как одиночные (&#39;), так и двойные (&quot;) кавычки.
+
+echo &quot;Попытка обращения к псевдониму \&quot;ll\&quot;:&quot;
+ll /usr/X11R6/bin/mk*   #* Работает.
+
+echo
+
+directory=/usr/X11R6/bin/
+prefix=mk*  # Определить -- не будет ли проблем с шаблонами.
+echo &quot;Переменные \&quot;directory\&quot; + \&quot;prefix\&quot; = $directory$prefix&quot;
+echo
+
+alias lll=&quot;ls -l $directory$prefix&quot;
+
+echo &quot;Попытка обращения к псевдониму \&quot;lll\&quot;:&quot;
+lll         # Список всех файлов в /usr/X11R6/bin, чьи имена начинаются с mk.
+# Псевдонимы могут работать с шаблонами.
+
+
+
+
+TRUE=1
+
+echo
+
+if [ TRUE ]
+then
+  alias rr=&quot;ls -l&quot;
+  echo &quot;Попытка обращения к псевдониму \&quot;rr\&quot;, созданному внутри if/then:&quot;
+  rr /usr/X11R6/bin/mk*   #* В результате -- сообщение об ошибке!
+  # К псевдонимам, созданным внутри составных инструкций, нельзя обратиться.
+  echo &quot;Однако, ранее созданный псевдоним остается работоспособным:&quot;
+  ll /usr/X11R6/bin/mk*
+fi
+
+echo
+
+count=0
+while [ $count -lt 3 ]
+do
+  alias rrr=&quot;ls -l&quot;
+  echo &quot;Попытка обращения к псевдониму \&quot;rrr\&quot;, созданному внутри цикла \&quot;while\&quot;:&quot;
+  rrr /usr/X11R6/bin/mk*   #* Так же возникает ошибка.
+                           #  alias.sh: line 57: rrr: command not found
+  let count+=1
+done
+
+echo; echo
+
+alias xyz=&#39;cat $0&#39;   # Сценарий печатает себя самого.
+                     # Обратите внимание на &quot;строгие&quot; кавычки.
+xyz
+#  Похоже работает,
+#+ хотя документация Bash утверждает, что такой псевдоним не должен работать.
+#
+#  Steve Jacobson отметил, что
+#+ параметр &quot;$0&quot; интерпретируется непосредственно, во время объявления псевдонима.
+
+exit 0
+</pre>
+      </div>
+
+      <p>Команда <strong
+       class="COMMAND">unalias</strong> удаляет псевдоним, объявленный
+      ранее .</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="UNAL"></a>
+
+        <p><strong>Пример 23-2. unalias: Объявление и удаление
+        псевдонимов</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+shopt -s expand_aliases  # Разрешить &quot;разворачивание&quot; псевдонимов.
+
+alias llm=&#39;ls -al | more&#39;
+llm
+
+echo
+
+unalias llm              # Удалить псевдоним.
+llm
+# Сообщение об ошибке, т.к. команда &#39;llm&#39; больше не распознается.
+
+exit 0
+</pre>
+      </div>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>./unalias.sh</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">total 6
+drwxrwxr-x    2 bozo     bozo         3072 Feb  6 14:04 .
+drwxr-xr-x   40 bozo     bozo         2048 Feb  6 14:04 ..
+-rwxr-xr-x    1 bozo     bozo          199 Feb  6 14:04 unalias.sh
+
+./unalias.sh: llm: command not found</tt>
+</pre>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN12698"
+         href="c12683.html#AEN12698"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Однако, псевдонимы могут &quot;раскручивать&quot;
+          позиционные параметры.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x12644.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c12716.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Локальные переменные</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p11889.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Списки команд</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

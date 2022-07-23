@@ -1,0 +1,571 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Команды для работы с датой и временем</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Внешние команды, программы и утилиты"
+     href="c6407.html">
+    <link
+     rel="PREVIOUS"
+     title="Более сложные команды"
+     href="x6646.html">
+    <link
+     rel="NEXT"
+     title="Команды обработки текста"
+     href="x7050.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x6646.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 12. Внешние команды, программы и
+          утилиты</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x7050.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="TIMEDATE"></a>12.3. Команды для работы с датой и
+      временем</h1>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="TDLISTING1"></a>Время/дата и измерение интервалов
+        времени</strong></p>
+
+        <dl>
+          <dt><a
+           name="DATEREF"></a><strong
+           class="COMMAND">date</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">date</strong> без параметров выводит дату
+            и время на стандартное устройство вывода <tt
+             class="FILENAME">stdout</tt>. Она становится гораздо
+            интереснее при использовании дополнительных ключей
+            форматирования вывода.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX51"></a>
+
+              <p><strong>Пример 12-7. Команда date</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Примеры использования команды &#39;date&#39;
+
+echo &quot;Количество дней, прошедших с начала года: `date +%j`.&quot;
+# Символ &#39;+&#39; обязателен при использовании форматирующего аргумента
+# %j,  возвращающего количество дней, прошедших с начала года.
+
+echo &quot;Количество секунд, прошедших с 01/01/1970 : `date +%s`.&quot;
+#  %s количество секунд, прошедших с начала &quot;эпохи UNIX&quot;,
+#+ но насколько этот ключ полезен?
+
+prefix=temp
+suffix=`eval date +%s`  # Ключ &quot;+%s&quot; характерен для GNU-версии &#39;date&#39;.
+filename=$prefix.$suffix
+echo $filename
+#  Прекрасный способ получения &quot;уникального&quot; имени для временного файла,
+#+ даже лучше, чем с использованием $$.
+
+# Дополнительную информацию вы найдете в &#39;man date&#39;.
+
+exit 0
+</pre>
+            </div>
+
+            <p>Ключ <tt
+             class="OPTION">-u</tt> дает UTC время (Universal
+            Coordinated Time -- время по Гринвичу).</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>date</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">Fri Mar 29 21:07:39 MST 2002</tt>
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>date -u</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">Sat Mar 30 04:07:42 UTC 2002</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">zdump</strong></dt>
+
+          <dd>
+            <p>Отображает время для указанной временной зоны.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>zdump EST</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">EST  Tue Sep 18 22:09:22 2001 EST</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><a
+           name="TIMREF"></a><strong
+           class="COMMAND">time</strong></dt>
+
+          <dd>
+            <p>Выводит подробную статистику по исполнению некоторой
+            команды.</p>
+
+            <p><tt
+             class="USERINPUT"><strong>time ls -l /</strong></tt> даст
+            нечто подобное:</p>
+<pre
+ class="SCREEN">
+<tt
+ class=
+"COMPUTEROUTPUT">0.00user 0.01system 0:00.05elapsed 16%CPU (0avgtext+0avgdata 0maxresident)k
+ 0inputs+0outputs (149major+27minor)pagefaults 0swaps</tt>
+</pre>
+            <br>
+            <br>
+
+            <p>См. так же очень похожую команду <a
+             href="c5358.html#TIMESREF">times</a>, обсуждавшуюся в
+            предыдущем разделе.</p>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Начиная с <a
+                     href="c13936.html#BASH2REF">версии 2.0</a> Bash,
+                    команда <strong
+                     class="COMMAND">time</strong> стала
+                    зарезервированным словом интерпретатора, с
+                    несколько измененным поведением в конвейере.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><a
+           name="TOUCHREF"></a><strong
+           class="COMMAND">touch</strong></dt>
+
+          <dd>
+            <p>Утилита устанавливает время последнего
+            обращения/изменения файла в текущее системное время или в
+            заданное время, но так же может использоваться для создания
+            нового пустого файла. Команда <tt
+             class="USERINPUT"><strong>touch zzz</strong></tt> создаст
+            новый пустой файл с именем <tt
+             class="FILENAME">zzz</tt>, если перед этим файл <tt
+             class="FILENAME">zzz</tt> отсутствовал. Кроме того, такие
+            пустые файлы могут использоваться для индикации, например,
+            времени последнего изменения в проекте.</p>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Эквивалентом команды <strong
+                     class="COMMAND">touch</strong> могут служить <tt
+                     class="USERINPUT"><strong>: &gt;&gt;
+                    newfile</strong></tt> или <tt
+                     class="USERINPUT"><strong>&gt;&gt;
+                    newfile</strong></tt> (для обычных файлов).</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><a
+           name="ATREF"></a><strong
+           class="COMMAND">at</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">at</strong> -- используется для запуска
+            заданий в заданное время. В общих чертах она напоминает <a
+             href="c9708.html#CRONREF">crond</a>, однако, <strong
+             class="COMMAND">at</strong> используется для однократного
+            запуска набора команд.</p>
+
+            <p><tt
+             class="USERINPUT"><strong>at 2pm January 15</strong></tt>
+            -- попросит ввести набор команд, которые необходимо
+            запустить в указанное время. Эти команды должны быть
+            совместимыми со сценариями командной оболочки. Ввод
+            завершается нажатием комбинации клавиш <a
+             href="c301.html#CTLDREF">Ctl-D</a>.</p>
+
+            <p>Ключ <tt
+             class="OPTION">-f</tt> или операция перенаправления ввода
+            (<span
+             class="TOKEN">&lt;</span>), заставляет <strong
+             class="COMMAND">at</strong> прочитать список команд из
+            файла. Этот файл должен представлять из себя обычный
+            сценарий, на языке командной оболочки и, само собой
+            разумеется, такой сценарий должен быть неинтерактивным.
+            Может использоваться совместно с командой <a
+             href="x9307.html#RUNPARTSREF">run-parts</a> для запуска
+            различных наборов сценариев.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class=
+"USERINPUT"><strong>at 2:30 am Friday &lt; at-jobs.list</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">job 2 at 2000-10-27 02:30</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">batch</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">batch</strong>, управляющая запуском
+            заданий, напоминает команду <strong
+             class="COMMAND">at</strong>, но запускает список команд
+            только тогда, когда загруженность системы упадет ниже <tt
+             class="LITERAL">.8</tt>. Подобно команде <strong
+             class="COMMAND">at</strong>, с ключом <tt
+             class="OPTION">-f</tt>, может считывать набор команд из
+            файла.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">cal</strong></dt>
+
+          <dd>
+            <p>Выводит на <tt
+             class="FILENAME">stdout</tt> аккуратно отформатированный
+            календарь на текущий месяц. Может выводить календарь за
+            определенный год.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">sleep</strong></dt>
+
+          <dd>
+            <p>Приостанавливает исполнение сценария на заданное
+            количество секунд, ничего не делая. Может использоваться
+            для синхронизации процессов, запущенных в фоне, проверяя
+            наступление ожидаемого события так часто, как это
+            необходимо. Например, <a
+             href="c13099.html#ONLINE">Пример 29-6</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+sleep 3
+# Пауза, длительностью в 3 секунды.
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Команда <strong
+                     class="COMMAND">sleep</strong> по-умолчанию
+                    принимает количество секунд, но ей можно передать и
+                    количество часов и минут и даже дней.</p>
+<pre
+ class="PROGRAMLISTING">
+sleep 3 h
+# Приостановка на 3 часа!
+</pre>
+                    <br>
+                    <br>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Для запуска команд через заданные интервалы
+                    времени лучше использовать <a
+                     href="c9708.html#WATCHREF">watch</a> .</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">usleep</strong></dt>
+
+          <dd>
+            <p><span
+             class="emphasis"><em
+             class="EMPHASIS">Microsleep</em></span> (здесь символ
+            <span
+             class="QUOTE">&quot;u&quot;</span> должен читаться как
+            буква греческого алфавита -- <span
+             class="QUOTE">&quot;мю&quot;</span>, или префикс микро).
+            Это то же самое, что и <strong
+             class="COMMAND">sleep</strong>, только интервал времени
+            задается в микросекундах. Может использоваться для очень
+            тонкой синхронизации процессов.</p>
+<pre
+ class="PROGRAMLISTING">
+usleep 30
+# Приостановка на 30 микросекунд.
+</pre>
+            <br>
+            <br>
+
+            <p>Эта команда является частью пакета <span
+             class="emphasis"><em
+             class="EMPHASIS">initscripts/rc-scripts</em></span> в
+            дистрибутиве Red Hat.</p>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Команда <strong
+                     class="COMMAND">usleep</strong> не обеспечивает
+                    особую точность соблюдения интервалов, и поэтому
+                    она не подходит для применений, критичных ко
+                    времени.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">hwclock</strong>, <strong
+           class="COMMAND">clock</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">hwclock</strong> используется для
+            получения доступа или коррекции аппаратных часов
+            компьютера. С некоторыми ключами требует наличия привилегий
+            root. Сенарий <tt
+             class="FILENAME">/etc/rc.d/rc.sysinit</tt> использует
+            команду <strong
+             class="COMMAND">hwclock</strong> для установки системного
+            времени во время загрузки.</p>
+
+            <p>Команда <strong
+             class="COMMAND">clock</strong> -- это синоним команды
+            <strong
+             class="COMMAND">hwclock</strong>.</p>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x6646.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x7050.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Более сложные команды</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c6407.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Команды обработки текста</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

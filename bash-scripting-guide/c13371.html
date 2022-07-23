@@ -1,0 +1,663 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Широко распространенные ошибки</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Материал повышенной сложности"
+     href="p11889.html">
+    <link
+     rel="PREVIOUS"
+     title="Необязательные параметры (ключи)"
+     href="c13228.html">
+    <link
+     rel="NEXT"
+     title="Стиль программирования"
+     href="c13468.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c13228.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c13468.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="GOTCHAS"></a>Глава 31. Широко распространенные ошибки</h1>
+
+      <table
+       border="0"
+       width="100%"
+       cellspacing="0"
+       cellpadding="0"
+       class="EPIGRAPH">
+        <tr>
+          <td
+           width="45%"> </td>
+
+          <td
+           width="45%"
+           align="left"
+           valign="top">
+            <p><em>Turandot: Gli enigmi sono tre, la morte
+            una!</em></p>
+
+            <p><em>Caleph: No, no! Gli enigmi sono tre, una la
+            vita!</em></p>
+          </td>
+        </tr>
+
+        <tr>
+          <td
+           width="45%"> </td>
+
+          <td
+           width="45%"
+           align="right"
+           valign="top"><em><span
+           class="ATTRIBUTION">Puccini</span></em></td>
+        </tr>
+      </table>
+
+      <p>Использование зарезервированных слов и служебных символов в
+      качестве имен переменных.</p>
+<pre
+ class="PROGRAMLISTING">
+case=value0       # Может вызвать проблемы.
+23skidoo=value1   # Тоже самое.
+# Имена переменных, начинающиеся с цифр, зарезервированы командной оболочкой.
+# Если имя переменной начинается с символа подчеркивания: _23skidoo=value1, то это не считается ошибкой.
+
+# Однако... если имя переменной состоит из единственного символа подчеркивания, то это ошибка.
+_=25
+echo $_           # $_  -- это внутренняя переменная.
+
+xyz((!*=value2    # Вызывает серьезные проблемы.
+</pre>
+      <br>
+      <br>
+
+      <p>Использование дефиса, и других зарезервированных символов, в
+      именах переменных.</p>
+<pre
+ class="PROGRAMLISTING">
+var-1=23
+# Вместо такой записи используйте &#39;var_1&#39;.
+</pre>
+      <br>
+      <br>
+
+      <p>Использование одинаковых имен для переменных и функций. Это
+      делает сценарий трудным для понимания.</p>
+<pre
+ class="PROGRAMLISTING">
+do_something ()
+{
+  echo &quot;Эта функция должна что-нибудь сделать с \&quot;$1\&quot;.&quot;
+}
+
+do_something=do_something
+
+do_something do_something
+
+# Все это будет работать правильно, но слишком уж запутанно.
+</pre>
+      <br>
+      <br>
+
+      <p><a
+       name="WSBAD"></a>Использование лишних <a
+       href="c301.html#WHITESPACEREF">пробелов</a>. В отличие от других
+      языков программирования, Bash весьма привередлив по отношению к
+      пробелам.</p>
+<pre
+ class="PROGRAMLISTING">
+var1 = 23   # Правильный вариант: &#39;var1=23&#39;.
+# В вышеприведенной строке Bash будет трактовать &quot;var1&quot; как имя команды
+# с аргументами &quot;=&quot; и &quot;23&quot;.
+
+let c = $a - $b   # Правильный вариант: &#39;let c=$a-$b&#39; или &#39;let &quot;c = $a - $b&quot;&#39;
+
+if [ $a -le 5]    # Правильный вариант: if [ $a -le 5 ]
+# if [ &quot;$a&quot; -le 5 ]   еще лучше.
+# [[ $a -le 5 ]] тоже верно.
+</pre>
+      <br>
+      <br>
+
+      <p>Ошибочным является предположение о том, что
+      неинициализированные переменные содержат <span
+       class="QUOTE">&quot;ноль&quot;</span>. Неинициализированные
+      переменные содержат <span
+       class="QUOTE">&quot;пустое&quot;</span> (null) значение, а <span
+       class="emphasis"><em
+       class="EMPHASIS">не</em></span> ноль.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+echo &quot;uninitialized_var = $uninitialized_var&quot;
+# uninitialized_var =
+</pre>
+      <br>
+      <br>
+
+      <p>Часто программисты путают операторы сравнения <span
+       class="emphasis"><em
+       class="EMPHASIS">=</em></span> и <span
+       class="emphasis"><em
+       class="EMPHASIS">-eq</em></span>. Запомните, оператор <span
+       class="emphasis"><em
+       class="EMPHASIS">=</em></span> используется для сравнения
+      строковых переменных, а <span
+       class="emphasis"><em
+       class="EMPHASIS">-eq</em></span> -- для сравнения целых
+      чисел.</p>
+<pre
+ class="PROGRAMLISTING">
+if [ &quot;$a&quot; = 273 ]      # Как вы полагаете? $a -- это целое число или строка?
+if [ &quot;$a&quot; -eq 273 ]    # Если $a -- целое число.
+
+# Иногда, такого рода ошибка никак себя не проявляет.
+# Однако...
+
+
+a=273.0   # Не целое число.
+
+if [ &quot;$a&quot; = 273 ]
+then
+  echo &quot;Равны.&quot;
+else
+  echo &quot;Не равны.&quot;
+fi    # Не равны.
+
+# тоже самое и для  a=&quot; 273&quot;  и  a=&quot;0273&quot;.
+
+
+# Подобные проблемы возникают при использовании &quot;-eq&quot; со строковыми значениями.
+
+if [ &quot;$a&quot; -eq 273.0 ]
+then
+  echo &quot;a = $a&#39;
+fi  # Исполнение сценария прерывается по ошибке.
+# test.sh: [: 273.0: integer expression expected
+</pre>
+      <br>
+      <br>
+
+      <p>Ошибки при сравнении <a
+       href="x2565.html#ICOMPARISON1">целых чисел</a> и <a
+       href="x2565.html#SCOMPARISON1">строковых значений</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# bad-op.sh
+
+number=1
+
+while [ &quot;$number&quot; &lt; 5 ]    # Неверно! должно быть   while [ &quot;number&quot; -lt 5 ]
+do
+  echo -n &quot;$number &quot;
+  let &quot;number += 1&quot;
+done
+
+# Этот сценарий генерирует сообщение об ошибке:
+# bad-op.sh: 5: No such file or directory
+</pre>
+      <br>
+      <br>
+
+      <p>Иногда, в операциях проверки, с использованием квадратных
+      скобок ([ ]), переменные необходимо брать в двойные кавычки. См.
+      <a
+       href="x2565.html#STRTEST">Пример 7-6</a>, <a
+       href="x11731.html#REDIR2">Пример 16-4</a> и <a
+       href="c3270.html#ARGLIST">Пример 9-6</a>.</p>
+
+      <p>Иногда сценарий не в состоянии выполнить команду из-за
+      нехватки прав доступа. Если пользователь не сможет запустить
+      команду из командной строки, то эта команда не сможет быть
+      запущена и из сценария. Попробуйте изменить атрибуты команды,
+      возможно вам придется установить бит suid.</p>
+
+      <p>Использование символа <strong
+       class="COMMAND">-</strong> в качестве оператора перенаправления
+      (каковым он не является) может приводить к неожиданным
+      результатам.</p>
+<pre
+ class="PROGRAMLISTING">
+command1 2&gt; - | command2  # Попытка передать сообщения об ошибках команде command1 через конвейер...
+#    ...не будет работать.
+
+command1 2&gt;&amp; - | command2  # Так же бессмысленно.
+
+Спасибо S.C.
+</pre>
+      <br>
+      <br>
+
+      <p>Использование функциональных особенностей Bash <a
+       href="c13936.html#BASH2REF">версии 2</a> или выше, может
+      привести к аварийному завершению сценария, работающему под
+      управлением Bash версии 1.XX.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+minimum_version=2
+# Поскольку Chet Ramey постоянно развивает Bash,
+# вам может потребоваться указать другую минимально допустимую версию $minimum_version=2.XX.
+E_BAD_VERSION=80
+
+if [ &quot;$BASH_VERSION&quot; \&lt; &quot;$minimum_version&quot; ]
+then
+  echo &quot;Этот сценарий должен исполняться под управлением Bash, версии $minimum или выше.&quot;
+  echo &quot;Настоятельно рекомендуется обновиться.&quot;
+  exit $E_BAD_VERSION
+fi
+
+...
+</pre>
+      <br>
+      <br>
+
+      <p>Использование специфических особенностей Bash может приводить
+      к аварийному завершению сценария в Bourne shell (<tt
+       class="USERINPUT"><strong>#!/bin/sh</strong></tt>). Как правило,
+      в Linux дистрибутивах, <strong
+       class="COMMAND">sh</strong> является псевдонимом <strong
+       class="COMMAND">bash</strong>, но это не всегда верно для
+      UNIX-систем вообще.</p>
+
+      <p>Сценарий, в котором строки отделяются друг от друга в стиле
+      MS-DOS (<tt
+       class="REPLACEABLE"><em>\r\n</em></tt>), будет завершаться
+      аварийно, поскольку комбинация <tt
+       class="USERINPUT"><strong>#!/bin/bash\r\n</strong></tt>
+      считается недопустимой. Исправить эту ошибку можно простым
+      удалением символа \r из сценария.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+echo &quot;Начало&quot;
+
+unix2dos $0    # Сценарий переводит символы перевода строки в формат DOS.
+chmod 755 $0   # Восстановление прав на запуск.
+               # Команда &#39;unix2dos&#39; удалит право на запуск из атрибутов файла.
+
+./$0           # Попытка запустить себя самого.
+               # Но это не сработает из-за того, что теперь строки отделяются
+               # друг от друга в стиле DOS.
+
+echo &quot;Конец&quot;
+
+exit 0
+</pre>
+      <br>
+      <br>
+
+      <p>Сценарий, начинающийся с <tt
+       class="USERINPUT"><strong>#!/bin/sh</strong></tt>, не может
+      работать в режиме полной совместимости с Bash. Некоторые из
+      специфических функций, присущих Bash, могут оказаться
+      запрещенными к использованию. Сценарий, который требует полного
+      доступа ко всем расширениям, имеющимся в Bash, должен начинаться
+      строкой <tt
+       class="USERINPUT"><strong>#!/bin/bash</strong></tt>.</p>
+
+      <p>Сценарий не может <strong
+       class="COMMAND">экспортировать</strong> переменные <a
+       href="c5358.html#FORKREF">родительскому процессу</a> - оболочке.
+      Здесь как в природе, потомок может унаследовать черты родителя,
+      но не наооборот.</p>
+<pre
+ class="PROGRAMLISTING">
+WHATEVER=/home/bozo
+export WHATEVER
+exit 0
+</pre>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <strong
+ class="COMMAND">echo $WHATEVER</strong>
+
+<tt
+ class="PROMPT">bash$</tt>
+</pre>
+      Будьте уверены -- при выходе в командную строку переменная
+      $WHATEVER останется неинициализированной. <br>
+      <br>
+
+      <p>Использование в подоболочке переменных с теми же именами, что
+      и в родительской оболочке может не давать ожидаемого
+      результата.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="SUBPIT"></a>
+
+        <p><strong>Пример 31-1. Западня в подоболочке</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Западня в подоболочке.
+
+outer_variable=внешняя_переменная
+echo
+echo &quot;outer_variable = $outer_variable&quot;
+echo
+
+(
+# Запуск в подоболочке
+
+echo &quot;внутри подоболочки outer_variable = $outer_variable&quot;
+inner_variable=внутренняя_переменная  # Инициализировать
+echo &quot;внутри подоболочки inner_variable = $inner_variable&quot;
+outer_variable=внутренняя_переменная  # Как думаете? Изменит внешнюю переменную?
+echo &quot;внутри подоболочки outer_variable = $outer_variable&quot;
+
+# Выход из подоболочки
+)
+
+echo
+echo &quot;за пределами подоболочки inner_variable = $inner_variable&quot;  # Ничего не выводится.
+echo &quot;за пределами подоболочки outer_variable = $outer_variable&quot;  # внешняя_переменная.
+echo
+
+exit 0
+</pre>
+      </div>
+
+      <p><a
+       name="BADREAD0"></a></p>
+
+      <p>Передача вывода от <strong
+       class="COMMAND">echo</strong> по <a
+       href="c301.html#PIPEREF">конвейеру</a> команде <a
+       href="c5358.html#READREF">read</a> может давать неожиданные
+      результаты. В этом сценарии, команда <strong
+       class="COMMAND">read</strong> действует так, как будто бы она
+      была запущена в подоболочке. Вместо нее лучше использовать
+      команду <a
+       href="c5358.html#SETREF">set</a> (см. <a
+       href="c5358.html#SETPOS">Пример 11-14</a>).</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="BADREAD"></a>
+
+        <p><strong>Пример 31-2. Передача вывода от команды echo команде
+        read, по конвейеру</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+#  badread.sh:
+#  Попытка использования &#39;echo&#39; и &#39;read&#39;
+#+ для записи значений в переменные.
+
+a=aaa
+b=bbb
+c=ccc
+
+echo &quot;один два три&quot; | read a b c
+# Попытка записать значения в переменные a, b и c.
+
+echo
+echo &quot;a = $a&quot;  # a = aaa
+echo &quot;b = $b&quot;  # b = bbb
+echo &quot;c = $c&quot;  # c = ccc
+# Присваивания не произошло.
+
+# ------------------------------
+
+# Альтернативный вариант.
+
+var=`echo &quot;один два три&quot;`
+set -- $var
+a=$1; b=$2; c=$3
+
+echo &quot;-------&quot;
+echo &quot;a = $a&quot;  # a = один
+echo &quot;b = $b&quot;  # b = два
+echo &quot;c = $c&quot;  # c = три
+# На этот раз все в порядке.
+
+# ------------------------------
+
+#  Обратите внимание: в подоболочке &#39;read&#39;, для первого варианта, переменные присваиваются нормально.
+#  Но только в подоболочке.
+
+a=aaa          # Все сначала.
+b=bbb
+c=ccc
+
+echo; echo
+echo &quot;один два три&quot; | ( read a b c;
+echo &quot;Внутри подоболочки: &quot;; echo &quot;a = $a&quot;; echo &quot;b = $b&quot;; echo &quot;c = $c&quot; )
+# a = один
+# b = два
+# c = три
+echo &quot;-------&quot;
+echo &quot;Снаружи: &quot;
+echo &quot;a = $a&quot;  # a = aaa
+echo &quot;b = $b&quot;  # b = bbb
+echo &quot;c = $c&quot;  # c = ccc
+echo
+
+exit 0
+</pre>
+      </div>
+
+      <p>Огромный риск, для безопасности системы, представляет
+      использование в скриптах команд, с установленным битом <span
+       class="QUOTE">&quot;suid&quot;</span>. <a
+       name="AEN13453"
+       href="#FTN.AEN13453"><span
+       class="footnote">[1]</span></a></p>
+
+      <p>Использование сценариев в качестве CGI-приложений может
+      приводить к серьезным проблемам из-за отсутствия контроля типов
+      переменных. Более того, они легко могут быть заменены взломщиком
+      на его собственные сценарии.</p>
+
+      <p>Bash не совсем корректно обрабатывает строки, содержащие <a
+       href="c5358.html#DOUBLESLASHREF">двойной слэш (<span
+       class="TOKEN">//</span>)</a>.</p>
+
+      <p>Сценарии на языке Bash, созданные для Linux или BSD систем,
+      могут потребовать доработки, перед тем как они смогут быть
+      запущены в коммерческой версии UNIX. Такие сценарии, как правило,
+      используют GNU-версии команд и утилит, которые имеют лучшую
+      функциональность, нежели их аналоги в UNIX. Это особенно
+      справедливо для таких утилит обработки текста, как <a
+       href="x7050.html#TRREF">tr</a>.</p>
+
+      <table
+       border="0"
+       width="100%"
+       cellspacing="0"
+       cellpadding="0"
+       class="EPIGRAPH">
+        <tr>
+          <td
+           width="45%"> </td>
+
+          <td
+           width="45%"
+           align="left"
+           valign="top">
+            <p><em>Danger is near thee --</em></p>
+
+            <p><em>Beware, beware, beware, beware.</em></p>
+
+            <p><em>Many brave hearts are asleep in the deep.</em></p>
+
+            <p><em>So beware --</em></p>
+
+            <p><em>Beware.</em></p>
+          </td>
+        </tr>
+
+        <tr>
+          <td
+           width="45%"> </td>
+
+          <td
+           width="45%"
+           align="right"
+           valign="top"><em><span
+           class="ATTRIBUTION">A.J. Lamb and H.W.
+          Petrie</span></em></td>
+        </tr>
+      </table>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN13453"
+         href="c13371.html#AEN13453"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Установка этого бита на файлы сценариев не имеет никакого
+          эффекта.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c13228.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c13468.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Необязательные параметры (ключи)</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p11889.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Стиль программирования</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

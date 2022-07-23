@@ -1,0 +1,392 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Переменные и параметры. Введение.</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Основы"
+     href="p299.html">
+    <link
+     rel="PREVIOUS"
+     title="Служебные символы"
+     href="c301.html">
+    <link
+     rel="NEXT"
+     title="Присваивание значений переменным"
+     href="x1673.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c301.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x1673.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="VARIABLES"></a>Глава 4. Переменные и параметры.
+      Введение.</h1>
+
+      <p>Переменные -- это одна из основ любого языка программирования.
+      Они учавствуют в арифметических операциях, в синтаксическом
+      анализе строк и совершенно необходимы для абстрагирования каких
+      либо величин с помощью символических имен. Физически переменные
+      представляют собой ни что иное как участки памяти, в которые
+      записана некоторая информация.</p>
+
+      <div
+       class="SECT1">
+        <h1
+         class="SECT1"><a
+         name="VARSUBN"></a>4.1. Подстановка переменных</h1>
+
+        <p>Когда интерпретатор встречает в тексте сценария <span
+         class="emphasis"><em
+         class="EMPHASIS">имя</em></span> переменной, то он вместо него
+        подставляет <span
+         class="emphasis"><em
+         class="EMPHASIS">значение</em></span> этой переменной. Поэтому
+        ссылки на переменные называются <span
+         class="emphasis"><em
+         class="EMPHASIS">подстановкой переменных</em></span>.</p>
+
+        <div
+         class="VARIABLELIST">
+          <dl>
+            <dt><span
+             class="TOKEN">$</span></dt>
+
+            <dd>
+              <p>Необходимо всегда помнить о различиях между <span
+               class="emphasis"><em
+               class="EMPHASIS">именем</em></span> переменной и ее
+              <span
+               class="emphasis"><em
+               class="EMPHASIS">значением</em></span>. Если <tt
+               class="USERINPUT"><strong>variable1</strong></tt> -- это
+              имя переменной, то <tt
+               class="USERINPUT"><strong>$variable1</strong></tt> --
+              это ссылка на ее <span
+               class="emphasis"><em
+               class="EMPHASIS">значение</em></span>. <span
+               class="QUOTE">&quot;Чистые&quot;</span> имена
+              переменных, без префикса <span
+               class="TOKEN">$</span>, могут использоваться только при
+              объявлении переменный, при присваивании переменной
+              некоторого значения, при <span
+               class="emphasis"><em
+               class="EMPHASIS">удалении (сбросе)</em></span>, при <a
+               href="c5358.html#EXPORTREF">экспорте</a> и в особых
+              случаях -- когда переменная представляет собой название
+              <a
+               href="c13099.html#SIGNALD">сигнала</a> (см. <a
+               href="c13099.html#EX76">Пример 29-5</a>). Присваивание
+              может производится с помощью символа <span
+               class="TOKEN">=</span> (например: <span
+               class="emphasis"><em
+               class="EMPHASIS">var1=27</em></span>), инструкцией <a
+               href="c5358.html#READREF">read</a> и в заголовке цикла
+              (<span
+               class="emphasis"><em
+               class="EMPHASIS">for var2 in 1 2 3</em></span>).</p>
+
+              <p><a
+               name="DBLQUO"></a>Заключение ссылки на переменную в
+              двойные кавычки (<span
+               class="TOKEN">&quot; &quot;</span>) никак не сказывается
+              на работе механизма подстановки. Этот случай называется
+              &quot;частичные кавычки&quot;, иногда можно встретить
+              название <span
+               class="QUOTE">&quot;нестрогие кавычки&quot;</span>. <a
+               name="SNGLQUO"></a>Одиночные кавычки (<span
+               class="TOKEN">&#39; &#39;</span>) заставляют
+              интерпретатор воспринимать ссылку на переменную как
+              простой набор символов, потому в одинарных кавычках
+              операции подстановки не производятся. Этот случай
+              называется &quot;полные&quot;, или <span
+               class="QUOTE">&quot;строгие&quot;</span> кавычки.
+              Дополнительную информацию вы найдете в <a
+               href="c1833.html">Глава 5</a>.</p>
+
+              <p>Примечательно, что написание <tt
+               class="USERINPUT"><strong>$variable</strong></tt>
+              фактически является упрощенной формой написания <tt
+               class="USERINPUT"><strong>${variable}</strong></tt>.
+              Более строгая форма записи <tt
+               class="USERINPUT"><strong>${variable}</strong></tt>
+              может с успехом использоваться в тех случаях, когда
+              применение упрощенной формы записи порождает сообщения о
+              синтаксических ошибках (см. <a
+               href="x4462.html">Section 9.3</a>, ниже).</p>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="EX9"></a>
+
+                <p><strong>Пример 4-1. Присваивание значений переменным
+                и подстановка значений переменных</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Присваивание значений переменным и подстановка значений переменных
+
+a=375
+hello=$a
+
+#-------------------------------------------------------------------------
+# Использование пробельных символов
+# с обеих сторон символа &quot;=&quot; присваивания недопустимо.
+
+#  Если записать &quot;VARIABLE =value&quot;,
+#+ то интерпретатор попытается выполнить команду &quot;VARIABLE&quot; с параметром &quot;=value&quot;.
+
+#  Если записать &quot;VARIABLE= value&quot;,
+#+ то интерпретатор попытается установить переменную окружения &quot;VARIABLE&quot; в &quot;&quot;
+#+ и выполнить команду &quot;value&quot;.
+#-------------------------------------------------------------------------
+
+
+echo hello    # Это не ссылка на переменную, выведет строку &quot;hello&quot;.
+
+echo $hello
+echo ${hello} # Идентично предыдущей строке.
+
+echo &quot;$hello&quot;
+echo &quot;${hello}&quot;
+
+echo
+
+hello=&quot;A B  C   D&quot;
+echo $hello   # A B C D
+echo &quot;$hello&quot; # A B  C   D
+# Здесь вы сможете наблюдать различия в выводе echo $hello и echo &quot;$hello&quot;.
+# Заключение ссылки на переменную в кавычки сохраняет пробельные символы.
+
+echo
+
+echo &#39;$hello&#39;  # $hello
+# Внутри одинарных кавычек не производится подстановка значений переменных,
+#+ т.е. &quot;$&quot; интерпретируется как простой символ.
+
+# Обратите внимание на различия, существующие между этими типами кавычек.
+
+
+hello=    # Запись пустого значения в переменную.
+echo &quot;\$hello (пустое значение) = $hello&quot;
+#  Обратите внимание: запись пустого значения -- это не то же самое,
+#+ что сброс переменной, хотя конечный результат -- тот же (см. ниже).
+
+# --------------------------------------------------------------
+
+#  Допускается присваивание нескольких переменных в одной строке,
+#+ если они отделены пробельными символами.
+#  Внимание! Это может снизить читабельность сценария и оказаться непереносимым.
+
+var1=variable1  var2=variable2  var3=variable3
+echo
+echo &quot;var1=$var1   var2=$var2  var3=$var3&quot;
+
+# Могут возникнуть проблемы с устаревшими версиями &quot;sh&quot;.
+
+# --------------------------------------------------------------
+
+echo; echo
+
+numbers=&quot;один два три&quot;
+other_numbers=&quot;1 2 3&quot;
+# Если в значениях переменных встречаются пробелы,
+# то использование кавычек обязательно.
+echo &quot;numbers = $numbers&quot;
+echo &quot;other_numbers = $other_numbers&quot;   # other_numbers = 1 2 3
+echo
+
+echo &quot;uninitialized_variable = $uninitialized_variable&quot;
+# Неинициализированная переменная содержит &quot;пустое&quot; значение.
+uninitialized_variable=   #  Объявление неинициализированной переменной
+                          #+ (то же, что и присваивание пустого значения, см. выше).
+echo &quot;uninitialized_variable = $uninitialized_variable&quot;
+                          # Переменная содержит &quot;пустое&quot; значение.
+
+uninitialized_variable=23       # Присваивание.
+unset uninitialized_variable    # Сброс.
+echo &quot;uninitialized_variable = $uninitialized_variable&quot;
+                                # Переменная содержит &quot;пустое&quot; значение.
+
+echo
+
+exit 0
+</pre>
+              </div>
+
+              <div
+               class="CAUTION">
+                <table
+                 class="CAUTION"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/caution.gif"
+                     hspace="5"
+                     alt="Caution"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>Неинициализированная переменная хранит <span
+                       class="QUOTE">&quot;пустое&quot;</span> значение
+                      - не ноль!. Использование неинициализированных
+                      переменных может приводить к ошибкам разного рода
+                      в процессе исполнения.</p>
+
+                      <p>Не смотря на это в арифметических операциях
+                      допускается использовать неинициализированные
+                      переменные.</p>
+<pre
+ class="PROGRAMLISTING">
+echo &quot;$uninitialized&quot;                                # (пустая строка)
+let &quot;uninitialized += 5&quot;                             # Прибавить 5.
+echo &quot;$uninitialized&quot;                                # 5
+
+#  Заключение:
+#  Неинициализированные переменные не имеют значения, однако
+#+ в арифметических операциях за значение таких переменных принимается число 0.
+#  Это недокументированная (и возможно непереносимая) возможность.
+</pre>
+                      См. так же <a
+                       href="c5358.html#SELFSOURCE">Пример
+                      11-19</a>.<br>
+                      <br>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c301.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x1673.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Служебные символы</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p299.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Присваивание значений переменным</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

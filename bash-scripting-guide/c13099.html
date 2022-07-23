@@ -1,0 +1,788 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Отладка сценариев</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Материал повышенной сложности"
+     href="p11889.html">
+    <link
+     rel="PREVIOUS"
+     title="/dev/zero и /dev/null"
+     href="c13041.html">
+    <link
+     rel="NEXT"
+     title="Необязательные параметры (ключи)"
+     href="c13228.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c13041.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c13228.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="DEBUGGING"></a>Глава 29. Отладка сценариев</h1>
+
+      <p>Командная оболочка Bash не имеет своего отладчика, и не имеет
+      даже каких либо отладочных команд или конструкций. <a
+       name="AEN13102"
+       href="#FTN.AEN13102"><span
+       class="footnote">[1]</span></a> Синтаксические ошибки или
+      опечатки часто вызывают сообщения об ошибках, которые которые
+      практически никак не помогают при отладке.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX74"></a>
+
+        <p><strong>Пример 29-1. Сценарий, содержащий
+        ошибку</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# ex74.sh
+
+# Этот сценарий содержит ошибку.
+
+a=37
+
+if [$a -gt 27 ]
+then
+  echo $a
+fi  
+
+exit 0
+</pre>
+      </div>
+
+      <p>В результате исполнения этого сценария вы получите такое
+      сообщение:</p>
+<pre
+ class="SCREEN">
+<tt
+ class="COMPUTEROUTPUT">./ex74.sh: [37: command not found</tt>
+</pre>
+      Что в этом сценарии может быть неправильно (подсказка: после
+      ключевого слова <strong
+       class="COMMAND">if</strong>)?<br>
+      <br>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="MISSINGKEYWORD"></a>
+
+        <p><strong>Пример 29-2. Пропущено <a
+         href="c5358.html#KEYWORDREF">ключевое слово</a></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# missing-keyword.sh:
+# Какое сообщение об ошибке будет выведено, при попытке запустить этот сценарий?
+
+for a in 1 2 3
+do
+  echo &quot;$a&quot;
+# done     # Необходимое ключевое слово &#39;done&#39; закомментировано.
+
+exit 0
+</pre>
+      </div>
+
+      <p>На экране появится сообщение:</p>
+<pre
+ class="SCREEN">
+<tt
+ class=
+"COMPUTEROUTPUT">missing-keyword.sh: line 11: syntax error: unexpected end of file</tt>
+       
+</pre>
+      Обратите внимание, сообщение об ошибке будет содержать номер не
+      той строки, в которой возникла ошибка, а той, в которой Bash
+      точно установил наличие ошибочной ситуации. <br>
+      <br>
+
+      <p>Сообщения об ошибках могут вообще не содержать номера строки,
+      при исполнении которой эта ошибка появилась.</p>
+
+      <p>А что делать, если сценарий работает, но не так как ожидалось?
+      Вот пример весьма распространенной логической ошибки.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX75"></a>
+
+        <p><strong>Пример 29-3. test24</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+#  Ожидается, что этот сценарий будет удалять в текущем каталоге
+#+ все файлы, имена которых содержат пробелы.
+#  Но он не работает.  Почему?
+
+
+badname=`ls | grep &#39; &#39;`
+
+# echo &quot;$badname&quot;
+
+rm &quot;$badname&quot;
+
+exit 0
+</pre>
+      </div>
+
+      <p>Попробуйте найти ошибку, раскомментарив строку <tt
+       class="USERINPUT"><strong>echo
+      &quot;$badname&quot;</strong></tt>. Инструкция echo очень полезна
+      при отладке сценариев, она позволяет узнать -- действительно ли
+      вы получаете то, что ожидали получить.</p>
+
+      <p>В данном конкретном случае, команда <tt
+       class="USERINPUT"><strong>rm &quot;$badname&quot;</strong></tt>
+      не дает желаемого результата потому, что переменная <tt
+       class="VARNAME">$badname</tt> взята в кавычки. В результате,
+      <strong
+       class="COMMAND">rm</strong> получает единственный аргумент (т.е.
+      команда будет считать, что получила имя одного файла). Частично
+      эта проблема может быть решена за счет удаления кавычек вокруг
+      <tt
+       class="VARNAME">$badname</tt> и установки переменной <tt
+       class="VARNAME">$IFS</tt> так, чтобы она содержала только символ
+      перевода строки, <tt
+       class="USERINPUT"><strong>IFS=$&#39;\n&#39;</strong></tt>.
+      Однако, существует более простой способ выполнить эту задачу.</p>
+<pre
+ class="PROGRAMLISTING">
+# Правильный способ удаления файлов, в чьих именах содержатся пробелы.
+rm *\ *
+rm *&quot; &quot;*
+rm *&#39; &#39;*
+# Спасибо S.C.
+</pre>
+      <br>
+      <br>
+
+      <p>В общих чертах, ошибочными можно считать такие сценарии,
+      которые</p>
+
+      <ol
+       type="1">
+        <li>
+          <p>&quot;сыплют&quot; сообщениями о <span
+           class="QUOTE">&quot;<span
+           class="ERRORNAME">синтаксических ошибках</span>&quot;</span>
+          или</p>
+        </li>
+
+        <li>
+          <p>запускаются, но работают не так как ожидалось (<span
+           class="ERRORNAME">логические ошибки</span>).</p>
+        </li>
+
+        <li>
+          <p>запускаются, делают то, что требуется, но имеют побочные
+          эффекты (<span
+           class="ERRORNAME">логическая бомба</span>).</p>
+        </li>
+      </ol>
+      <br>
+      <br>
+
+      <p>Инструменты, которые могут помочь при отладке неработающих
+      сценариев</p>
+
+      <ol
+       type="1">
+        <li>
+          <p>команда echo, в критических точках сценария, поможет
+          отследить состояние переменных и отобразить ход
+          исполнения.</p>
+        </li>
+
+        <li>
+          <p>команда-фильтр <strong
+           class="COMMAND">tee</strong>, которая поможет проверить
+          процессы и потоки данных в критических местах.</p>
+        </li>
+
+        <li>
+          <p>ключи <tt
+           class="OPTION">-n -v -x</tt></p>
+
+          <p><tt
+           class="USERINPUT"><strong>sh -n scriptname</strong></tt> --
+          проверит наличие синтаксических ошибок, не запуская сам
+          сценарий. Того же эффекта можно добиться, вставив в сценарий
+          команду <tt
+           class="USERINPUT"><strong>set -n</strong></tt> или <tt
+           class="USERINPUT"><strong>set -o noexec</strong></tt>.
+          Обратите внимание, некоторые из синтаксических ошибок не
+          могут быть выявлены таким способом.</p>
+
+          <p><tt
+           class="USERINPUT"><strong>sh -v scriptname</strong></tt> --
+          выводит каждую команду прежде, чем она будет выполнена. Того
+          же эффекта можно добиться, вставив в сценарий команду <tt
+           class="USERINPUT"><strong>set -v</strong></tt> или <tt
+           class="USERINPUT"><strong>set -o verbose</strong></tt>.</p>
+
+          <p>Ключи <tt
+           class="OPTION">-n</tt> и <tt
+           class="OPTION">-v</tt> могут употребляться совместно: <tt
+           class="USERINPUT"><strong>sh -nv
+          scriptname</strong></tt>.</p>
+
+          <p><tt
+           class="USERINPUT"><strong>sh -x scriptname</strong></tt> --
+          выводит, в краткой форме, результат исполнения каждой
+          команды. Того же эффекта можно добиться, вставив в сценарий
+          команду <tt
+           class="USERINPUT"><strong>set -x</strong></tt> или <tt
+           class="USERINPUT"><strong>set -o xtrace</strong></tt>.</p>
+
+          <p>Вставив в сценарий <tt
+           class="USERINPUT"><strong>set -u</strong></tt> или <tt
+           class="USERINPUT"><strong>set -o nounset</strong></tt>, вы
+          будете получать сообщение об ошибке <span
+           class="ERRORNAME">unbound variable</span> всякий раз, когда
+          будет производиться попытка обращения к необъявленной
+          переменной.</p>
+        </li>
+
+        <li>
+          <p>Функция <span
+           class="QUOTE">&quot;assert&quot;</span>, предназначенная для
+          проверки переменных или условий, в критических точках
+          сценария. (Эта идея заимствована из языка программирования
+          C.)</p>
+
+          <div
+           class="EXAMPLE">
+            <a
+             name="ASSERT"></a>
+
+            <p><strong>Пример 29-4. Проверка условия с помощью функции
+            <span
+             class="QUOTE">&quot;assert&quot;</span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# assert.sh
+
+assert ()                 #  Если условие ложно,
+{                         #+ выход из сценария с сообщением об ошибке.
+  E_PARAM_ERR=98
+  E_ASSERT_FAILED=99
+
+
+  if [ -z &quot;$2&quot; ]          # Недостаточное количество входных параметров.
+  then
+    return $E_PARAM_ERR
+  fi
+
+  lineno=$2
+
+  if [ ! $1 ]
+  then
+    echo &quot;Утверждение ложно:  \&quot;$1\&quot;&quot;
+    echo &quot;Файл: \&quot;$0\&quot;, строка: $lineno&quot;
+    exit $E_ASSERT_FAILED
+  # else
+  #   return
+  #   и продолжить исполнение сценария.
+  fi
+}
+
+
+a=5
+b=4
+condition=&quot;$a -lt $b&quot;     # Сообщение об ощибке и завершение сценария.
+                          #  Попробуйте поменять условие &quot;condition&quot;
+                          #+ на что нибудь другое и
+                          #+ посмотреть -- что получится.
+
+assert &quot;$condition&quot; $LINENO
+# Сценарий продолжит работу только в том случае, если утверждение истинно.
+
+
+# Прочие команды.
+# ...
+echo &quot;Эта строка появится на экране только если утверждение истинно.&quot;
+# ...
+# Прочие команды.
+# ...
+
+exit 0
+</pre>
+          </div>
+        </li>
+
+        <li>
+          <p>Ловушка на выхто в этом сценарии может быть неправильно
+          (подсказка: после ключевого словоде.</p>
+
+          <p>Команда <strong
+           class="COMMAND">exit</strong>, в сценарии, порождает сигнал
+          <span
+           class="RETURNVALUE">0</span>, по которому процесс завершает
+          работу, т.е. -- сам сценарий. <a
+           name="AEN13188"
+           href="#FTN.AEN13188"><span
+           class="footnote">[2]</span></a> Часто бывает полезным по
+          выходу из сценария выдать <span
+           class="QUOTE">&quot;распечатку&quot;</span> переменных.</p>
+        </li>
+      </ol>
+      <br>
+      <br>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="TRAPREF1"></a>Установка ловушек на сигналы</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">trap</strong></dt>
+
+          <dd>
+            <p>Определяет действие при получении сигнала; так же
+            полезна при отладке.</p>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p><a
+                     name="SIGNALD"></a>Сигнал (<span
+                     class="emphasis"><em
+                     class="EMPHASIS">signal</em></span>) -- это просто
+                    сообщение, передается процессу либо ядром, либо
+                    другим процессом, чтобы побудить процесс выполнить
+                    какие либо действия (обычно -- завершить работу).
+                    Например, нажатие на <strong
+                     class="KEYCAP">Control</strong>-<strong
+                     class="KEYCAP">C</strong>, вызывает передачу
+                    сигнала SIGINT, исполняющейся программе.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+<pre
+ class="PROGRAMLISTING">
+trap &#39;&#39; 2
+# Игнорировать прерывание 2 (Control-C), действие по сигналу не указано.
+
+trap &#39;echo &quot;Control-C disabled.&quot;&#39; 2
+# Сообщение при нажатии на Control-C.
+</pre>
+            <br>
+            <br>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX76"></a>
+
+        <p><strong>Пример 29-5. Ловушка на выходе</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+trap &#39;echo Список переменных --- a = $a  b = $b&#39; EXIT
+# EXIT -- это название сигнала, генерируемого при выходе из сценария.
+
+a=39
+
+b=36
+
+exit 0
+# Примечательно, что если закомментировать команду &#39;exit&#39;,
+# то это никак не скажется на работе сценария,
+# поскольку &quot;выход&quot; из сценария происходит в любом случае.
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="ONLINE"></a>
+
+        <p><strong>Пример 29-6. Удаление временного файла при нажатии
+        на Control-C</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# logon.sh: Сценарий, написаный &quot;на скорую руку&quot;, контролирует вход в режим on-line.
+
+
+TRUE=1
+LOGFILE=/var/log/messages
+# Обратите внимание: $LOGFILE должен быть доступен на чтение (chmod 644 /var/log/messages).
+TEMPFILE=temp.$$
+# &quot;Уникальное&quot; имя для временного файла, где расширение в имени -- это pid процесса-сценария.
+KEYWORD=address
+# При входе, в файл /var/log/messages,
+# добавляется  строка &quot;remote IP address xxx.xxx.xxx.xxx&quot;
+ONLINE=22
+USER_INTERRUPT=13
+CHECK_LINES=100
+# Количество проверяемых строк.
+
+trap &#39;rm -f $TEMPFILE; exit $USER_INTERRUPT&#39; TERM INT
+# Удалить временный файл, когда сценарий завершает работу по control-c.
+
+echo
+
+while [ $TRUE ]  #Бесконечный цикл.
+do
+  tail -$CHECK_LINES $LOGFILE&gt; $TEMPFILE
+  # Последние 100 строк из системного журнала переписать во временный файл.
+  # Совершенно необходимо, т.к. новейшие версии ядер генерируют много сообщений при входе.
+  search=`grep $KEYWORD $TEMPFILE`
+  # Проверить наличие фразы &quot;address&quot;,
+  # свидетельствующей об успешном входе.
+
+  if [ ! -z &quot;$search&quot; ] # Кавычки необходимы, т.к. переменная может содержать пробелы.
+  then
+     echo &quot;On-line&quot;
+     rm -f $TEMPFILE    # Удалить временный файл.
+     exit $ONLINE
+  else
+     echo -n &quot;.&quot;        # ключ -n подавляет вывод символа перевода строки,
+                        # так вы получите непрерывную строку точек.
+  fi
+
+  sleep 1
+done
+
+
+# Обратите внимание: если изменить содержимое переменной KEYWORD
+# на &quot;Exit&quot;, то сценарий может использоваться для контроля
+# неожиданного выхода (logoff).
+
+exit 0
+
+# Nick Drage предложил альтернативный метод:
+
+while true
+  do ifconfig ppp0 | grep UP 1&gt; /dev/null &amp;&amp; echo &quot;соединение установлено&quot; &amp;&amp; exit 0
+  echo -n &quot;.&quot;   # Печать последовательности точек (.....), пока соединение не будет установлено.
+  sleep 2
+done
+
+# Проблема: Нажатия Control-C может оказаться недостаточным, чтобы завершить этот процесс.
+#          (Точки продолжают выводиться на экран.)
+# Упражнение: Исправьте этот недостаток.
+
+
+
+# Stephane Chazelas предложил еще одну альтернативу:
+
+CHECK_INTERVAL=1
+
+while ! tail -1 &quot;$LOGFILE&quot; | grep -q &quot;$KEYWORD&quot;
+do echo -n .
+   sleep $CHECK_INTERVAL
+done
+echo &quot;On-line&quot;
+
+# Упражнение: Найдите сильные и слабые стороны
+#           каждого из этих подходов.
+</pre>
+      </div>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Аргумент <tt
+               class="OPTION">DEBUG</tt>, команды <strong
+               class="COMMAND">trap</strong>, заставляет сценарий
+              выполнять указанное действие после выполнения каждой
+              команды. Это можно использовать для трассировки
+              переменных.</p>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="VARTRACE"></a>
+
+                <p><strong>Пример 29-7. Трассировка
+                переменной</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+trap &#39;echo &quot;VARIABLE-TRACE&gt; $LINENO: \$variable = \&quot;$variable\&quot;&quot;&#39; DEBUG
+# Выводить значение переменной после исполнения каждой команды.
+
+variable=29
+
+echo &quot;Переменная \&quot;\$variable\&quot; инициализирована числом $variable.&quot;
+
+let &quot;variable *= 3&quot;
+echo &quot;Значение переменной \&quot;\$variable\&quot; увеличено в 3 раза.&quot;
+
+# Конструкция &quot;trap &#39;commands&#39; DEBUG&quot; может оказаться очень полезной
+# при отладке больших и сложных скриптов,
+# когда размещение множества инструкций &quot;echo $variable&quot;
+# может потребовать достаточно большого времени.
+
+# Спасибо Stephane Chazelas.
+
+exit 0
+</pre>
+              </div>
+              <br>
+              <br>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Конструкция <tt
+               class="USERINPUT"><strong>trap &#39;&#39;
+              SIGNAL</strong></tt> (две одиночных кавычки) -- запрещает
+              SIGNAL для оставшейся части сценария. Конструкция <tt
+               class="USERINPUT"><strong>trap SIGNAL</strong></tt> --
+              восстанавливает действие сигнала SIGNAL. Эти конструкции
+              могут использоваться для защиты критических участков
+              сценария от нежелательного прерывания.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+<pre
+ class="PROGRAMLISTING">
+       trap &#39;&#39; 2  # Сигнал 2 (Control-C) -- запрещен.
+        command
+        command
+        command
+        trap 2     # Разрешение реакции на Control-C
+       
+</pre>
+      <br>
+      <br>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN13102"
+         href="c13099.html#AEN13102"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p><a
+           href="http://bashdb.sourceforge.net"
+           target="_top">Bash debugger</a> (автор: Rocky Bernstein)
+          частично возмещает этот недостаток.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN13188"
+         href="c13099.html#AEN13188"><span
+         class="footnote">[2]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>В соответствии с соглашениями, сигнал с номером <tt
+           class="REPLACEABLE"><em>0</em></tt> соответствует команде <a
+           href="c2105.html#EXITCOMMANDREF">exit</a>.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c13041.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c13228.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">/dev/zero и /dev/null</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p11889.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Необязательные параметры (ключи)</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

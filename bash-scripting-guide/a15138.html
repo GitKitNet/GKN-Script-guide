@@ -1,0 +1,1345 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Преобразование пакетных (*.bat) файлов DOS в сценарии
+    командной оболочки</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="PREVIOUS"
+     title="Пример файла .bashrc"
+     href="a15124.html">
+    <link
+     rel="NEXT"
+     title="Упражнения"
+     href="a15523.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="a15124.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="a15523.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="APPENDIX">
+      <h1><a
+       name="DOSBATCH"></a>Приложение H. Преобразование пакетных
+      (*.bat) файлов DOS в сценарии командной оболочки</h1>
+
+      <p><a
+       name="DOSBATCH1"></a></p>
+
+      <p>Большое число программистов начинало изучать скриптовые языки
+      на PC, работающих под управлением DOS. Даже на этом
+      &quot;калеке&quot; удавалось создавать неплохие сценарии, хотя
+      это и требовало значительных усилий. Иногда еще возникает
+      потребность в переносе пекетных файлов DOS на платформу UNIX, в
+      виде сценариев командной оболочки. Обычно это не сложно,
+      поскольку набор операторов, доступных в DOS, представляет из себя
+      ограниченное подмножество эквивалентных команд, доступных в
+      командной оболочке.</p>
+
+      <div
+       class="TABLE">
+        <a
+         name="AEN15143"></a>
+
+        <p><strong>Таблица H-1. Ключевые слова/переменные/операторы
+        пакетных файлов DOS и их аналоги командной
+        оболочки</strong></p>
+
+        <table
+         border="1"
+         class="CALSTABLE">
+          <thead>
+            <tr>
+              <th
+               align="left"
+               valign="top">Операторы пакетных файлов</th>
+
+              <th
+               align="left"
+               valign="top">Эквивалентные команды в UNIX</th>
+
+              <th
+               align="left"
+               valign="top">Описание</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">%</tt></td>
+
+              <td
+               align="left"
+               valign="top">$</td>
+
+              <td
+               align="left"
+               valign="top">префикс аргументов командной строки</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">/</tt></td>
+
+              <td
+               align="left"
+               valign="top">-</td>
+
+              <td
+               align="left"
+               valign="top">признак ключа (опции)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">\</tt></td>
+
+              <td
+               align="left"
+               valign="top">/</td>
+
+              <td
+               align="left"
+               valign="top">разделитель имен каталогов в пути</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">==</tt></td>
+
+              <td
+               align="left"
+               valign="top">=</td>
+
+              <td
+               align="left"
+               valign="top">(равно) сравнение строк</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">!==!</tt></td>
+
+              <td
+               align="left"
+               valign="top">!=</td>
+
+              <td
+               align="left"
+               valign="top">(не равно) сравнение строк</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">|</tt></td>
+
+              <td
+               align="left"
+               valign="top">|</td>
+
+              <td
+               align="left"
+               valign="top">конвейер (канал)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">@</tt></td>
+
+              <td
+               align="left"
+               valign="top">set <tt
+               class="OPTION">+v</tt></td>
+
+              <td
+               align="left"
+               valign="top">не выводить текущую команду</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">*</tt></td>
+
+              <td
+               align="left"
+               valign="top">*</td>
+
+              <td
+               align="left"
+               valign="top"><span
+               class="QUOTE">&quot;шаблонный символ&quot;</span> в
+              имени файла</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">&gt;</tt></td>
+
+              <td
+               align="left"
+               valign="top">&gt;</td>
+
+              <td
+               align="left"
+               valign="top">перенаправление (с удалением существующего
+              файла)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">&gt;&gt;</tt></td>
+
+              <td
+               align="left"
+               valign="top">&gt;&gt;</td>
+
+              <td
+               align="left"
+               valign="top">перенаправление (с добавлением в конец
+              существующего файла)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">&lt;</tt></td>
+
+              <td
+               align="left"
+               valign="top">&lt;</td>
+
+              <td
+               align="left"
+               valign="top">перенаправление ввода <tt
+               class="FILENAME">stdin</tt></td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">%VAR%</tt></td>
+
+              <td
+               align="left"
+               valign="top">$VAR</td>
+
+              <td
+               align="left"
+               valign="top">переменная окружения</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">REM</tt></td>
+
+              <td
+               align="left"
+               valign="top">#</td>
+
+              <td
+               align="left"
+               valign="top">комментарий</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">NOT</tt></td>
+
+              <td
+               align="left"
+               valign="top">!</td>
+
+              <td
+               align="left"
+               valign="top">отрицание последующего условия</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">NUL</tt></td>
+
+              <td
+               align="left"
+               valign="top"><tt
+               class="FILENAME">/dev/null</tt></td>
+
+              <td
+               align="left"
+               valign="top"><span
+               class="QUOTE">&quot;черная дыра&quot;</span> для того,
+              чтобы &quot;спрятать&quot; вывод команды</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">ECHO</tt></td>
+
+              <td
+               align="left"
+               valign="top">echo</td>
+
+              <td
+               align="left"
+               valign="top">вывод (в Bash имеет большое число
+              опций)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">ECHO.</tt></td>
+
+              <td
+               align="left"
+               valign="top">echo</td>
+
+              <td
+               align="left"
+               valign="top">вывод пустой строки</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">ECHO OFF</tt></td>
+
+              <td
+               align="left"
+               valign="top">set <tt
+               class="OPTION">+v</tt></td>
+
+              <td
+               align="left"
+               valign="top">не выводить последующие команды</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">FOR %%VAR IN (LIST) DO</tt></td>
+
+              <td
+               align="left"
+               valign="top">for var in [list]; do</td>
+
+              <td
+               align="left"
+               valign="top">цикл <span
+               class="QUOTE">&quot;for&quot;</span></td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">:LABEL</tt></td>
+
+              <td
+               align="left"
+               valign="top">эквивалент отсутствует (нет
+              необходимости)</td>
+
+              <td
+               align="left"
+               valign="top">метка</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">GOTO</tt></td>
+
+              <td
+               align="left"
+               valign="top">эквивалент отсутствует (используйте
+              функции)</td>
+
+              <td
+               align="left"
+               valign="top">переход по заданной метке</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">PAUSE</tt></td>
+
+              <td
+               align="left"
+               valign="top">sleep</td>
+
+              <td
+               align="left"
+               valign="top">пауза, или ожидание, в течение заданного
+              времени</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">CHOICE</tt></td>
+
+              <td
+               align="left"
+               valign="top">case или select</td>
+
+              <td
+               align="left"
+               valign="top">выбор из меню</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">IF</tt></td>
+
+              <td
+               align="left"
+               valign="top">if</td>
+
+              <td
+               align="left"
+               valign="top">условный оператор if</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">IF EXIST <tt
+               class="REPLACEABLE"><em>FILENAME</em></tt></tt></td>
+
+              <td
+               align="left"
+               valign="top">if [ -e filename ]</td>
+
+              <td
+               align="left"
+               valign="top">проверка существования файла</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">IF !%N==!</tt></td>
+
+              <td
+               align="left"
+               valign="top">if [ -z &quot;$N&quot; ]</td>
+
+              <td
+               align="left"
+               valign="top">Проверка: параметр <span
+               class="QUOTE">&quot;N&quot;</span> отсутствует</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">CALL</tt></td>
+
+              <td
+               align="left"
+               valign="top">source или . (оператор
+              &quot;точка&quot;)</td>
+
+              <td
+               align="left"
+               valign="top"><span
+               class="QUOTE">&quot;подключение&quot;</span> другого
+              сценария</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">COMMAND /C</tt></td>
+
+              <td
+               align="left"
+               valign="top">source или . (оператор
+              &quot;точка&quot;)</td>
+
+              <td
+               align="left"
+               valign="top"><span
+               class="QUOTE">&quot;подключение&quot;</span> другого
+              сценария (то же, что и CALL)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">SET</tt></td>
+
+              <td
+               align="left"
+               valign="top">export</td>
+
+              <td
+               align="left"
+               valign="top">установить переменную окружения</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">SHIFT</tt></td>
+
+              <td
+               align="left"
+               valign="top">shift</td>
+
+              <td
+               align="left"
+               valign="top">сдвиг списка аргументов уомандной строки
+              влево</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">SGN</tt></td>
+
+              <td
+               align="left"
+               valign="top">-lt или -gt</td>
+
+              <td
+               align="left"
+               valign="top">знак (целого числа)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">ERRORLEVEL</tt></td>
+
+              <td
+               align="left"
+               valign="top">$?</td>
+
+              <td
+               align="left"
+               valign="top">код завершения</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">CON</tt></td>
+
+              <td
+               align="left"
+               valign="top"><tt
+               class="FILENAME">stdin</tt></td>
+
+              <td
+               align="left"
+               valign="top"><span
+               class="QUOTE">&quot;консоль&quot;</span> (<tt
+               class="FILENAME">stdin</tt>)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">PRN</tt></td>
+
+              <td
+               align="left"
+               valign="top"><tt
+               class="FILENAME">/dev/lp0</tt></td>
+
+              <td
+               align="left"
+               valign="top">устройство принтера</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">LPT1</tt></td>
+
+              <td
+               align="left"
+               valign="top"><tt
+               class="FILENAME">/dev/lp0</tt></td>
+
+              <td
+               align="left"
+               valign="top">устройство принтера</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">COM1</tt></td>
+
+              <td
+               align="left"
+               valign="top"><tt
+               class="FILENAME">/dev/ttyS0</tt></td>
+
+              <td
+               align="left"
+               valign="top">первый последовательный порт</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Пакетные файлы обычно содержат вызовы команд DOS. Они должны
+      быть заменены эквивалентными командами UNIX.</p>
+
+      <div
+       class="TABLE">
+        <a
+         name="AEN15350"></a>
+
+        <p><strong>Таблица H-2. Команды DOS и их эквиваленты в
+        UNIX</strong></p>
+
+        <table
+         border="1"
+         class="CALSTABLE">
+          <thead>
+            <tr>
+              <th
+               align="left"
+               valign="top">Команды DOS</th>
+
+              <th
+               align="left"
+               valign="top">Эувивалент в UNIX</th>
+
+              <th
+               align="left"
+               valign="top">Описание</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">ASSIGN</tt></td>
+
+              <td
+               align="left"
+               valign="top">ln</td>
+
+              <td
+               align="left"
+               valign="top">ссылка на файл или каталог</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">ATTRIB</tt></td>
+
+              <td
+               align="left"
+               valign="top">chmod</td>
+
+              <td
+               align="left"
+               valign="top">изменить атрибуты файла (права
+              доступа)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">CD</tt></td>
+
+              <td
+               align="left"
+               valign="top">cd</td>
+
+              <td
+               align="left"
+               valign="top">сменить каталог</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">CHDIR</tt></td>
+
+              <td
+               align="left"
+               valign="top">cd</td>
+
+              <td
+               align="left"
+               valign="top">сменить каталог</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">CLS</tt></td>
+
+              <td
+               align="left"
+               valign="top">clear</td>
+
+              <td
+               align="left"
+               valign="top">очистить экран</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">COMP</tt></td>
+
+              <td
+               align="left"
+               valign="top">diff, comm, cmp</td>
+
+              <td
+               align="left"
+               valign="top">сравнить файлы</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">COPY</tt></td>
+
+              <td
+               align="left"
+               valign="top">cp</td>
+
+              <td
+               align="left"
+               valign="top">скопировать файл</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">Ctl-C</tt></td>
+
+              <td
+               align="left"
+               valign="top">Ctl-C</td>
+
+              <td
+               align="left"
+               valign="top">прервать исполнение сценария</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">Ctl-Z</tt></td>
+
+              <td
+               align="left"
+               valign="top">Ctl-D</td>
+
+              <td
+               align="left"
+               valign="top">EOF (конец-файла)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">DEL</tt></td>
+
+              <td
+               align="left"
+               valign="top">rm</td>
+
+              <td
+               align="left"
+               valign="top">удалить файл(ы)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">DELTREE</tt></td>
+
+              <td
+               align="left"
+               valign="top">rm -rf</td>
+
+              <td
+               align="left"
+               valign="top">удалить каталог с подкаталогами</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">DIR</tt></td>
+
+              <td
+               align="left"
+               valign="top">ls -l</td>
+
+              <td
+               align="left"
+               valign="top">вывести содержимое каталога</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">ERASE</tt></td>
+
+              <td
+               align="left"
+               valign="top">rm</td>
+
+              <td
+               align="left"
+               valign="top">удалить файл(ы)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">EXIT</tt></td>
+
+              <td
+               align="left"
+               valign="top">exit</td>
+
+              <td
+               align="left"
+               valign="top">завершить текущий процесс</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">FC</tt></td>
+
+              <td
+               align="left"
+               valign="top">comm, cmp</td>
+
+              <td
+               align="left"
+               valign="top">сравнить файлы</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">FIND</tt></td>
+
+              <td
+               align="left"
+               valign="top">grep</td>
+
+              <td
+               align="left"
+               valign="top">найти строку в файлах</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">MD</tt></td>
+
+              <td
+               align="left"
+               valign="top">mkdir</td>
+
+              <td
+               align="left"
+               valign="top">создать каталог</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">MKDIR</tt></td>
+
+              <td
+               align="left"
+               valign="top">mkdir</td>
+
+              <td
+               align="left"
+               valign="top">создать каталог</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">MORE</tt></td>
+
+              <td
+               align="left"
+               valign="top">more</td>
+
+              <td
+               align="left"
+               valign="top">постраничный вывод</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">MOVE</tt></td>
+
+              <td
+               align="left"
+               valign="top">mv</td>
+
+              <td
+               align="left"
+               valign="top">переместить</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">PATH</tt></td>
+
+              <td
+               align="left"
+               valign="top">$PATH</td>
+
+              <td
+               align="left"
+               valign="top">путь поиска исполняемых файлов</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">REN</tt></td>
+
+              <td
+               align="left"
+               valign="top">mv</td>
+
+              <td
+               align="left"
+               valign="top">переименовать (переместить)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">RENAME</tt></td>
+
+              <td
+               align="left"
+               valign="top">mv</td>
+
+              <td
+               align="left"
+               valign="top">переименовать (переместить)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">RD</tt></td>
+
+              <td
+               align="left"
+               valign="top">rmdir</td>
+
+              <td
+               align="left"
+               valign="top">удалить каталог</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">RMDIR</tt></td>
+
+              <td
+               align="left"
+               valign="top">rmdir</td>
+
+              <td
+               align="left"
+               valign="top">удалить каталог</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">SORT</tt></td>
+
+              <td
+               align="left"
+               valign="top">sort</td>
+
+              <td
+               align="left"
+               valign="top">отсортировать файл</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">TIME</tt></td>
+
+              <td
+               align="left"
+               valign="top">date</td>
+
+              <td
+               align="left"
+               valign="top">вывести системное время</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">TYPE</tt></td>
+
+              <td
+               align="left"
+               valign="top">cat</td>
+
+              <td
+               align="left"
+               valign="top">вывести содержимое файла на <tt
+               class="FILENAME">stdout</tt></td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">XCOPY</tt></td>
+
+              <td
+               align="left"
+               valign="top">cp</td>
+
+              <td
+               align="left"
+               valign="top">(расширенная команда) скопировать файл</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Фактически, команды и операторы командной оболочки
+              UNIX имеют огромное количество дополнительных опций,
+              расширяющих их функциональность, по сравнению с их
+              эквивалентами в DOS. В большинстве своем, пакетные файлы
+              DOS предполагают наличие вспомогательных утилит, таких
+              как <strong
+               class="COMMAND">ask.com</strong> (&quot;увечный&quot;
+              аналог UNIX-вого <a
+               href="c5358.html#READREF">read</a>).</p>
+
+              <p>DOS поддерживает крайне ограниченный набор шаблонных
+              символов, учавствующих в операциях <a
+               href="x12282.html">подстановки имен файлов</a>,
+              распознавая только два символа -- <span
+               class="TOKEN">*</span> и <span
+               class="TOKEN">?</span>.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p>Преобразование пакетных файлов DOS в сценарии командной
+      оболочки, обычно не вызывает затруднений, а результат такого
+      преобразования читается гораздо лучше, чем оригинал.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="VIEWDAT"></a>
+
+        <p><strong>Пример H-1. VIEWDATA.BAT: пакетный файл
+        DOS</strong></p>
+<pre
+ class="PROGRAMLISTING">
+REM VIEWDATA
+
+REM INSPIRED BY AN EXAMPLE IN &quot;DOS POWERTOOLS&quot;
+REM                           BY PAUL SOMERSON
+
+
+@ECHO OFF
+
+IF !%1==! GOTO VIEWDATA
+REM  IF NO COMMAND-LINE ARG...
+FIND &quot;%1&quot; C:\BOZO\BOOKLIST.TXT
+GOTO EXIT0
+REM  PRINT LINE WITH STRING MATCH, THEN EXIT.
+
+:VIEWDATA
+TYPE C:\BOZO\BOOKLIST.TXT | MORE
+REM  SHOW ENTIRE FILE, 1 PAGE AT A TIME.
+
+:EXIT0
+</pre>
+      </div>
+
+      <p>Результат преобразования в сценарий командной оболочки,
+      немного улучшенный.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="VIEWDATA"></a>
+
+        <p><strong>Пример H-2. viewdata.sh: Результат преобразования
+        VIEWDATA.BAT в сценарий командной оболочки</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Результат преобразования пакетного файла VIEWDATA.BAT в сценарий командной оболочки.
+
+DATAFILE=/home/bozo/datafiles/book-collection.data
+ARGNO=1
+
+# @ECHO OFF       Эта команда здесь не нужна.
+
+if [ $# -lt &quot;$ARGNO&quot; ]    # IF !%1==! GOTO VIEWDATA
+then
+  less $DATAFILE          # TYPE C:\MYDIR\BOOKLIST.TXT | MORE
+else
+  grep &quot;$1&quot; $DATAFILE     # FIND &quot;%1&quot; C:\MYDIR\BOOKLIST.TXT
+fi
+
+exit 0                    # :EXIT0
+
+# операторы перехода GOTO, метки и прочий &quot;мусор&quot; больше не нужны.
+# Результат преобразования стал короче, чище и понятнее,
+</pre>
+      </div>
+
+      <p>На сайте Тэда Дэвиса (Ted Davis) <a
+       href="http://www.maem.umr.edu/~batch/"
+       target="_top">Shell Scripts on the PC</a>, вы найдете большое
+      число руководств по созданию пакетных файлов в DOS. Определенно,
+      его изобретательность будет вам полезна, при создании ваших
+      сценариев.</p>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="a15124.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="a15523.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Пример файла <tt
+           class="FILENAME">.bashrc</tt></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"> </td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Упражнения</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

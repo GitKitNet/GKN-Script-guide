@@ -1,0 +1,504 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>/proc</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="/dev и /proc"
+     href="c12942.html">
+    <link
+     rel="PREVIOUS"
+     title="/dev и /proc"
+     href="c12942.html">
+    <link
+     rel="NEXT"
+     title="/dev/zero и /dev/null"
+     href="c13041.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c12942.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 27. /dev и /proc</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c13041.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="PROCREF1"></a>27.2. <tt
+       class="FILENAME">/proc</tt></h1>
+
+      <p>Фактически, каталог <tt
+       class="FILENAME">/proc</tt> -- это виртуальная файловая система.
+      Файлы, в каталоге <tt
+       class="FILENAME">/proc</tt>, содержат информацию о процессах, о
+      состоянии и конфигурации ядра и системы.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>cat /proc/devices</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">Character devices:
+   1 mem
+   2 pty
+   3 ttyp
+   4 ttyS
+   5 cua
+   7 vcs
+  10 misc
+  14 sound
+  29 fb
+  36 netlink
+ 128 ptm
+ 136 pts
+ 162 raw
+ 254 pcmcia
+
+ Block devices:
+   1 ramdisk
+   2 fd
+   3 ide0
+   9 md</tt>
+
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>cat /proc/interrupts</strong></tt>
+ <tt
+ class="COMPUTEROUTPUT">          CPU0
+   0:      84505          XT-PIC  timer
+   1:       3375          XT-PIC  keyboard
+   2:          0          XT-PIC  cascade
+   5:          1          XT-PIC  soundblaster
+   8:          1          XT-PIC  rtc
+  12:       4231          XT-PIC  PS/2 Mouse
+  14:     109373          XT-PIC  ide0
+ NMI:          0
+ ERR:          0</tt>
+
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>cat /proc/partitions</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">major minor  #blocks  name     rio rmerge rsect ruse wio wmerge wsect wuse running use aveq
+
+    3     0    3007872 hda 4472 22260 114520 94240 3551 18703 50384 549710 0 111550 644030
+    3     1      52416 hda1 27 395 844 960 4 2 14 180 0 800 1140
+    3     2          1 hda2 0 0 0 0 0 0 0 0 0 0 0
+    3     4     165280 hda4 10 0 20 210 0 0 0 0 0 210 210
+    ...</tt>
+
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>cat /proc/loadavg</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">0.13 0.42 0.27 2/44 1119</tt>
+        
+</pre>
+      <br>
+      <br>
+
+      <p>Сценарии командной оболочки могут извлекать необходимую
+      информацию из соответствующих файлов в каталоге <tt
+       class="FILENAME">/proc</tt>. <a
+       name="AEN13009"
+       href="#FTN.AEN13009"><span
+       class="footnote">[1]</span></a></p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class=
+"USERINPUT"><strong>cat /proc/filesystems | grep iso9660</strong></tt>
+ <tt
+ class="COMPUTEROUTPUT">       iso9660</tt>
+
+             
+</pre>
+      <br>
+      <br>
+<pre
+ class="PROGRAMLISTING">
+kernel_version=$( awk &#39;{ print $3 }&#39; /proc/version )
+</pre>
+      <br>
+      <br>
+<pre
+ class="PROGRAMLISTING">
+CPU=$( awk &#39;/model name/ {print $4}&#39; &lt; /proc/cpuinfo )
+
+if [ $CPU = Pentium ]
+then
+  выполнить_ряд_специфичных_команд
+  ...
+else
+  выполнить_ряд_других_специфичных_команд
+  ...
+fi
+</pre>
+      <br>
+      <br>
+
+      <p>В каталоге <tt
+       class="FILENAME">/proc</tt> вы наверняка заметите большое
+      количество подкаталогов, с не совсем обычными именами, состоящими
+      только из цифр. Каждый из них соответствует исполняющемуся
+      процессу, а имя каталога -- это <a
+       href="c3270.html#PPIDREF">ID (идентификатор) процесса</a>.
+      Внутри каждого такого подкаталога находится ряд файлов, в которых
+      содержится полезная информация о соответствующих процессах. Файлы
+      <tt
+       class="FILENAME">stat</tt> и <tt
+       class="FILENAME">status</tt> хранят статистику работы процесса,
+      <tt
+       class="FILENAME">cmdline</tt> -- команда, которой был запущен
+      процесс, <tt
+       class="FILENAME">exe</tt> -- символическая ссылка на исполняемый
+      файл программы. Здесь же вы найдете ряд других файлов, но, с
+      точки зрения написания сценариев, они не так интересны, как эти
+      четыре.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="PIDID"></a>
+
+        <p><strong>Пример 27-1. Поиск файла программы по идентификатору
+        процесса</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# pid-identifier.sh: Возвращает полный путь к исполняемому файлу программы по идентификатору процесса (pid).
+
+ARGNO=1  # Число, ожидаемых из командной строки, аргументов.
+E_WRONGARGS=65
+E_BADPID=66
+E_NOSUCHPROCESS=67
+E_NOPERMISSION=68
+PROCFILE=exe
+
+if [ $# -ne $ARGNO ]
+then
+  echo &quot;Порядок использования: `basename $0` PID-процесса&quot; &gt;&amp;2  # Сообщение об ошибке на &gt;stderr.
+  exit $E_WRONGARGS
+fi
+
+ps ax
+
+pidno=$( ps ax | grep $1 | awk &#39;{ print $1 }&#39; | grep $1 )
+# Проверка наличия процесса с заданным pid в списке, выданном командой  &quot;ps&quot;, поле #1.
+# Затем следует убедиться, что этот процесс не был запущен этим сценарием (&#39;ps&#39;).
+# Это делает последний &quot;grep $1&quot;.
+if [ -z &quot;$pidno&quot; ]  # Если после фильтрации получается пустая строка,
+then                # то это означает, что в системе нет процесса с заданым pid.
+  echo &quot;Нет такого процесса.&quot;
+  exit $E_NOSUCHPROCESS
+fi
+
+# Альтернативный вариант:
+#   if ! ps $1 &gt; /dev/null 2&gt;&amp;1
+#   then                # в системе нет процесса с заданым pid.
+#     echo &quot;Нет такого процесса.&quot;
+#     exit $E_NOSUCHPROCESS
+#    fi
+
+
+if [ ! -r &quot;/proc/$1/$PROCFILE&quot; ]  # Проверить право на чтение.
+then
+  echo &quot;Процесс $1 найден, однако...&quot;
+  echo &quot;у вас нет права на чтение файла /proc/$1/$PROCFILE.&quot;
+  exit $E_NOPERMISSION  # Обычный пользователь не имеет прав
+                        # на доступ к некоторым файлам в каталоге /proc.
+fi
+
+# Последние две проверки могут быть заменены на:
+#    if ! kill -0 $1 &gt; /dev/null 2&gt;&amp;1 # &#39;0&#39; -- это не сигнал, но
+                                      # команда все равно проверит наличие
+                                      # процесса-получателя.
+#    then echo &quot;Процесс с данным PID не найден, либо вы не являетесь его владельцем&quot; &gt;&amp;2
+#    exit $E_BADPID
+#    fi
+
+
+
+exe_file=$( ls -l /proc/$1 | grep &quot;exe&quot; | awk &#39;{ print $11 }&#39; )
+# Или      exe_file=$( ls -l /proc/$1/exe | awk &#39;{print $11}&#39; )
+#
+# /proc/pid-number/exe -- это символическая ссылка
+# на исполняемый файл работающей программы.
+
+if [ -e &quot;$exe_file&quot; ]  # Если файл /proc/pid-number/exe существует...
+then                 # то существует и соответствующий процесс.
+  echo &quot;Исполняемый файл процесса #$1: $exe_file.&quot;
+else
+  echo &quot;Нет такого процесса.&quot;
+fi
+
+
+# В большинстве случаев, этот, довольно сложный сценарий, может быть заменен командой
+# ps ax | grep $1 | awk &#39;{ print $5 }&#39;
+# В большинстве, но не всегда...
+# поскольку пятое поле листинга,выдаваемого командой &#39;ps&#39;, это argv[0] процесса,
+# а не путь к исполняемому файлу.
+#
+# Однако, оба следующих варианта должны работать безотказно.
+#       find /proc/$1/exe -printf &#39;%l\n&#39;
+#       lsof -aFn -p $1 -d txt | sed -ne &#39;s/^n//p&#39;
+
+# Автор последнего комментария: Stephane Chazelas.
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="CONSTAT"></a>
+
+        <p><strong>Пример 27-2. Проверка состояния
+        соединения</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+PROCNAME=pppd        # демон ppp
+PROCFILENAME=status  # Что смотреть.
+NOTCONNECTED=65
+INTERVAL=2           # Период проверки -- раз в 2 секунды.
+
+pidno=$( ps ax | grep -v &quot;ps ax&quot; | grep -v grep | grep $PROCNAME | awk &#39;{ print $1 }&#39; )
+# Найти идентификатор процесса &#39;pppd&#39;, &#39;ppp daemon&#39;.
+# По пути убрать из листинга записи о процессах, порожденных сценарием.
+#
+#  Однако, как отмечает Oleg Philon,
+#+ Эта последовательность команд может быть заменена командой &quot;pidof&quot;.
+#  pidno=$( pidof $PROCNAME )
+#
+#  Мораль:
+#+ Когда последовательность команд становится слишком сложной,
+#+ это повод к тому, чтобы поискать более короткий вариант.
+
+
+if [ -z &quot;$pidno&quot; ]   # Если получилась пустая строка, значит процесс не запущен.
+then
+  echo &quot;Соединение не установлено.&quot;
+  exit $NOTCONNECTED
+else
+  echo &quot;Соединение установлено.&quot;; echo
+fi
+
+while [ true ]       # Бесконечный цикл.
+do
+
+  if [ ! -e &quot;/proc/$pidno/$PROCFILENAME&quot; ]
+  # Пока работает процесс, файл &quot;status&quot; существует.
+  then
+    echo &quot;Соединение разорвано.&quot;
+    exit $NOTCONNECTED
+  fi
+
+netstat -s | grep &quot;packets received&quot;  # Получить некоторые сведения о соединении.
+netstat -s | grep &quot;packets delivered&quot;
+
+
+  sleep $INTERVAL
+  echo; echo
+
+done
+
+exit 0
+
+# Как обычно, этот сценарий может быть остановлен комбинацией клавиш Control-C.
+
+#    Упражнение:
+#    ----------
+#    Добавьте возможность завершения работы сценария, по нажатии на клавишу &quot;q&quot;.
+#    Это сделает скрипт более жружественным к пользователю.
+</pre>
+      </div>
+
+      <div
+       class="WARNING">
+        <table
+         class="WARNING"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/warning.gif"
+             hspace="5"
+             alt="Warning"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Будьте предельно осторожны при работе с файловой
+              системой <tt
+               class="FILENAME">/proc</tt>, так как попытка записи в
+              некоторые файлы может повредить файловую систему или
+              привести к краху системы.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN13009"
+         href="x12987.html#AEN13009"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Отдельные системные команды, такие как <a
+           href="c9708.html#PROCINFOREF">procinfo</a>, <a
+           href="c9708.html#FREEREF">free</a>, <a
+           href="c9708.html#VMSTATREF">vmstat</a>, <a
+           href="c9708.html#LSDEVREF">lsdev</a> и <a
+           href="c9708.html#UPTIMEREF">uptime</a> делают это именно
+          таким образом.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c12942.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c13041.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">/dev и /proc</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c12942.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">/dev/zero и /dev/null</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

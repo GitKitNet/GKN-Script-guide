@@ -1,0 +1,605 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Необязательные параметры (ключи)</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Материал повышенной сложности"
+     href="p11889.html">
+    <link
+     rel="PREVIOUS"
+     title="Отладка сценариев"
+     href="c13099.html">
+    <link
+     rel="NEXT"
+     title="Широко распространенные ошибки"
+     href="c13371.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c13099.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c13371.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="OPTIONS"></a>Глава 30. Необязательные параметры
+      (ключи)</h1>
+
+      <p><a
+       name="OPTIONSREF"></a></p>
+
+      <p>Необязательные параметры -- это дополнительные ключи (опции),
+      которые оказывают влияние на поведение сценария и/или командной
+      оболочки.</p>
+
+      <p>Команда <a
+       href="c5358.html#SETREF">set</a> позволяет задавать
+      дополнительные опции прямо внутри сценария. В том месте сценария,
+      где необходимо, чтобы та или иная опция вступила в силу, вставьте
+      такую конструкцию <strong
+       class="COMMAND">set -o option-name</strong>, или в более
+      короткой форме -- <strong
+       class="COMMAND">set -option-abbrev</strong>. Эти две формы
+      записи совершенно идентичны по своему действию.</p>
+<pre
+ class="PROGRAMLISTING">
+      #!/bin/bash
+
+      set -o verbose
+      # Вывод команд перед их исполнением.
+     
+</pre>
+      <br>
+      <br>
+<pre
+ class="PROGRAMLISTING">
+      #!/bin/bash
+
+      set -v
+      # Имеет тот же эффект, что и выше.
+     
+</pre>
+      <br>
+      <br>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Для того, чтобы отключить действие той или иной опции,
+              следует вставить конструкцию <strong
+               class="COMMAND">set +o option-name</strong>, или <strong
+               class="COMMAND">set +option-abbrev</strong>.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+<pre
+ class="PROGRAMLISTING">
+      #!/bin/bash
+
+      set -o verbose
+      # Вывод команд перед их исполнением.
+      command
+      ...
+      command
+
+      set +o verbose
+      # Запретить вывод команд перед их исполнением.
+      command
+      # команда не выводится.
+
+
+      set -v
+      # Вывод команд перед их исполнением.
+      command
+      ...
+      command
+
+      set +v
+      # Запретить вывод команд перед их исполнением.
+      command
+
+      exit 0
+     
+</pre>
+      <br>
+      <br>
+
+      <p>Как вариант установки опций, можно предложить указывать их в
+      заголовке сценария (в строке sha-bang) -- <tt
+       class="REPLACEABLE"><em>#!</em></tt>.</p>
+<pre
+ class="PROGRAMLISTING">
+      #!/bin/bash -x
+      #
+      # Далее следует текст сценария.
+     
+</pre>
+      <br>
+      <br>
+
+      <p><a
+       name="INVOCATIONOPTIONSREF"></a></p>
+
+      <p>Так же можно указывать дополнительные ключи в командной
+      строке, при запуске сценария. Некоторые из опций работают только
+      если они заданы из командной строки, например <tt
+       class="REPLACEABLE"><em>-i</em></tt> -- ключ интерактивного
+      режима работы скрипта.</p>
+
+      <p><tt
+       class="USERINPUT"><strong>bash -v script-name</strong></tt></p>
+
+      <p><tt
+       class="USERINPUT"><strong>bash -o verbose
+      script-name</strong></tt></p>
+
+      <p>Ниже приводится список некоторых полезных опций, которые могут
+      быть указаны как в полной форме так и в сокращенной.</p>
+
+      <div
+       class="TABLE">
+        <a
+         name="AEN13260"></a>
+
+        <p><strong>Таблица 30-1. Ключи Bash</strong></p>
+
+        <table
+         border="1"
+         class="CALSTABLE">
+          <thead>
+            <tr>
+              <th
+               align="left"
+               valign="top">Краткое имя</th>
+
+              <th
+               align="left"
+               valign="top">Полное имя</th>
+
+              <th
+               align="left"
+               valign="top">Описание</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td
+               align="left"
+               valign="top"><a
+               name="NOCLOBBERREF"></a><tt
+               class="OPTION">-C</tt></td>
+
+              <td
+               align="left"
+               valign="top">noclobber</td>
+
+              <td
+               align="left"
+               valign="top">Предотвращает перезапись файла в операциях
+              перенаправления вывода (не распространяется на конвейеры
+              (каналы) -- <span
+               class="TOKEN">&gt;|</span>)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">-D</tt></td>
+
+              <td
+               align="left"
+               valign="top">(нет)</td>
+
+              <td
+               align="left"
+               valign="top">Выводит список строк в двойных кавычках,
+              которым предшествует символ <span
+               class="TOKEN">$</span>, сам сценарий не исполняется</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">-a</tt></td>
+
+              <td
+               align="left"
+               valign="top">allexport</td>
+
+              <td
+               align="left"
+               valign="top">Экспорт всех, определенных в сценарии,
+              переменных</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">-b</tt></td>
+
+              <td
+               align="left"
+               valign="top">notify</td>
+
+              <td
+               align="left"
+               valign="top">Выводит уведомление по завершении фоновой
+              задачи (job) (довольно редко используется в
+              сценариях)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">-c ...</tt></td>
+
+              <td
+               align="left"
+               valign="top">(нет)</td>
+
+              <td
+               align="left"
+               valign="top">Читает команды из <strong
+               class="COMMAND">...</strong></td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">-f</tt></td>
+
+              <td
+               align="left"
+               valign="top">noglob</td>
+
+              <td
+               align="left"
+               valign="top">Подстановка имен файлов (globbing)
+              запрещена</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">-i</tt></td>
+
+              <td
+               align="left"
+               valign="top">interactive</td>
+
+              <td
+               align="left"
+               valign="top">Сценарий запускается в <span
+               class="emphasis"><em
+               class="EMPHASIS">интерактивном</em></span> режиме</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">-p</tt></td>
+
+              <td
+               align="left"
+               valign="top">privileged</td>
+
+              <td
+               align="left"
+               valign="top">Сценарий запускается как <span
+               class="QUOTE">&quot;suid&quot;</span> (осторожно!)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">-r</tt></td>
+
+              <td
+               align="left"
+               valign="top">restricted</td>
+
+              <td
+               align="left"
+               valign="top">Сценарий запускается в <span
+               class="emphasis"><em
+               class="EMPHASIS">ограниченном</em></span> режиме (см. <a
+               href="c12376.html">Глава 20</a>).</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">-u</tt></td>
+
+              <td
+               align="left"
+               valign="top">nounset</td>
+
+              <td
+               align="left"
+               valign="top">При попытке обращения к неопределенным
+              переменным, выдает сообщение об ошибке и прерывает работу
+              сценария</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">-v</tt></td>
+
+              <td
+               align="left"
+               valign="top">verbose</td>
+
+              <td
+               align="left"
+               valign="top">Выводит на <tt
+               class="FILENAME">stdout</tt> каждую команду прежде, чем
+              она будет исполнена</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">-x</tt></td>
+
+              <td
+               align="left"
+               valign="top">xtrace</td>
+
+              <td
+               align="left"
+               valign="top">Подобна <tt
+               class="OPTION">-v</tt>, но выполняет подстановку
+              команд</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">-e</tt></td>
+
+              <td
+               align="left"
+               valign="top">errexit</td>
+
+              <td
+               align="left"
+               valign="top">Прерывает работу сценария при появлении
+              первой же ошибки (когда команда возвращает ненулевой код
+              завершения)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">-n</tt></td>
+
+              <td
+               align="left"
+               valign="top">noexec</td>
+
+              <td
+               align="left"
+               valign="top">Читает команды из сценария, но не исполняет
+              их (проверка синтаксиса)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">-s</tt></td>
+
+              <td
+               align="left"
+               valign="top">stdin</td>
+
+              <td
+               align="left"
+               valign="top">Читает команды с устройства <tt
+               class="FILENAME">stdin</tt></td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">-t</tt></td>
+
+              <td
+               align="left"
+               valign="top">(нет)</td>
+
+              <td
+               align="left"
+               valign="top">Выход после исполнения первой команды</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">-</tt></td>
+
+              <td
+               align="left"
+               valign="top">(нет)</td>
+
+              <td
+               align="left"
+               valign="top">Конец списка ключей (опций), последующие
+              аргументы будут восприниматься как <a
+               href="c3270.html#POSPARAMREF">позиционные
+              параметры</a>.</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">--</tt></td>
+
+              <td
+               align="left"
+               valign="top">(нет)</td>
+
+              <td
+               align="left"
+               valign="top">Эквивалент предыдущей опции (-).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c13099.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c13371.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Отладка сценариев</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p11889.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Широко распространенные ошибки</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

@@ -1,0 +1,230 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Числовые константы</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Операции и смежные темы"
+     href="c2792.html">
+    <link
+     rel="PREVIOUS"
+     title="Операции и смежные темы"
+     href="c2792.html">
+    <link
+     rel="NEXT"
+     title="Углубленный материал"
+     href="p3268.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c2792.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 8. Операции и смежные темы</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="p3268.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="NUMERICAL-CONSTANTS"></a>8.2. Числовые константы</h1>
+
+      <p><a
+       name="NUMCONSTANTS"></a>Интерпретатор командной оболочки
+      воспринимает числа как десятичные, в противном случае числу
+      должен предшествовать специальный префикс, либо число должно быть
+      записано в особой нотации. Числа, начинающиеся с символа <tt
+       class="REPLACEABLE"><em>0</em></tt>, считаются <tt
+       class="REPLACEABLE"><em>восьмеричными</em></tt>. если числу
+      предшествует префикс <tt
+       class="REPLACEABLE"><em>0x</em></tt>, то число считается <tt
+       class="REPLACEABLE"><em>шестнадцатиричным</em></tt>. Число, в
+      записи которого присутствует символ <tt
+       class="REPLACEABLE"><em>#</em></tt>, расценивается как запись
+      числа с указанием основы счисления в виде <tt
+       class="REPLACEABLE"><em>ОСНОВА#ЧИСЛО</em></tt>.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="NUMBERS"></a>
+
+        <p><strong>Пример 8-4. Различные представления числовых
+        констант</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# numbers.sh: Различные представления числовых констант.
+
+# Десятичное: по-умолчанию
+let &quot;dec = 32&quot;
+echo &quot;десятичное число = $dec&quot;             # 32
+# Вобщем-то ничего необычного.
+
+
+# Восьмеричное: числа начинаются с &#39;0&#39; (нуля)
+let &quot;oct = 032&quot;
+echo &quot;восьмеричное число = $oct&quot;           # 26
+# Результат печатается в десятичном виде.
+# --------- ------ -- -------
+
+# Шестнадцатиричное: числа начинаются с &#39;0x&#39; или &#39;0X&#39;
+let &quot;hex = 0x32&quot;
+echo &quot;шестнадцатиричное число = $hex&quot;      # 50
+# Результат печатается в десятичном виде.
+
+# Другие основы счисления: ОСНОВА#ЧИСЛО
+# ОСНОВА должна быть между 2 и 64.
+# для записи ЧИСЛА должен использоваться соответствующий ОСНОВЕ диапазон символов,
+# см. ниже.
+
+let &quot;bin = 2#111100111001101&quot;
+echo &quot;двоичное число = $bin&quot;               # 31181
+
+let &quot;b32 = 32#77&quot;
+echo &quot;32-ричное число = $b32&quot;              # 231
+
+let &quot;b64 = 64#@_&quot;
+echo &quot;64-ричное число = $b64&quot;              # 4094
+#
+#  Нотация ОСНОВА#ЧИСЛО может использоваться на ограниченном
+#+ диапазоне основ счисления (от 2 до 64)
+#  10 цифр + 26 символов в нижнем регистре + 26 символов в верхнем регистре + @ + _
+
+echo
+
+echo $((36#zz)) $((2#10101010)) $((16#AF16)) $((53#1aA))
+                                         # 1295 170 44822 3375
+
+
+#  Важное замечание:
+#  --------------
+#  Использование символов, для записи числа, выходящих за диапазо,
+#+ соответствующий ОСНОВЕ счисления
+#+ будет приводить к появлению сообщений об ошибках.
+
+let &quot;bad_oct = 081&quot;
+# numbers.sh: let: oct = 081: value too great for base (error token is &quot;081&quot;)
+#                  Для записи восьмеричных чисел допускается использовать
+#+                 только цифры в диапазоне 0 - 7.
+
+exit 0       # Спасибо Rich Bartell и Stephane Chazelas, за разъяснения.
+</pre>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c2792.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="p3268.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Операции и смежные темы</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c2792.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Углубленный материал</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

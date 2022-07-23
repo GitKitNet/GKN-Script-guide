@@ -1,0 +1,1241 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Прочие команды</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Внешние команды, программы и утилиты"
+     href="c6407.html">
+    <link
+     rel="PREVIOUS"
+     title="Команды выполнения математических операций"
+     href="x9199.html">
+    <link
+     rel="NEXT"
+     title="Команды системного администрирования"
+     href="c9708.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x9199.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 12. Внешние команды, программы и
+          утилиты</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c9708.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="EXTMISC"></a>12.9. Прочие команды</h1>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="MISCCOMMANDLISTING1"></a>Команды, которые нельзя отнести
+        ни к одной из вышеперечисленных категорий</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">jot</strong>, <strong
+           class="COMMAND">seq</strong></dt>
+
+          <dd>
+            <p>Эти утилиты выводят последовательность целых чисел с
+            шагом, заданным пользователем.</p>
+
+            <p>По-умолчанию, выводимые числа отделяются друг от друга
+            символом перевода строки, однако, с помощью ключа <tt
+             class="OPTION">-s</tt> может быть задан другой
+            разделитель.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>seq 5</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">1
+2
+3
+4
+5</tt>
+
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>seq -s : 5</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">1:2:3:4:5</tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <p>Обе утилиты, и <strong
+             class="COMMAND">jot</strong>, и <strong
+             class="COMMAND">seq</strong>, очень удобно использовать
+            для генерации списка аргументов в цикле <a
+             href="c4875.html#FORLOOPREF1">for</a>.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX53"></a>
+
+              <p><strong>Пример 12-39. Использование seq для генерации
+              списка аргументов цикла for</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Утилита &quot;seq&quot;
+
+echo
+
+for a in `seq 80`  # или так:   for a in $( seq 80 )
+# То же самое, что и   for a in 1 2 3 4 5 ... 80   (но как экономит время и силы!).
+# Можно использовать и &#39;jot&#39; (если эта утилита имеется в системе).
+do
+  echo -n &quot;$a &quot;
+done      # 1 2 3 4 5 ... 80
+# Пример использования вывода команды для генерации
+# [списка] аргументов цикла &quot;for&quot;.
+
+echo; echo
+
+
+COUNT=80  # Да, &#39;seq&#39; допускает указание переменных в качестве параметра.
+
+for a in `seq $COUNT`  # или так:   for a in $( seq $COUNT )
+do
+  echo -n &quot;$a &quot;
+done      # 1 2 3 4 5 ... 80
+
+echo; echo
+
+BEGIN=75
+END=80
+
+for a in `seq $BEGIN $END`
+#  Если &quot;seq&quot; передаются два аргумента, то первый означает начальное число последовательности,
+#+ второй -- последнее,
+do
+  echo -n &quot;$a &quot;
+done      # 75 76 77 78 79 80
+
+echo; echo
+
+BEGIN=45
+INTERVAL=5
+END=80
+
+for a in `seq $BEGIN $INTERVAL $END`
+#  Если &quot;seq&quot; передется три аргумента, то первый аргумент -- начальное число в последовательности,
+#+ второй -- шаг последовательности,
+#+ и третий -- последнее число в последовательности.
+do
+  echo -n &quot;$a &quot;
+done      # 45 50 55 60 65 70 75 80
+
+echo; echo
+
+exit 0
+</pre>
+            </div>
+          </dd>
+
+          <dt><a
+           name="GETOPTY"></a><strong
+           class="COMMAND">getopt</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">getopt</strong> служит для разбора
+            командной строки, выделяя из нее ключи -- символы, с
+            предшествующим знаком <a
+             href="c301.html#DASHREF">дефис</a>. Этой утилите имеется,
+            встроенный в Bash, аналог -- <a
+             href="c5358.html#GETOPTSX">getopts</a>, более мощная и
+            универсальная команда.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX33A"></a>
+
+              <p><strong>Пример 12-40. Использование getopt для разбора
+              аргументов командной строки</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# ex33a.sh
+
+# Попробуйте следующие варианты вызова этого сценария.
+#   sh ex33a -a
+#   sh ex33a -abc
+#   sh ex33a -a -b -c
+#   sh ex33a -d
+#   sh ex33a -dXYZ
+#   sh ex33a -d XYZ
+#   sh ex33a -abcd
+#   sh ex33a -abcdZ
+#   sh ex33a -z
+#   sh ex33a a
+# Объясните полученные результаты.
+
+E_OPTERR=65
+
+if [ &quot;$#&quot; -eq 0 ]
+then   # Необходим по меньшей мере один аргумент.
+  echo &quot;Порядок использования: $0 -[options a,b,c]&quot;
+  exit $E_OPTERR
+fi
+
+set -- `getopt &quot;abcd:&quot; &quot;$@&quot;`
+# Запись аргументов командной строки в позиционные параметры.
+# Что произойдет, если вместо &quot;$@&quot; указать &quot;$*&quot;?
+
+while [ ! -z &quot;$1&quot; ]
+do
+  case &quot;$1&quot; in
+    -a) echo &quot;Опция \&quot;a\&quot;&quot;;;
+    -b) echo &quot;Опция \&quot;b\&quot;&quot;;;
+    -c) echo &quot;Опция \&quot;c\&quot;&quot;;;
+    -d) echo &quot;Опция \&quot;d\&quot; $2&quot;;;
+     *) break;;
+  esac
+
+  shift
+done
+
+#  Вместо &#39;getopt&#39; лучше использовать встроенную команду &#39;getopts&#39;,
+#  См. &quot;ex33.sh&quot;.
+
+exit 0
+</pre>
+            </div>
+          </dd>
+
+          <dt><a
+           name="RUNPARTSREF"></a><strong
+           class="COMMAND">run-parts</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">run-parts</strong> <a
+             name="AEN9380"
+             href="#FTN.AEN9380"><span
+             class="footnote">[1]</span></a> запускает на исполнение
+            все сценарии, в порядке возрастания имен файлов-сценариев,
+            в заданном каталоге. Естественно, файлы сценариев должны
+            иметь права на исполнение.</p>
+
+            <p><a
+             href="x8707.html#DAEMONREF">Демон</a> <a
+             href="c9708.html#CRONREF">crond</a> вызывает <strong
+             class="COMMAND">run-parts</strong> для запуска сценариев
+            из каталогов <tt
+             class="FILENAME">/etc/cron.*</tt>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">yes</strong></dt>
+
+          <dd>
+            <p>По-умолчанию, команда <strong
+             class="COMMAND">yes</strong> выводит на <tt
+             class="FILENAME">stdout</tt> непрерывную
+            последовательность символов <tt
+             class="COMPUTEROUTPUT">y</tt>, разделенных символами
+            перевода строки. Исполнение команды можно прервать
+            комбинацией клавиш <strong
+             class="KEYCAP">control</strong>-<strong
+             class="KEYCAP">c</strong>. Команду <strong
+             class="COMMAND">yes</strong> можно заставить выводить иную
+            последовательность символов. Теперь самое время задаться
+            вопросом о практической пользе этой команды. Основное
+            применение этой команды состоит в том, что вывод от нее
+            может быть передан, через конвейер, другой команде,
+            ожидающей реакции пользователя. В результате получается,
+            своего рода, слабенькая версия команды <strong
+             class="COMMAND">expect</strong>.</p>
+
+            <p><tt
+             class="USERINPUT"><strong>yes | fsck
+            /dev/hda1</strong></tt> запускает <strong
+             class="COMMAND">fsck</strong> в неинтерактивном режиме
+            (будьте осторожны!).</p>
+
+            <p><tt
+             class="USERINPUT"><strong>yes | rm -r
+            dirname</strong></tt> имеет тот же эффект, что и <tt
+             class="USERINPUT"><strong>rm -rf dirname</strong></tt>
+            (будьте осторожны!).</p>
+
+            <div
+             class="WARNING">
+              <table
+               class="WARNING"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/warning.gif"
+                   hspace="5"
+                   alt="Warning"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Внимание! Передача вывода команды <strong
+                     class="COMMAND">yes</strong> по конвейеру
+                    потенциально опасным командам, таким как <a
+                     href="c9708.html#FSCKREF">fsck</a> или <a
+                     href="c9708.html#FDISKREF">fdisk</a> может дать
+                    нежелательные побочные эффекты.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">banner</strong></dt>
+
+          <dd>
+            <p>Печатает на <tt
+             class="FILENAME">stdout</tt> заданную строку символов (не
+            более 10), рисуя каждый символ строки при помощи символа
+            &#39;#&#39;. Вывод от команды может быть перенаправлен на
+            принтер.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">printenv</strong></dt>
+
+          <dd>
+            <p>Выводит все <a
+             href="x1716.html#ENVREF">переменные окружения</a> текущего
+            пользователя.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>printenv | grep HOME</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">HOME=/home/bozo</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">lp</strong></dt>
+
+          <dd>
+            <p>Команды <strong
+             class="COMMAND">lp</strong> и <strong
+             class="COMMAND">lpr</strong> отправляют файлы в очередь
+            печати <a
+             name="AEN9455"
+             href="#FTN.AEN9455"><span
+             class="footnote">[2]</span></a> для вывода на принтер.
+            Названия этих команд произошли от &quot;line
+            printers&quot;.</p>
+
+            <p><tt
+             class="PROMPT">bash$</tt> <tt
+             class="USERINPUT"><strong>lp file1.txt</strong></tt> или
+            <tt
+             class="PROMPT">bash</tt> <tt
+             class="USERINPUT"><strong>lp
+            &lt;file1.txt</strong></tt></p>
+
+            <p>Очень часто используются в комбинации с командой
+            форматированного вывода <strong
+             class="COMMAND">pr</strong>.</p>
+
+            <p><tt
+             class="PROMPT">bash$</tt> <tt
+             class="USERINPUT"><strong>pr -options file1.txt |
+            lp</strong></tt></p>
+
+            <p>Программы подготовки текста к печати, такие как <strong
+             class="COMMAND">groff</strong> и <span
+             class="emphasis"><em
+             class="EMPHASIS">Ghostscript</em></span>, так же могут
+            напрямую взаимодействовать с <strong
+             class="COMMAND">lp</strong>.</p>
+
+            <p><tt
+             class="PROMPT">bash$</tt> <tt
+             class="USERINPUT"><strong>groff -Tascii file.tr |
+            lp</strong></tt></p>
+
+            <p><tt
+             class="PROMPT">bash$</tt> <tt
+             class="USERINPUT"><strong>gs -options | lp
+            file.ps</strong></tt></p>
+
+            <p>Команда <strong
+             class="COMMAND">lpq</strong> предназначена для просмотра
+            очереди заданий печати, а <strong
+             class="COMMAND">lprm</strong> -- для удаления заданий из
+            очереди.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">tee</strong></dt>
+
+          <dd>
+            <p>[UNIX заимствовал эту идею из водопроводного дела.]</p>
+
+            <p>Это опрератор перенаправления, но с некоторыми
+            особенностями. Подобно водопроводным трубам, <span
+             class="QUOTE">&quot;tee&quot;</span> позволяет <span
+             class="QUOTE">&quot;направить поток&quot;</span> данных
+            <span
+             class="emphasis"><em
+             class="EMPHASIS">в несколько файлов</em></span> и на
+            stdout одновременно, никак не влияя на сами данные. Эта
+            команда может оказаться очень полезной при отладке.</p>
+<pre
+ class="SCREEN">
+                   tee
+                 |------&gt; в файл
+                 |
+  ===============|===============
+  command---&gt;----|-operator--&gt;---&gt; результат работы команд(ы)
+  ===============================
+             
+</pre>
+<pre
+ class="PROGRAMLISTING">
+cat listfile* | sort | tee check.file | uniq &gt; result.file
+</pre>
+            (Здесь, в файл <tt
+             class="FILENAME">check.file</tt> будут записаны данные из
+            всех <span
+             class="QUOTE">&quot;listfile*&quot;</span>, в
+            отсортированном виде до того, как повторяющиеся строки
+            будут удалены командой <a
+             href="x7050.html#UNIQREF">uniq</a>.)<br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">mkfifo</strong></dt>
+
+          <dd>
+            <p><a
+             name="NAMEDPIPEREF"></a>Эта, редко встречающаяся, команда
+            создает <span
+             class="emphasis"><em
+             class="EMPHASIS">именованный канал</em></span> - очередь,
+            через который производится обмен данными между процессами.
+            <a
+             name="AEN9514"
+             href="#FTN.AEN9514"><span
+             class="footnote">[3]</span></a> Как правило, один процесс
+            записывает данные в очередь (FIFO), а другой читает данные
+            из очереди. См. <a
+             href="a14477.html#FIFO">Пример A-17</a>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">pathchk</strong></dt>
+
+          <dd>
+            <p>Производит проверку полного имени файла -- проверяет,
+            доступны ли на чтение, каталоги в пути к файлу, и не
+            превышает ли длина полного имени файла 255 символов. При
+            несоблюдении одного из условий -- возвращает сообщение об
+            ошибке.</p>
+
+            <p>К сожалению, <strong
+             class="COMMAND">pathchk</strong> не возвращает
+            соответствующего кода ошибки, и потому, в общем-то,
+            бесполезна в сценариях. Вместо нее лучше использовать <a
+             href="x2389.html#RTIF">операторы проверки файлов</a>.</p>
+          </dd>
+
+          <dt><a
+           name="DDREF"></a><strong
+           class="COMMAND">dd</strong></dt>
+
+          <dd>
+            <p>Эта немного непонятная и &quot;страшная&quot; команда
+            (<span
+             class="QUOTE">&quot;data duplicator&quot;</span>)
+            изначально использовалась для переноса данных на магнитной
+            ленте между микрокомпьютерами с ОС UNIX и майнфреймами IBM.
+            Команда <strong
+             class="COMMAND">dd</strong> просто создает копию файла
+            (или <tt
+             class="FILENAME">stdin/stdout</tt>), выполняя по пути
+            некоторые преобразования. Один из вариантов: преобразование
+            из ASCII в EBCDIC, <a
+             name="AEN9546"
+             href="#FTN.AEN9546"><span
+             class="footnote">[4]</span></a> <tt
+             class="USERINPUT"><strong>dd --help</strong></tt> выведет
+            список возможных вариантов преобразований и опций этой
+            мощной утилиты.</p>
+<pre
+ class="PROGRAMLISTING">
+# Изучаем &#39;dd&#39;.
+
+n=3
+p=5
+input_file=project.txt
+output_file=log.txt
+
+dd if=$input_file of=$output_file bs=1 skip=$((n-1)) count=$((p-n+1)) 2&gt; /dev/null
+# Извлечет из $input_file символы с n-го по p-й.
+
+
+
+
+echo -n &quot;hello world&quot; | dd cbs=1 conv=unblock 2&gt; /dev/null
+# Выведет &quot;hello world&quot; вертикально.
+
+
+# Спасибо, S.C.
+</pre>
+            <br>
+            <br>
+
+            <p>Для демонстрации возможностей <strong
+             class="COMMAND">dd</strong>, попробуем перехватить нажатия
+            на клавиши.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="DDKEYPRESS"></a>
+
+              <p><strong>Пример 12-41. Захват нажатых
+              клавиш</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Захват нажатых клавиш.
+
+
+keypresses=4                      # Количество фиксируемых нажатий.
+
+
+old_tty_setting=$(stty -g)        # Сохранить настройки терминала.
+
+echo &quot;Нажмите $keypresses клавиши.&quot;
+stty -icanon -echo                # Запретить канонический режим.
+                                  # Запретить эхо-вывод.
+keys=$(dd bs=1 count=$keypresses 2&gt; /dev/null)
+# &#39;dd&#39; использует stdin, если &quot;if&quot; не задан.
+
+stty &quot;$old_tty_setting&quot;           # Восстановить настройки терминала.
+
+echo &quot;Вы нажали клавиши \&quot;$keys\&quot;.&quot;
+
+# Спасибо S.C.
+exit 0
+</pre>
+            </div>
+
+            <p>Команда <strong
+             class="COMMAND">dd</strong> имеет возможность
+            произвольного доступа к данным в потоке.</p>
+<pre
+ class="PROGRAMLISTING">
+echo -n . | dd bs=1 seek=4 of=file conv=notrunc
+# Здесь, опция &quot;conv=notrunc&quot; означает, что выходной файлне будет усечен.
+
+# Спасибо, S.C.
+</pre>
+            <br>
+            <br>
+
+            <p>Команда <strong
+             class="COMMAND">dd</strong> может использоваться для
+            создания образов дисков, считывая данные прямо с устройств,
+            таких как дискеты, компакт диски, магнитные ленты (<a
+             href="a14477.html#COPYCD">Пример A-6</a>). Обычно она
+            используется для создания загрузочных дискет.</p>
+
+            <p><tt
+             class="USERINPUT"><strong>dd if=kernel-image
+            of=/dev/fd0H1440</strong></tt></p>
+
+            <p>Точно так же, <strong
+             class="COMMAND">dd</strong> может скопировать все
+            содержимое дискеты, даже с неизвестной файловой системой,
+            на жесткий диск в виде файла-образа.</p>
+
+            <p><tt
+             class="USERINPUT"><strong>dd if=/dev/fd0
+            of=/home/bozo/projects/floppy.img</strong></tt></p>
+
+            <p>Еще одно применение <strong
+             class="COMMAND">dd</strong> -- создание временного
+            swap-файла (<a
+             href="c13041.html#EX73">Пример 28-2</a>) и ram-дисков (<a
+             href="c13041.html#RAMDISK">Пример 28-3</a>). Она может
+            создавать даже образы целых разделов жесткого диска, хотя и
+            не рекомендуется делать это без особой на то
+            необходимости.</p>
+
+            <p>Многие (которые, вероятно, не знают чем себя занять)
+            постоянно придумывают все новые и новые области применения
+            команды <strong
+             class="COMMAND">dd</strong>.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="BLOTOUT"></a>
+
+              <p><strong>Пример 12-42. Надежное удаление
+              файла</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# blotout.sh: Надежно удаляет файл.
+
+#  Этот суенарий записывает случайные данные в заданный файл,
+#+ затем записывает туда нули и наконец удаляет файл.
+#  После такого удаления даже анализ дисковых секторов
+#+ не даст ровным счетом ничего.
+
+PASSES=7         # Количество проходов по файлу.
+BLOCKSIZE=1      #  операции ввода/вывода в/из /dev/urandom требуют указания размера блока,
+                 #+ иначе вы не получите желаемого результата.
+E_BADARGS=70
+E_NOT_FOUND=71
+E_CHANGED_MIND=72
+
+if [ -z &quot;$1&quot; ]   # Имя файла не указано.
+then
+  echo &quot;Порядок использования: `basename $0` filename&quot;
+  exit $E_BADARGS
+fi
+
+file=$1
+
+if [ ! -e &quot;$file&quot; ]
+then
+  echo &quot;Файл \&quot;$file\&quot; не найден.&quot;
+  exit $E_NOT_FOUND
+fi
+
+echo; echo -n &quot;Вы совершенно уверены в том, что желаете уничтожить \&quot;$file\&quot; (y/n)? &quot;
+read answer
+case &quot;$answer&quot; in
+[nN]) echo &quot;Передумали? Операция отменена.&quot;
+      exit $E_CHANGED_MIND
+      ;;
+*)    echo &quot;Уничтожается файл \&quot;$file\&quot;.&quot;;;
+esac
+
+
+flength=$(ls -l &quot;$file&quot; | awk &#39;{print $5}&#39;)  # Поле с номером 5 -- это длина файла.
+
+pass_count=1
+
+echo
+
+while [ &quot;$pass_count&quot; -le &quot;$PASSES&quot; ]
+do
+  echo &quot;Проход #$pass_count&quot;
+  sync         # Вытолкнуть буферы.
+  dd if=/dev/urandom of=$file bs=$BLOCKSIZE count=$flength
+               # Заполнить файл случайными данными.
+  sync         # Снова вытолкнуть буферы.
+  dd if=/dev/zero of=$file bs=$BLOCKSIZE count=$flength
+               # Заполнить файл нулями.
+  sync         # Снова вытолкнуть буферы.
+  let &quot;pass_count += 1&quot;
+  echo
+done
+
+
+rm -f $file    # Наконец удалить изрядно &quot;подпорченный&quot; файл.
+sync           # Вытолкнуть буферы в последний раз.
+
+echo &quot;Файл \&quot;$file\&quot; уничтожен.&quot;; echo
+
+
+#  Это довольно надежный, хотя и достаточно медленный способ уничтожения файлов.
+#+ Более эффективно это делает команда &quot;shred&quot;,
+#+ входящая в состав пакета GNU &quot;fileutils&quot;.
+
+#  Уничтоженный таким образом файл, не сможет быть восстановлен обычными методами.
+#  Однако...
+#+ эта метода вероятно НЕ сможет противостоять аналитическим службам
+#+ из СООТВЕТСТВУЮЩИХ ОРГАНОВ
+
+
+#  Tom Vier разработал пакет &quot;wipe&quot;, который более надежно стирает файлы
+#+ чем этот простой сценарий.
+#     http://www.ibiblio.org/pub/Linux/utils/file/wipe-2.0.0.tar.bz2
+
+#  Для более глубоко изучения проблемы надежного удаления файлов,
+#+ рекомендую обратиться к cnfnmt Peter Gutmann,
+#+     &quot;Secure Deletion of Data From Magnetic and Solid-State Memory&quot;.
+#         http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html
+
+
+exit 0
+</pre>
+            </div>
+          </dd>
+
+          <dt><a
+           name="ODREF"></a><strong
+           class="COMMAND">od</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">od</strong> (<span
+             class="emphasis"><em
+             class="EMPHASIS">octal dump</em></span>) производит
+            преобразование ввода (или файла) в один или несколько
+            форматов, в соответствии с указанными опциями. При
+            отсутствии опций используется восьмеричный формат (опция
+            -o). Эта команда полезна при просмотре или обработке файлов
+            с двоичными данными, например <tt
+             class="FILENAME">/dev/urandom</tt>. См. <a
+             href="x4812.html#SEEDINGRANDOM">Пример 9-26</a> и <a
+             href="x7050.html#RND">Пример 12-10</a>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">hexdump</strong></dt>
+
+          <dd>
+            <p>Выводит дамп двоичных данных из файла в восьмеричном,
+            шестнадцатиричном, десятичном виде или в виде ASCII. Эту
+            команду, с массой оговорок, можно назвать эквивалентом
+            команды of <strong
+             class="COMMAND">od</strong>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">objdump</strong></dt>
+
+          <dd>
+            <p>Отображает содержимое исполняемого или объектного файла
+            либо в шестнадцатиричной форме, либо в виде
+            дизассемблерного листинга (с ключом <tt
+             class="OPTION">-d</tt>).</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>objdump -d /bin/ls</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">/bin/ls:     file format elf32-i386
+
+ Disassembly of section .init:
+
+ 080490bc &lt;.init&gt;:
+  80490bc:       55                      push   %ebp
+  80490bd:       89 e5                   mov    %esp,%ebp
+  . . .</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">mcookie</strong></dt>
+
+          <dd>
+            <p>Эта команда создает псевдослучайные шестнадцатиричные
+            128-битные числа, так называемые <span
+             class="QUOTE">&quot;magic cookie&quot;</span>, обычно
+            используется X-сервером в качестве <span
+             class="QUOTE">&quot;сигнатуры&quot;</span> авторизации. В
+            сценариях может использоваться как малоэффективный
+            генератор случайных чисел.</p>
+<pre
+ class="PROGRAMLISTING">
+random000=`mcookie | sed -e &#39;2p&#39;`
+# &#39;sed&#39; удаляет посторонние символы.
+</pre>
+            <br>
+            <br>
+
+            <p>Конечно, для тех же целей, сценарий может использовать
+            <a
+             href="x7794.html#MD5SUMREF">md5</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+# Сценарий вычисляет контрольную сумму для самого себя.
+random001=`md5sum $0 | awk &#39;{print $1}&#39;`
+# &#39;awk&#39; удаляет имя файла.
+</pre>
+            <br>
+            <br>
+
+            <p>С помощью <strong
+             class="COMMAND">mcookie</strong> можно создавать <span
+             class="QUOTE">&quot;уникальные&quot;</span> имена
+            файлов.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="TEMPFILENAME"></a>
+
+              <p><strong>Пример 12-43. Генератор имен
+              файлов</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# tempfile-name.sh:  Генератор имен временных файлов
+
+BASE_STR=`mcookie`   # 32-символьный (128 бит) magic cookie.
+POS=11               # Произвольная позиция в строке magic cookie.
+LEN=5                # $LEN последовательных символов.
+
+prefix=temp          #  В конце концов это временный (&quot;temp&quot;) файл.
+
+suffix=${BASE_STR:POS:LEN}
+                     # Извлечь строку, длиной в 5 символов, начиная с позиции 11.
+
+temp_filename=$prefix.$suffix
+                     # Сборка имени файла.
+
+echo &quot;Имя временного файла = \&quot;$temp_filename\&quot;&quot;
+
+# sh tempfile-name.sh
+# Имя временного файла = temp.e19ea
+
+exit 0
+</pre>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">units</strong></dt>
+
+          <dd>
+            <p>Эта утилита производит преобразование величин из одних
+            единиц измерения в другие. Как правило вызывается в
+            интерактивном режиме, ниже приводится пример использования
+            <strong
+             class="COMMAND">units</strong> в сценарии.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="UNITCONVERSION"></a>
+
+              <p><strong>Пример 12-44. Преобразование метров в
+              мили</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# unit-conversion.sh
+
+
+convert_units ()  # Принимает в качестве входных параметров единицы измерения.
+{
+  cf=$(units &quot;$1&quot; &quot;$2&quot; | sed --silent -e &#39;1p&#39; | awk &#39;{print $2}&#39;)
+  # Удаляет все кроме коэффициентов преобразования.
+  echo &quot;$cf&quot;
+}
+
+Unit1=miles
+Unit2=meters
+cfactor=`convert_units $Unit1 $Unit2`
+quantity=3.73
+
+result=$(echo $quantity*$cfactor | bc)
+
+echo &quot;В $quantity милях $result метров.&quot;
+
+#  Что произойдет, если в функцию передать несовместимые единицы измерения,
+#+ например &quot;acres&quot; (акры) and &quot;miles&quot; (мили)?
+
+exit 0
+</pre>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">m4</strong></dt>
+
+          <dd>
+            <p>Не команда, а клад, <strong
+             class="COMMAND">m4</strong> -- это мощный фильтр обработки
+            макроопределений, <a
+             name="AEN9671"
+             href="#FTN.AEN9671"><span
+             class="footnote">[5]</span></a> фактически -- целый язык
+            программирования. Изначально создававшаяся как препроцессор
+            для <span
+             class="emphasis"><em
+             class="EMPHASIS">RatFor</em></span>, <strong
+             class="COMMAND">m4</strong> оказалась очень полезной и как
+            самостоятельная утилита. Фактически, <strong
+             class="COMMAND">m4</strong> сочетает в себе функциональные
+            возможности <a
+             href="c5358.html#EVALREF">eval</a>, <a
+             href="x7050.html#TRREF">tr</a>, <a
+             href="x14802.html#AWKREF">awk</a>, и дополнительно
+            предоставляет обширные возможности по созданию новых
+            макроопределений.</p>
+
+            <p>В апрельском выпуске, за 2002 год, журнала <a
+             href="http://www.linuxjournal.com"
+             target="_top">Linux Journal</a> вы найдете замечательную
+            статью, описывающую возможности утилиты <strong
+             class="COMMAND">m4</strong>.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="M4"></a>
+
+              <p><strong>Пример 12-45. Пример работы с m4</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# m4.sh: Демонстрация некоторых возможносией макропроцессора m4
+
+# Строки
+string=abcdA01
+echo &quot;len($string)&quot; | m4                           # 7
+echo &quot;substr($string,4)&quot; | m4                      # A01
+echo &quot;regexp($string,[0-1][0-1],\&amp;Z)&quot; | m4     # 01Z
+
+# Арифметика
+echo &quot;incr(22)&quot; | m4                               # 23
+echo &quot;eval(99 / 3)&quot; | m4                           # 33
+
+exit 0
+</pre>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">doexec</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">doexec</strong> предоставляет возможность
+            передачи произвольного списка аргументов внешней программе.
+            В частности, передавая <tt
+             class="VARNAME">argv[0]</tt> (для сценариев соответствует
+            специальной переменной <a
+             href="x1716.html#POSPARAMREF1">$0</a>), можно вызвать
+            программу под другим именем, определяя тем самым, ее
+            реакцию.</p>
+
+            <p>Например, Пусть в каталоге <tt
+             class="FILENAME">/usr/local/bin</tt> имеется программа с
+            именем <span
+             class="QUOTE">&quot;aaa&quot;</span>, которая при вызове
+            <strong
+             class="COMMAND">doexec /usr/local/bin/aaa list</strong>
+            выведет список всех файлов в текущем каталоге, имена
+            которых начинаются с символа <span
+             class="QUOTE">&quot;a&quot;</span>, а при вызове той же
+            самой программы как <strong
+             class="COMMAND">doexec /usr/local/bin/aaa delete</strong>
+            , она удалит эти файлы.</p>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Естественно, реакция программы на свое
+                    собственное имя должна быть реализована в коде
+                    программы, для сценария на языке командной оболочки
+                    это может выглядеть примерно так:</p>
+<pre
+ class="PROGRAMLISTING">
+case `basename $0` in
+&quot;name1&quot; ) реакция на вызов под именем name1;;
+&quot;name2&quot; ) реакция на вызов под именем name2;;
+&quot;name3&quot; ) реакция на вызов под именем name3;;
+*       ) действия по-умолчанию;;
+esac
+</pre>
+                    <br>
+                    <br>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN9380"
+         href="x9307.html#AEN9380"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Фактически -- это сценарий, заимствованный из дистрибутива
+          Debian Linux.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN9455"
+         href="x9307.html#AEN9455"><span
+         class="footnote">[2]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p><span
+           class="emphasis"><em
+           class="EMPHASIS">Очередь печати</em></span> -- это группа
+          заданий <span
+           class="QUOTE">&quot;ожидающих вывода&quot;</span> на
+          принтер.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN9514"
+         href="x9307.html#AEN9514"><span
+         class="footnote">[3]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Эта тема прекрасно освещена в статье, которую написал Andy
+          Vaught, <a
+           href=
+          "http://www2.linuxjournal.com/lj-issues/issue41/2156.html"
+           target="_top">Introduction to Named Pipes</a>, в сентябре
+          1997 для <a
+           href="http://www.linuxjournal.com"
+           target="_top">Linux Journal</a>.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN9546"
+         href="x9307.html#AEN9546"><span
+         class="footnote">[4]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>EBCDIC (произносится как <span
+           class="QUOTE">&quot;ebb-sid-ic&quot;</span>) -- это
+          аббревиатура от Extended Binary Coded Decimal Interchange
+          Code (Расширенный Двоично-Десятичный Код Обмена Информацией).
+          Это формат представления данных от IBM, не нашедший широкого
+          применения. Не совсем обычное применение опции <tt
+           class="OPTION">conv=ebcdic</tt> -- это использовать <strong
+           class="COMMAND">dd</strong> для быстрого и легкого, но
+          слабого, шифрования текстовых файлов.</p>
+<pre
+ class="PROGRAMLISTING">
+cat $file | dd conv=swab,ebcdic &gt; $file_encrypted
+# Зашифрованный файл будет выглядеть как &quot;абракадабра&quot;.
+# опция swab добавлена для внесения большей неразберихи.
+
+cat $file_encrypted | dd conv=swab,ascii &gt; $file_plaintext
+# Декодирование.
+</pre>
+          <br>
+          <br>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN9671"
+         href="x9307.html#AEN9671"><span
+         class="footnote">[5]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p><span
+           class="emphasis"><em
+           class="EMPHASIS">макроопределение</em></span> -- это
+          идентификатор, символическая константа, которая представляет
+          некоторую последовательность команд, операций и
+          параметров.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x9199.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c9708.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Команды выполнения математических операций</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c6407.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Команды системного администрирования</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

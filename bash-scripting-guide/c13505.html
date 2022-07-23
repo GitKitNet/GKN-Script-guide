@@ -1,0 +1,319 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Разное</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Материал повышенной сложности"
+     href="p11889.html">
+    <link
+     rel="PREVIOUS"
+     title="Стиль программирования"
+     href="c13468.html">
+    <link
+     rel="NEXT"
+     title="Сценарии-обертки"
+     href="x13541.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c13468.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x13541.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="MISCELLANY"></a>Глава 33. Разное</h1>
+
+      <table
+       border="0"
+       width="100%"
+       cellspacing="0"
+       cellpadding="0"
+       class="EPIGRAPH">
+        <tr>
+          <td
+           width="45%"> </td>
+
+          <td
+           width="45%"
+           align="left"
+           valign="top">
+            <p><em>Практически никто не знает грамматики Bourne
+            shell-а. Даже изучение исходных текстов не дает ее полного
+            понимания.</em></p>
+          </td>
+        </tr>
+
+        <tr>
+          <td
+           width="45%"> </td>
+
+          <td
+           width="45%"
+           align="right"
+           valign="top"><em><span
+           class="ATTRIBUTION">Tom Duff</span></em></td>
+        </tr>
+      </table>
+
+      <div
+       class="SECT1">
+        <h1
+         class="SECT1"><a
+         name="INTANDNONINT"></a>33.1. Интерактивный и неинтерактивный
+        режим работы</h1>
+
+        <p>В <span
+         class="emphasis"><em
+         class="EMPHASIS">интеракивном</em></span> режиме, оболочка
+        читает команды, вводимые пользователем, с устройства <tt
+         class="FILENAME">tty</tt>. Кроме того, такая оболочка
+        считывает конфигурационные файлы на запуске, выводит строку
+        приглашения к вводу (prompt), и, по-умолчанию, разрешает
+        управление заданиями. Пользователь имеет возможность <span
+         class="emphasis"><em
+         class="EMPHASIS">взаимодействия</em></span> с оболочкой.</p>
+
+        <p>Сценарий всегда запускается в неинтерактивном режиме. Но, не
+        смотря на это, он сохраняет доступ к своему <tt
+         class="FILENAME">tty</tt>. И даже может эмулировать
+        интерактивный режим работы.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+MY_PROMPT=&#39;$ &#39;
+while :
+do
+  echo -n &quot;$MY_PROMPT&quot;
+  read line
+  eval &quot;$line&quot;
+  done
+
+exit 0
+
+# Этот сценарий, как иллюстрация к вышесказанному, предоставлен
+# Stephane Chazelas (спасибо).
+</pre>
+        <br>
+        <br>
+
+        <p>Будем считать <span
+         class="emphasis"><em
+         class="EMPHASIS">интерактивным</em></span> такой сценарий,
+        который может принимать ввод от пользователя, обычно с помощью
+        команды <a
+         href="c5358.html#READREF">read</a> (см. <a
+         href="c5358.html#EX36">Пример 11-2</a>). В <span
+         class="QUOTE">&quot;реальной жизни&quot;</span> все намного
+        сложнее. Пока же, будем придерживаться предположения о том, что
+        интерактивный сценарий ограничен рамками tty, с которого
+        сценарий был запущен пользователемa, т.е консоль или окно
+        xterm.</p>
+
+        <p>Сценарии начальной инициализации системы не являются
+        интерактивными, поскольку они не предполагают вмешательство
+        человека в процессе своей работы. Большая часть сценариев,
+        выполняющих администрирование и обслуживание системы -- так же
+        работают в неинтерактивном режиме. Многие задачи автоматизации
+        труда администратора очень трудно представить себе без
+        неинтерактивных сценариев.</p>
+
+        <p>Неинтерактивные сценарии прекрасно могут работать в фоне, в
+        то время, как интерактивные -- подвисают, останавливаясь на
+        операциях, ожидающих ввода пользователя. Сложности, возникающие
+        с запуском интерактивных сценариев в фоновом режиме, могут быть
+        преодолены с помощью <strong
+         class="COMMAND">expect</strong>-сценария или <a
+         href="c11785.html#HEREDOCREF">встроенного документа</a>. В
+        простейших случаях, можно организовать перенаправление ввода из
+        файла в команду <strong
+         class="COMMAND">read</strong> (<strong
+         class="COMMAND">read variable &lt;file</strong>). Эти приемы
+        позволят создавать сценарии, которые смогут работать как в
+        интерактивном, так и в неинтерактивном режимах.</p>
+
+        <p>Если внутри сценария необходимо проверить режим работы --
+        интерактивный или неинтерактивный, это можно сделать проверкой
+        переменной окружения <a
+         href="c3270.html#PS1REF">$PS1</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+if [ -z $PS1 ] # интерактивный режим?
+then
+  # неинтерактивный
+  ...
+else
+  # интерактивный
+  ...
+fi
+</pre>
+        <a
+         name="IITEST"></a>Еще один способ -- проверка установки флага
+        <span
+         class="QUOTE">&quot;i&quot;</span> в переменной <a
+         href="c3270.html#FLPREF">$-</a>. 
+<pre
+ class="PROGRAMLISTING">
+case $- in
+*i*)    # интерактивный режим
+;;
+*)      # неинтерактивный режим
+;;
+# (Из &quot;UNIX F.A.Q.,&quot; 1993)
+</pre>
+        <br>
+        <br>
+
+        <div
+         class="NOTE">
+          <table
+           class="NOTE"
+           width="100%"
+           border="0">
+            <tr>
+              <td
+               width="25"
+               align="center"
+               valign="top"><img
+               src="misc/abs-book/images/note.gif"
+               hspace="5"
+               alt="Note"></td>
+
+              <td
+               align="left"
+               valign="top">
+                <p>Сценарий может принудительно запускаться в
+                интерактивном режиме, для этого необходимо указать ключ
+                <span
+                 class="TOKEN">-i</span> в строке-заголовке <tt
+                 class="USERINPUT"><strong>#!/bin/bash
+                -i</strong></tt>. Однако вы должны помнить о том, что в
+                таких случаях сценарий может выдавать сообщения об
+                ошибках даже тогда, когда ошибок, по сути, нет.</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c13468.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x13541.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Стиль программирования</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p11889.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Сценарии-обертки</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

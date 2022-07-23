@@ -1,0 +1,300 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Углубленный материал</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="PREVIOUS"
+     title="Числовые константы"
+     href="x3255.html">
+    <link
+     rel="NEXT"
+     title="К вопросу о переменных"
+     href="c3270.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x3255.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c3270.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="PART">
+      <a
+       name="PART3"></a>
+
+      <div
+       class="TITLEPAGE">
+        <h1
+         class="TITLE">Часть 3. Углубленный материал</h1>
+
+        <div
+         class="TOC">
+          <dl>
+            <dt><strong>Содержание</strong></dt>
+
+            <dt>9. <a
+             href="c3270.html">К вопросу о переменных</a></dt>
+
+            <dd>
+              <dl>
+                <dt>9.1. <a
+                 href="c3270.html#INTERNALVARIABLES">Внутренние
+                переменные</a></dt>
+
+                <dt>9.2. <a
+                 href="x4171.html">Работа со строками</a></dt>
+
+                <dd>
+                  <dl>
+                    <dt>9.2.1. <a
+                     href="x4171.html#AWKSTRINGMANIP">Использование awk
+                    при работе со строками</a></dt>
+
+                    <dt>9.2.2. <a
+                     href="x4171.html#STRFDISC">Дальнейшее
+                    обсуждение</a></dt>
+                  </dl>
+                </dd>
+
+                <dt>9.3. <a
+                 href="x4462.html">Подстановка параметров</a></dt>
+
+                <dt>9.4. <a
+                 href="x4704.html">Объявление переменных: <strong
+                 class="COMMAND">declare</strong> и <strong
+                 class="COMMAND">typeset</strong></a></dt>
+
+                <dt>9.5. <a
+                 href="x4788.html">Косвенные ссылки на
+                переменные</a></dt>
+
+                <dt>9.6. <a
+                 href="x4812.html">$RANDOM: генерация псевдослучайных
+                целых чисел</a></dt>
+
+                <dt>9.7. <a
+                 href="x4862.html">Двойные круглые скобки</a></dt>
+              </dl>
+            </dd>
+
+            <dt>10. <a
+             href="c4875.html">Циклы и ветвления</a></dt>
+
+            <dd>
+              <dl>
+                <dt>10.1. <a
+                 href="c4875.html#LOOPS1">Циклы</a></dt>
+
+                <dt>10.2. <a
+                 href="x5140.html">Вложенные циклы</a></dt>
+
+                <dt>10.3. <a
+                 href="x5153.html">Управление ходом выполнения
+                цикла</a></dt>
+
+                <dt>10.4. <a
+                 href="x5210.html">Операторы выбора</a></dt>
+              </dl>
+            </dd>
+
+            <dt>11. <a
+             href="c5358.html">Внутренние команды</a></dt>
+
+            <dd>
+              <dl>
+                <dt>11.1. <a
+                 href="c5358.html#AEN6110">Команды управления
+                заданиями</a></dt>
+              </dl>
+            </dd>
+
+            <dt>12. <a
+             href="c6407.html">Внешние команды, программы и
+            утилиты</a></dt>
+
+            <dd>
+              <dl>
+                <dt>12.1. <a
+                 href="c6407.html#BASIC">Базовые команды</a></dt>
+
+                <dt>12.2. <a
+                 href="x6646.html">Более сложные команды</a></dt>
+
+                <dt>12.3. <a
+                 href="x6837.html">Команды для работы с датой и
+                временем</a></dt>
+
+                <dt>12.4. <a
+                 href="x7050.html">Команды обработки текста</a></dt>
+
+                <dt>12.5. <a
+                 href="x7794.html">Команды для работы с файлами и
+                архивами</a></dt>
+
+                <dt>12.6. <a
+                 href="x8707.html">Команды для работы с сетью</a></dt>
+
+                <dt>12.7. <a
+                 href="x9117.html">Команды управления
+                терминалом</a></dt>
+
+                <dt>12.8. <a
+                 href="x9199.html">Команды выполнения математических
+                операций</a></dt>
+
+                <dt>12.9. <a
+                 href="x9307.html">Прочие команды</a></dt>
+              </dl>
+            </dd>
+
+            <dt>13. <a
+             href="c9708.html">Команды системного
+            администрирования</a></dt>
+
+            <dt>14. <a
+             href="c11441.html">Подстановка команд</a></dt>
+
+            <dt>15. <a
+             href="c11565.html">Арифметические подстановки</a></dt>
+
+            <dt>16. <a
+             href="c11620.html">Перенаправление ввода/вывода</a></dt>
+
+            <dd>
+              <dl>
+                <dt>16.1. <a
+                 href="c11620.html#AEN11702">С помощью команды <strong
+                 class="COMMAND">exec</strong></a></dt>
+
+                <dt>16.2. <a
+                 href="x11731.html">Перенаправление для блоков
+                кода</a></dt>
+
+                <dt>16.3. <a
+                 href="x11778.html">Область применения</a></dt>
+              </dl>
+            </dd>
+
+            <dt>17. <a
+             href="c11785.html">Встроенные документы</a></dt>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x3255.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c3270.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Числовые константы</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"> </td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">К вопросу о переменных</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

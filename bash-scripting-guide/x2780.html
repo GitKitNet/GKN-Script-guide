@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Проверка степени усвоения материала</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Проверка условий"
+     href="c2171.html">
+    <link
+     rel="PREVIOUS"
+     title="Вложенные условные операторы if/then"
+     href="x2770.html">
+    <link
+     rel="NEXT"
+     title="Операции и смежные темы"
+     href="c2792.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x2770.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 7. Проверка условий</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c2792.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="TESTTEST"></a>7.5. Проверка степени усвоения
+      материала</h1>
+
+      <p>Для запуска X-сервера может быть использован файл <tt
+       class="FILENAME">xinitrc</tt>. Этот файл содержит некоторое
+      число операторов <span
+       class="emphasis"><em
+       class="EMPHASIS">if/then</em></span>. Ниже приводится отрывок из
+      этого файла.</p>
+<pre
+ class="PROGRAMLISTING">
+if [ -f $HOME/.Xclients ]; then
+  exec $HOME/.Xclients
+elif [ -f /etc/X11/xinit/Xclients ]; then
+  exec /etc/X11/xinit/Xclients
+else
+     # failsafe settings.  Although we should never get here
+     # (we provide fallbacks in Xclients as well) it can&#39;t hurt.
+     xclock -geometry 100x100-5+5 &amp;
+     xterm -geometry 80x50-50+150 &amp;
+     if [ -f /usr/bin/netscape -a -f /usr/share/doc/HTML/index.html ]; then
+             netscape /usr/share/doc/HTML/index.html &amp;
+     fi
+fi
+</pre>
+      <br>
+      <br>
+
+      <p>Объясните действия условных операторов в вышеприведенном
+      отрывке, затем просмотрите файл <tt
+       class="FILENAME">/etc/X11/xinit/xinitrc</tt> и проанализируйте
+      его. Возможно вам придется обратиться к разделам, посвященным <a
+       href="x7050.html#GREPREF">grep</a>, <a
+       href="a14586.html#SEDREF">sed</a> и <a
+       href="c11895.html#REGEXREF">регулярным выражениям</a>.</p>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x2770.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c2792.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Вложенные условные операторы if/then</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c2171.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Операции и смежные темы</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

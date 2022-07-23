@@ -1,0 +1,870 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Более сложные команды</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Внешние команды, программы и утилиты"
+     href="c6407.html">
+    <link
+     rel="PREVIOUS"
+     title="Внешние команды, программы и утилиты"
+     href="c6407.html">
+    <link
+     rel="NEXT"
+     title="Команды для работы с датой и временем"
+     href="x6837.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c6407.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 12. Внешние команды, программы и
+          утилиты</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x6837.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="MOREADV"></a>12.2. Более сложные команды</h1>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="CCLISTING1"></a>Команды для более опытных
+        пользователей</strong></p>
+
+        <dl>
+          <dt><a
+           name="FINDREF"></a><strong
+           class="COMMAND">find</strong></dt>
+
+          <dd>
+            <p>-exec <tt
+             class="REPLACEABLE"><em>COMMAND</em></tt> \;</p>
+
+            <p>Для каждого найденного файла, соответствующего заданному
+            шаблону поиска, выполняет команду <tt
+             class="REPLACEABLE"><em>COMMAND</em></tt>. Командная
+            строка должна завершаться последовательностью символов
+            <span
+             class="TOKEN">\;</span> (здесь символ <span
+             class="QUOTE">&quot;;&quot;</span> экранирован обратным
+            слэшем, чтобы информировать командную оболочку о том, что
+            символ <span
+             class="QUOTE">&quot;;&quot;</span> должен быть передан
+            команде <strong
+             class="COMMAND">find</strong> как обычный символ). Если
+            <tt
+             class="REPLACEABLE"><em>COMMAND</em></tt> содержит <span
+             class="TOKEN">{}</span>, то <strong
+             class="COMMAND">find</strong> подставляет полное имя
+            найденного файла вместо <span
+             class="QUOTE">&quot;{}&quot;</span>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>find ~/ -name &#39;*.txt&#39;</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">/home/bozo/.kde/share/apps/karm/karmdata.txt
+/home/bozo/misc/irmeyc.txt
+/home/bozo/test-scripts/1.txt</tt>
+             
+</pre>
+            <br>
+            <br>
+<pre
+ class="PROGRAMLISTING">
+find /home/bozo/projects -mtime 1
+#  Найти все файлы в каталоге /home/bozo/projects и вложенных подкаталогах,
+#+ которые изменялись в течение последних суток.
+#
+#  mtime = время последнего изменения файла
+#  ctime = время последнего изменения атрибутов файла (через &#39;chmod&#39; или как-то иначе)
+#  atime = время последнего обращения к файлу
+
+DIR=/home/bozo/junk_files
+find &quot;$DIR&quot; -type f -atime +5 -exec rm {} \;
+#  Удалить все файлы в каталоге &quot;/home/bozo/junk_files&quot;
+#+ к которым не было обращений в течение последних 5 дней.
+#
+#  &quot;-type filetype&quot;, где
+#  f = обычный файл
+#  d = каталог, и т.п.
+#  (Полный список ключей вы найдете в &#39;man find&#39;.)
+</pre>
+            <br>
+            <br>
+<pre
+ class="PROGRAMLISTING">
+find /etc -exec grep &#39;[0-9][0-9]*[.][0-9][0-9]*[.][0-9][0-9]*[.][0-9][0-9]*&#39; {} \;
+
+# Поиск всех IP-адресов (xxx.xxx.xxx.xxx) в файлах каталога  /etc.
+# Однако эта команда выводит не только IP-адреса, как этого избежать?
+
+# Примерно так:
+
+find /etc -type f -exec cat &#39;{}&#39; \; | tr -c &#39;.[:digit:]&#39; &#39;\n&#39; \
+ | grep &#39;^[^.][^.]*\.[^.][^.]*\.[^.][^.]*\.[^.][^.]*$&#39;
+# [:digit:] -- один из символьных классов
+# введен в стандарт POSIX 1003.2.
+
+# Спасибо S.C.
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="NOTE">
+              <table
+               class="NOTE"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/note.gif"
+                   hspace="5"
+                   alt="Note"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Не следует путать опцию <tt
+                     class="OPTION">-exec</tt> команды <strong
+                     class="COMMAND">find</strong> с внутренней
+                    командой Bash -- <a
+                     href="c5358.html#EXECREF">exec</a>.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX57"></a>
+
+              <p><strong>Пример 12-2. Badname, удаление файлов в
+              текущем каталоге, имена которых содержат недопустимые
+              символы и <a
+               href="c301.html#WHITESPACEREF">пробелы</a>.</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Удаление файлов в текущем каталоге, чьи имена содержат недопустимые символы.
+
+for filename in *
+do
+badname=`echo &quot;$filename&quot; | sed -n /[\+\{\;\&quot;\\\=\?~\(\)\&lt;\&gt;\&amp;\*\|\$]/p`
+# Недопустимые символы в именах файлов:     + { ; &quot; \ = ? ~ ( ) &lt; &gt; &amp; * | $
+rm $badname 2&gt;/dev/null    # Сообщения об ошибках &quot;выстреливаются&quot; в никуда.
+done
+
+# Теперь &quot;позаботимся&quot; о файлах, чьи имена содержат пробельные символы.
+find . -name &quot;* *&quot; -exec rm -f {} \;
+# На место &quot;{}&quot;, find подставит полное имя файла.
+# Символ &#39;\&#39; указывает на то, что &#39;;&#39; интерпретируется как обычный символ, а не как конец команды.
+
+exit 0
+
+#---------------------------------------------------------------------
+# Строки, приведенные ниже, не будут выполнены, т.к. выше стоит команда &quot;exit&quot;.
+
+# Альтернативный вариант сценария:
+find . -name &#39;*[+{;&quot;\\=?~()&lt;&gt;&amp;*|$ ]*&#39; -exec rm -f &#39;{}&#39; \;
+exit 0
+# (Спасибо S.C.)
+</pre>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="IDELETE"></a>
+
+              <p><strong>Пример 12-3. Удаление файла по его номеру
+              <span
+               class="emphasis"><em
+               class="EMPHASIS">inode</em></span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# idelete.sh: Удаление файла по номеру inode.
+
+#  Этот прием используется в тех случаях, когда имя файла начинается с недопустимого символа,
+#+ например, ? или -.
+
+ARGCOUNT=1                      # Имя файла должно быть передано в сценарий.
+E_WRONGARGS=70
+E_FILE_NOT_EXIST=71
+E_CHANGED_MIND=72
+
+if [ $# -ne &quot;$ARGCOUNT&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` filename&quot;
+  exit $E_WRONGARGS
+fi
+
+if [ ! -e &quot;$1&quot; ]
+then
+  echo &quot;Файл \&quot;&quot;$1&quot;\&quot; не найден.&quot;
+  exit $E_FILE_NOT_EXIST
+fi
+
+inum=`ls -i | grep &quot;$1&quot; | awk &#39;{print $1}&#39;`
+# inum = номер inode (index node) файла
+# Каждый файл имеет свой inode, где хранится информация о физическом расположении файла.
+
+echo; echo -n &quot;Вы совершенно уверены в том, что желаете удалить \&quot;$1\&quot; (y/n)? &quot;
+# Ключ &#39;-v&#39; в команде &#39;rm&#39; тоже заставит команду вывести подобный запрос.
+read answer
+case &quot;$answer&quot; in
+[nN]) echo &quot;Передумали?&quot;
+      exit $E_CHANGED_MIND
+      ;;
+*)    echo &quot;Удаление файла \&quot;$1\&quot;.&quot;;;
+esac
+
+find . -inum $inum -exec rm {} \;
+echo &quot;Файл &quot;\&quot;$1&quot;\&quot; удален!&quot;
+
+exit 0
+</pre>
+            </div>
+
+            <p>Дополнительные примеры по использованию команды <strong
+             class="COMMAND">find</strong> вы найдете в <a
+             href="x7794.html#EX48">Пример 12-22</a>, <a
+             href="c301.html#EX58">Пример 3-4</a> и <a
+             href="c4875.html#FINDSTRING">Пример 10-9</a>. В страницах
+            справочного ркуоводства (man find) вы найдете более
+            подробную информацию об этой достаточно сложной и мощной
+            команде.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">xargs</strong></dt>
+
+          <dd>
+            <p>Команда передачи аргументов указанной команде. Она
+            разбивает поток аргументов на отдельные составляющие и
+            поочередно передает их заданной команде для обработки. Эта
+            команда может рассматриваться как мощная замена обратным
+            одиничным кавычкам. Зачастую, когда команды, заключенные в
+            обратные одиночные кавычки, завершаются с ошибкой <span
+             class="ERRORNAME">too many arguments</span> (слишком много
+            аргументов), использование <strong
+             class="COMMAND">xargs</strong> позволяет обойти это
+            ограничение. Обычно, <strong
+             class="COMMAND">xargs</strong> считывает список аргументов
+            со стандартного устройства ввода <tt
+             class="FILENAME">stdin</tt> или из канала (конвейера), но
+            может считывать информацию и из файла.</p>
+
+            <p>Если команда не задана, то по-умолчанию выполняется <a
+             href="c5358.html#ECHOREF">echo</a>. При передаче
+            аргументов по конвейеру, <strong
+             class="COMMAND">xargs</strong> допускает наличие
+            пробельных символов и символов перевода строки, которые
+            затем автоматически отбрасываются.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ls -l</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">total 0
+-rw-rw-r--    1 bozo  bozo         0 Jan 29 23:58 file1
+-rw-rw-r--    1 bozo  bozo         0 Jan 29 23:58 file2</tt>
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ls -l | xargs</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">total 0 -rw-rw-r-- 1 bozo bozo 0 Jan 29 23:58 file1 -rw-rw-r-- 1 bozo bozo 0 Jan 29 23:58 file2</tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <p><tt
+             class="USERINPUT"><strong>ls | xargs -p -l
+            gzip</strong></tt> -- упакует с помощью <a
+             href="x7794.html#GZIPREF">gzip</a> все файлы в текущем
+            каталоге, выводя запрос на подтверждение для каждого
+            файла.</p>
+
+            <div
+             class="TIP">
+              <table
+               class="TIP"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/tip.gif"
+                   hspace="5"
+                   alt="Tip"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p><strong
+                     class="COMMAND">xargs</strong> имеет очень
+                    любопытный ключ <tt
+                     class="OPTION">-n <tt
+                     class="REPLACEABLE"><em>NN</em></tt></tt>, который
+                    ограничивает количество передаваемых аргументов за
+                    один &quot;присест&quot; числом <tt
+                     class="REPLACEABLE"><em>NN</em></tt>.</p>
+
+                    <p><tt
+                     class="USERINPUT"><strong>ls | xargs -n 8
+                    echo</strong></tt> -- выведет список файлов
+                    текущего каталога в <tt
+                     class="LITERAL">8</tt> колонок.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div
+             class="TIP">
+              <table
+               class="TIP"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/tip.gif"
+                   hspace="5"
+                   alt="Tip"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Еще одна полезная опция -- <tt
+                     class="OPTION">-0</tt>, в комбинации с <strong
+                     class="COMMAND">find -print0</strong> или <strong
+                     class="COMMAND">grep -lZ</strong> позволяет
+                    обрабатывать аргументы, содержащие пробелы и
+                    кавычки.</p>
+
+                    <p><tt
+                     class="USERINPUT"><strong>find / -type f -print0 |
+                    xargs -0 grep -liwZ GUI | xargs -0 rm
+                    -f</strong></tt></p>
+
+                    <p><tt
+                     class="USERINPUT"><strong>grep -rliwZ GUI / |
+                    xargs -0 rm -f</strong></tt></p>
+
+                    <p>Обе вышеприведенные команды удалят все файлы,
+                    содержащие в своем имени комбинацию символов <span
+                     class="QUOTE">&quot;GUI&quot;</span>. <span
+                     class="emphasis"><em
+                     class="EMPHASIS">(Спасибо S.C.)</em></span></p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX41"></a>
+
+              <p><strong>Пример 12-4. Использование команды xargs для
+              мониторинга системного журнала</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Создание временного файла мониторинга в текщем каталоге,
+# куда переписываются несколько последних строк из /var/log/messages.
+
+# Обратите внимание: если сценарий запускается обычным пользователем,
+# то файл /var/log/messages должен быть доступен на чтение этому пользователю.
+#         #root chmod 644 /var/log/messages
+
+LINES=5
+
+( date; uname -a ) &gt;&gt;logfile
+# Время и информация о системе
+echo --------------------------------------------------------------------- &gt;&gt;logfile
+tail -$LINES /var/log/messages | xargs |  fmt -s &gt;&gt;logfile
+echo &gt;&gt;logfile
+echo &gt;&gt;logfile
+
+exit 0
+
+# Упражнение:
+# --------
+#  Измените сценарий таким образом, чтобы он мог отслеживать изменения в /var/log/messages
+#+ с интервалом в 20 минут.
+#  Подсказка: воспользуйтесь командой &quot;watch&quot;.
+</pre>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX42"></a>
+
+              <p><strong>Пример 12-5. copydir, копирование файлов из
+              текущего каталога в другое место, с помощью
+              xargs</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Копирует все файлы из текущего каталога
+# в каталог, указанный в командной строке.
+
+if [ -z &quot;$1&quot; ]   # Выход, если каталог назначения не задан.
+then
+  echo &quot;Порядок использования: `basename $0` directory-to-copy-to&quot;
+  exit 65
+fi
+
+ls . | xargs -i -t cp ./{} $1
+# Этот сценария является точным эквивалентом
+#    cp * $1
+# если в именах файлов не содержатся пробельные символы.
+
+exit 0
+</pre>
+            </div>
+          </dd>
+
+          <dt><a
+           name="EXPRREF"></a><tt
+           class="USERINPUT"><strong>expr</strong></tt></dt>
+
+          <dd>
+            <p>Универсальный обработчик выражений: вычисляет заданное
+            выражение (аргументы должны отделяться пробелами).
+            Выражения могут быть арифметическими, логическими или
+            строковыми.</p>
+
+            <div
+             class="VARIABLELIST">
+              <dl>
+                <dt><tt
+                 class="USERINPUT"><strong>expr 3 +
+                5</strong></tt></dt>
+
+                <dd>
+                  <p>возвратит <tt
+                   class="LITERAL">8</tt></p>
+                </dd>
+
+                <dt><tt
+                 class="USERINPUT"><strong>expr 5 %
+                3</strong></tt></dt>
+
+                <dd>
+                  <p>возвратит 2</p>
+                </dd>
+
+                <dt><tt
+                 class="USERINPUT"><strong>expr 5 \*
+                3</strong></tt></dt>
+
+                <dd>
+                  <p>возвратит 15</p>
+
+                  <p>В арифметических выражениях, оператор умножения
+                  обязательно должен экранироваться обратным
+                  слэшем.</p>
+                </dd>
+
+                <dt><tt
+                 class="USERINPUT"><strong>y=`expr $y +
+                1`</strong></tt></dt>
+
+                <dd>
+                  <p>Операция инкремента переменной, то же самое, что и
+                  <tt
+                   class="USERINPUT"><strong>let y=y+1</strong></tt>,
+                  или <tt
+                   class="USERINPUT"><strong>y=$(($y+1))</strong></tt>.
+                  Пример <a
+                   href="c11565.html#ARITHEXPREF">подстановки
+                  арифметических выражений</a>.</p>
+                </dd>
+
+                <dt><a
+                 name="EXPEXTRSUB"></a><tt
+                 class="USERINPUT"><strong>z=`expr substr $string
+                $position $length`</strong></tt></dt>
+
+                <dd>
+                  <p>Извлекает подстроку длиной $length символов,
+                  начиная с позиции $position.</p>
+                </dd>
+              </dl>
+            </div>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="EX45"></a>
+
+              <p><strong>Пример 12-6. Пример работы с expr</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Демонстрация некоторых приемов работы с командой &#39;expr&#39;
+# =======================================
+
+echo
+
+# Арифметические операции
+# -------------- --------
+
+echo &quot;Арифметические операции&quot;
+echo
+a=`expr 5 + 3`
+echo &quot;5 + 3 = $a&quot;
+
+a=`expr $a + 1`
+echo
+echo &quot;a + 1 = $a&quot;
+echo &quot;(инкремент переменной)&quot;
+
+a=`expr 5 % 3`
+# остаток от деления (деление по модулю)
+echo
+echo &quot;5 mod 3 = $a&quot;
+
+echo
+echo
+
+# Логические операции
+# ---------- --------
+
+#  Возвращает 1 если выражение истинноо, 0 -- если ложно,
+#+ в противоположность соглашениям, принятым в Bash.
+
+echo &quot;Логические операции&quot;
+echo
+
+x=24
+y=25
+b=`expr $x = $y`         # Сравнение.
+echo &quot;b = $b&quot;            # 0  ( $x -ne $y )
+echo
+
+a=3
+b=`expr $a \&gt; 10`
+echo &#39;b=`expr $a \&gt; 10`, поэтому...&#39;
+echo &quot;Если a &gt; 10, то b = 0 (ложь)&quot;
+echo &quot;b = $b&quot;            # 0  ( 3 ! -gt 10 )
+echo
+
+b=`expr $a \&lt; 10`
+echo &quot;Если a &lt; 10, то b = 1 (истина)&quot;
+echo &quot;b = $b&quot;            # 1  ( 3 -lt 10 )
+echo
+# Обратите внимание на необходимость экранирования операторов.
+
+b=`expr $a \&lt;= 3`
+echo &quot;Если a &lt;= 3, то b = 1 (истина)&quot;
+echo &quot;b = $b&quot;            # 1  ( 3 -le 3 )
+# Существует еще оператор &quot;\&gt;=&quot; (больше или равно).
+
+
+echo
+echo
+
+# Операции сравнения
+# -------- ---------
+
+echo &quot;Операции сравнения&quot;
+echo
+a=zipper
+echo &quot;a is $a&quot;
+if [ `expr $a = snap` ]
+then
+   echo &quot;a -- это не zipper&quot;
+fi
+
+echo
+echo
+
+
+
+# Операции со строками
+# -------- -- --------
+
+echo &quot;Операции со строками&quot;
+echo
+
+a=1234zipper43231
+echo &quot;Строка над которой производятся операции: \&quot;$a\&quot;.&quot;
+
+# length: длина строки
+b=`expr length $a`
+echo &quot;длина строки \&quot;$a\&quot; равна $b.&quot;
+
+# index: позиция первого символа подстроки в строке
+b=`expr index $a 23`
+echo &quot;Позиция первого символа \&quot;2\&quot; в строке \&quot;$a\&quot; : \&quot;$b\&quot;.&quot;
+
+# substr: извлечение подстроки, начиная с заданной позиции, указанной длины
+b=`expr substr $a 2 6`
+echo &quot;Подстрока в строке \&quot;$a\&quot;, начиная с позиции 2,\
+и длиной в 6 символов: \&quot;$b\&quot;.&quot;
+
+
+#  При выполнении поиска по шаблону, по-умолчанию поиск
+#+ начинается с ***начала*** строки.
+#
+#        Использование регулярных выражений
+b=`expr match &quot;$a&quot; &#39;[0-9]*&#39;`               #  Подсчет количества цифр.
+echo Количество цифр с начала строки \&quot;$a\&quot; : $b.
+b=`expr match &quot;$a&quot; &#39;\([0-9]*\)&#39;`           #  Обратите внимание на экранирование круглых скобок
+#                   ==      ==
+echo &quot;Цифры, стоящие в начале строки \&quot;$a\&quot; : \&quot;$b\&quot;.&quot;
+
+echo
+
+exit 0
+</pre>
+            </div>
+
+            <div
+             class="IMPORTANT">
+              <table
+               class="IMPORTANT"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/important.gif"
+                   hspace="5"
+                   alt="Important"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Вместо оператора <strong
+                     class="COMMAND">match</strong> можно использовать
+                    оператор <a
+                     href="c301.html#NULLREF">:</a>. Например, команда
+                    <tt
+                     class="USERINPUT"><strong>b=`expr $a :
+                    [0-9]*`</strong></tt> является точным эквивалентом
+                    для <tt
+                     class="USERINPUT"><strong>b=`expr match $a
+                    [0-9]*`</strong></tt> в примере, рассмотренном
+                    выше.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+echo
+echo &quot;Операции над строками с использованием конструкции \&quot;expr \$string : \&quot; &quot;
+echo &quot;========================================================================&quot;
+echo
+
+a=1234zipper5FLIPPER43231
+
+echo &quot;Строка, над которой выполняются операции: \&quot;`expr &quot;$a&quot; : &#39;\(.*\)&#39;`\&quot;.&quot;
+#     Экранирование круглых скобок в шаблоне                    ==  ==
+
+
+#  Если скобки не экранировать...
+#+ то &#39;expr&#39; преобразует строковый операнд в целое число.
+
+echo &quot;Длина строки \&quot;$a\&quot; равна `expr &quot;$a&quot; : &#39;.*&#39;`.&quot;   # Длина строки
+
+echo &quot;Количество цифр с начала строки \&quot;$a\&quot; равно `expr &quot;$a&quot; : &#39;[0-9]*&#39;`.&quot;
+
+# ------------------------------------------------------------------------- #
+
+echo
+
+echo &quot;Цифры, стоящие в начале строки \&quot;$a\&quot; : `expr &quot;$a&quot; : &#39;\([0-9]*\)&#39;`.&quot;
+#                                                             ==      ==
+echo &quot;Первые 7 символов в строке \&quot;$a\&quot; : `expr &quot;$a&quot; : &#39;\(.......\)&#39;`.&quot;
+#     ======                                          ==       ==
+# Опять же, необходимо экранировать круглые скобки в шаблоне.
+#
+echo &quot;Последние 7 символов в строке \&quot;$a\&quot; : `expr &quot;$a&quot; : &#39;.*\(.......\)&#39;`.&quot;
+#     =========                  оператор конца строки     ^^
+#  (фактически означает переход через любое количество символов, пока
+#+  не будет найдена требуемая подстрока)
+
+echo
+
+exit 0
+</pre>
+                    <br>
+                    <br>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+        </dl>
+      </div>
+
+      <p>Этот пример демонстрирует необходимость <span
+       class="emphasis"><em
+       class="EMPHASIS">экранирования оператора группировки -- \( ...
+      \)</em></span> в <a
+       href="c11895.html#REGEXREF">регулярных выражениях</a>, при
+      поиске по шаблону командой <strong
+       class="COMMAND">expr</strong>.</p>
+
+      <p><a
+       href="x13541.html#PERLREF">Perl</a>, <a
+       href="a14586.html#SEDREF">sed</a> и <a
+       href="x14802.html#AWKREF">awk</a> имеют в своем распоряжении
+      более мощный аппарат анализа строк. Коротенький скрипт на <strong
+       class="COMMAND">sed</strong> или <strong
+       class="COMMAND">awk</strong>, внутри сценария (см. <a
+       href="x13541.html">Section 33.2</a>) -- значительно более
+      привлекательная альтернатива использованию <strong
+       class="COMMAND">expr</strong> при анализе строк.</p>
+
+      <p>Дополнительные примеры, по обработке строк, вы найдете в <a
+       href="x4171.html">Section 9.2</a>.</p>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c6407.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x6837.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Внешние команды, программы и утилиты</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c6407.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Команды для работы с датой и временем</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

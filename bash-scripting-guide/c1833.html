@@ -1,0 +1,921 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Кавычки</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Основы"
+     href="p299.html">
+    <link
+     rel="PREVIOUS"
+     title="Специальные типы переменных"
+     href="x1716.html">
+    <link
+     rel="NEXT"
+     title="Завершение и код завершения"
+     href="c2105.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x1716.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c2105.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="QUOTING"></a>Глава 5. Кавычки</h1>
+
+      <p><a
+       name="QUOTINGREF"></a></p>
+
+      <p>Кавычки, ограничивающие строки с обеих сторон, служат для
+      предотвращения интерпретации специальных символов, которые могут
+      находиться в строке. (Символ называется &quot;специальным&quot;,
+      если он несет дополнительную смысловую нагрузку, например символ
+      <span
+       class="TOKEN">шаблона</span> -- <span
+       class="TOKEN">*</span>.)</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ls -l [Vv]*</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">-rw-rw-r--    1 bozo  bozo       324 Apr  2 15:05 VIEWDATA.BAT
+ -rw-rw-r--    1 bozo  bozo       507 May  4 14:25 vartrace.sh
+ -rw-rw-r--    1 bozo  bozo       539 Apr 14 17:11 viewdata.sh</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ls -l &#39;[Vv]*&#39;</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">ls: [Vv]*: No such file or directory</tt>
+</pre>
+      <br>
+      <br>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Некоторые программы и утилиты могут вызываться с
+              дополнительными параметрами, содержащими специальными
+              символы, поэтому очень важно предотвратить интерпретацию
+              передаваемых параметров командной оболочкой, позволяя
+              сделать это вызываемой программой.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>grep &#39;[Пп]ервая&#39; *.txt</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">file1.txt:Это первая строка в file1.txt.
+ file2.txt:Это Первая строка в file2.txt.</tt>
+</pre>
+              <br>
+              <br>
+
+              <p>Примечательно, что &quot;не окавыченный&quot; вариант
+              команды <tt
+               class="USERINPUT"><strong>grep [Пп]ервая
+              *.txt</strong></tt> будет правильно исполняться в Bash,
+              но не в <strong
+               class="COMMAND">tcsh</strong>.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p>Вообще, желательно использовать двойные кавычки (<span
+       class="TOKEN">&quot; &quot;</span>) при обращении к переменным.
+      Это предотвратит интерпретацию специальных символов, которые
+      могут содержаться в именах переменных, за исключением <span
+       class="TOKEN">$</span>, <span
+       class="TOKEN">`</span> (обратная кавычка) и <span
+       class="TOKEN">\</span> (escape -- обратный слэш). <a
+       name="AEN1882"
+       href="#FTN.AEN1882"><span
+       class="footnote">[1]</span></a> То, что символ <span
+       class="TOKEN">$</span> попал в разряд исключений, позволяет
+      выполнять обращение к переменным внутри строк, ограниченных
+      двойными кавычками (<tt
+       class="REPLACEABLE"><em>&quot;$variable&quot;</em></tt>), т.е.
+      выполнять подстановку значений переменных (см. <a
+       href="c1613.html#EX9">Пример 4-1</a>, выше).</p>
+
+      <p>Двойные кавычки могут быть использованы для предотвращения
+      разбиения строки на слова. <a
+       name="AEN1906"
+       href="#FTN.AEN1906"><span
+       class="footnote">[2]</span></a> Заключение строки в кавычки
+      приводит к тому, что она передается как один аргумент, даже если
+      она содержит <a
+       href="c301.html#WHITESPACEREF">пробельные символы</a> -
+      разделители.</p>
+<pre
+ class="PROGRAMLISTING">
+variable1=&quot;a variable containing five words&quot;
+COMMAND This is $variable1    # Исполнение COMMAND с 7 входными аргументами:
+# &quot;This&quot; &quot;is&quot; &quot;a&quot; &quot;variable&quot; &quot;containing&quot; &quot;five&quot; &quot;words&quot;
+
+COMMAND &quot;This is $variable1&quot;  # Исполнение COMMAND с одним входным аргументом:
+# &quot;This is a variable containing five words&quot;
+
+
+variable2=&quot;&quot;    # Пустая переменная.
+
+COMMAND $variable2 $variable2 $variable2        # Исполнение COMMAND без аргументов.
+COMMAND &quot;$variable2&quot; &quot;$variable2&quot; &quot;$variable2&quot;  # Исполнение COMMAND с 3 &quot;пустыми&quot; аргументами.
+COMMAND &quot;$variable2 $variable2 $variable2&quot;      # Исполнение COMMAND с 1 аргументом (и 2 пробелами).
+
+# Спасибо S.C.
+</pre>
+      <br>
+      <br>
+
+      <div
+       class="TIP">
+        <table
+         class="TIP"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/tip.gif"
+             hspace="5"
+             alt="Tip"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Заключение в кавычки аргументов команды <strong
+               class="COMMAND">echo</strong> необходимо только в том
+              случае, когда разбиение на отдельные слова сопряжено с
+              определенными трудностями.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="WEIRDVARS"></a>
+
+        <p><strong>Пример 5-1. Вывод &quot;причудливых&quot;
+        переменных</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# weirdvars.sh: Вывод &quot;причудливых&quot; переменных
+
+var=&quot;&#39;(]\\{}\$\&quot;&quot;
+echo $var        # &#39;(]\{}$&quot;
+echo &quot;$var&quot;      # &#39;(]\{}$&quot;     Никаких различий.
+
+echo
+
+IFS=&#39;\&#39;
+echo $var        # &#39;(] {}$&quot;     \ символ-разделитель преобразован в пробел.
+echo &quot;$var&quot;      # &#39;(]\{}$&quot;
+
+# Примеры выше предоставлены S.C.
+
+exit 0
+</pre>
+      </div>
+
+      <p>Одиночные кавычки (<span
+       class="TOKEN">&#39; &#39;</span>) схожи по своему действию с
+      двойными кавычками, только не допускают обращение к переменным,
+      поскольку специальный символ &quot;$&quot; внутри одинарных
+      кавычек воспринимается как обычный символ. Внутри одиночных
+      кавычек, <span
+       class="emphasis"><em
+       class="EMPHASIS">любой</em></span> специальный символ, за
+      исключением <span
+       class="TOKEN">&#39;</span>, интерпретируется как простой символ.
+      Одиночные кавычки (<span
+       class="QUOTE">&quot;строгие, или полные кавычки&quot;</span>)
+      следует рассматривать как более строгий вариант чем двойные
+      кавычки (<span
+       class="QUOTE">&quot;нестрогие, или неполные
+      кавычки&quot;</span>).</p>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Поскольку внутри одиночных кавычек даже экранирующий
+              (<span
+               class="TOKEN">\</span>) символ воспринимается как
+              обычный символ, попытка вывести одиночную кавычку внутри
+              строки, ограниченной одинарными кавычками, не даст
+              желаемого результата.</p>
+<pre
+ class="PROGRAMLISTING">
+echo &quot;Why can&#39;t I write &#39;s between single quotes&quot;
+
+echo
+
+# Обходной метод.
+echo &#39;Why can&#39;\&#39;&#39;t I write &#39;&quot;&#39;&quot;&#39;s between single quotes&#39;
+#    |-------|  |----------|   |-----------------------|
+# Три строки, ограниченных одинарными кавычками,
+# и экранированные одиночные кавычки между ними.
+
+# Пример любезно предоставлен Stephane Chazelas.
+</pre>
+              <br>
+              <br>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p><a
+       name="ESCP"></a><em
+       class="FIRSTTERM">Экранирование</em> -- это способ заключения в
+      кавычки одиночного символа. Экранирующий (<span
+       class="TOKEN">escape</span>) символ (<span
+       class="TOKEN">\</span>) сообщает интерпретатору, что следующий
+      за ним символ должен восприниматься как обычный символ.</p>
+
+      <div
+       class="CAUTION">
+        <table
+         class="CAUTION"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/caution.gif"
+             hspace="5"
+             alt="Caution"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>С отдельными командами и утилитами, такими как <a
+               href="c5358.html#ECHOREF">echo</a> и <a
+               href="a14586.html#SEDREF">sed</a>, экранирующий символ
+              может применяться для получения обратного эффекта - когда
+              обычные символы при экранировании приобретают специальное
+              значение.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="SPM"></a>Специальное назначение некоторых экранированных
+        символов</strong></p>
+
+        <dl>
+          <dt>используемых совместно с <strong
+           class="COMMAND">echo</strong> и <strong
+           class="COMMAND">sed</strong></dt>
+
+          <dt><span
+           class="TOKEN">\n</span></dt>
+
+          <dd>
+            <p>перевод строки (новая строка)</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">\r</span></dt>
+
+          <dd>
+            <p>перевод каретки</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">\t</span></dt>
+
+          <dd>
+            <p>табуляция</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">\v</span></dt>
+
+          <dd>
+            <p>вертикальная табуляция</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">\b</span></dt>
+
+          <dd>
+            <p>забой (backspace)</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">\a</span></dt>
+
+          <dd>
+            <p><span
+             class="QUOTE">&quot;звонок&quot;</span> (сигнал)</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">\0xx</span></dt>
+
+          <dd>
+            <p>ASCII-символ с кодом <tt
+             class="REPLACEABLE"><em>0xx</em></tt> в восьмеричном
+            виде)</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="ESCAPED"></a>
+
+              <p><strong>Пример 5-2. Экранированные
+              символы</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# escaped.sh: экранированные символы
+
+echo; echo
+
+echo &quot;\v\v\v\v&quot;      # Вывод последовательности символов \v\v\v\v.
+# Для вывода экранированных символов следует использовать ключ -e.
+echo &quot;=============&quot;
+echo &quot;ВЕРТИКАЛЬНАЯ ТАБУЛЯЦИЯ&quot;
+echo -e &quot;\v\v\v\v&quot;   # Вывод 4-х вертикальных табуляций.
+echo &quot;==============&quot;
+
+echo &quot;КАВЫЧКИ&quot;
+echo -e &quot;\042&quot;       # Выводит символ &quot; (кавычки с восьмеричным кодом ASCII 42).
+echo &quot;==============&quot;
+
+# Конструкция $&#39;\X&#39; делает использование ключа -e необязательным.
+echo; echo &quot;НОВАЯ СТРОКА И ЗВОНОК&quot;
+echo $&#39;\n&#39;           # Перевод строки.
+echo $&#39;\a&#39;           # Звонок (сигнал).
+
+echo &quot;===============&quot;
+echo &quot;КАВЫЧКИ&quot;
+# Bash версии 2 и выше допускает использование конструкции $&#39;\nnn&#39;.
+# Обратите внимание: здесь под &#39;\nnn&#39; подразумевается восьмеричное значение.
+echo $&#39;\t \042 \t&#39;   # Кавычки (&quot;) окруженные табуляцией.
+
+# В конструкции $&#39;\xhhh&#39; допускается использовать и шестнадцатеричные значения.
+echo $&#39;\t \x22 \t&#39;  # Кавычки (&quot;) окруженные табуляцией.
+# Спасибо Greg Keraunen, за это примечание.
+# Ранние версии Bash допускали употребление конструкции в виде &#39;\x022&#39;.
+echo &quot;===============&quot;
+echo
+
+
+# Запись ASCII-символов в переменную.
+# ----------------------------------------
+quote=$&#39;\042&#39;        # запись символа &quot; в переменную.
+echo &quot;$quote Эта часть строки ограничена кавычками, $quote а эта -- нет.&quot;
+
+echo
+
+# Конкатенация ASCII-символов в переменную.
+triple_underline=$&#39;\137\137\137&#39;  # 137 -- это восьмеричный код символа &#39;_&#39;.
+echo &quot;$triple_underline ПОДЧЕРКИВАНИЕ $triple_underline&quot;
+
+echo
+
+ABC=$&#39;\101\102\103\010&#39;           # 101, 102, 103 это  A, B и C соответственно.
+echo $ABC
+
+echo; echo
+
+escape=$&#39;\033&#39;                    # 033 -- восьмеричный код экранирующего символа.
+echo &quot;\&quot;escape\&quot; выводится как $escape&quot;
+#                                   вывод отсутствует.
+
+echo; echo
+
+exit 0
+</pre>
+            </div>
+
+            <p>Еще один пример использования конструкции <tt
+             class="USERINPUT"><strong>$&#39; &#39;</strong></tt> вы
+            найдете в <a
+             href="c13936.html#EX77">Пример 34-1</a>.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">\&quot;</span></dt>
+
+          <dd>
+            <p>кавычки</p>
+<pre
+ class="PROGRAMLISTING">
+echo &quot;Привет&quot;                    # Привет
+echo &quot;Он сказал: \&quot;Привет\&quot;.&quot;    # Он сказал: &quot;Привет&quot;.
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><span
+           class="TOKEN">\$</span></dt>
+
+          <dd>
+            <p>символ доллара (если за комбинацией символов \$ следует
+            имя переменной, то она не будет разыменована)</p>
+<pre
+ class="PROGRAMLISTING">
+echo &quot;\$variable01&quot;  # выведет $variable01
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><span
+           class="TOKEN">\\</span></dt>
+
+          <dd>
+            <p>обратный слэш</p>
+<pre
+ class="PROGRAMLISTING">
+echo &quot;\\&quot;  # выведет \
+</pre>
+            <br>
+            <br>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Поведение символа <span
+               class="TOKEN">\</span> сильно зависит от того
+              экранирован ли он, ограничен ли кавычками или находится
+              внутри конструкции <a
+               href="c11441.html#COMMANDSUBREF">подстановки команды</a>
+              или во <a
+               href="c11785.html#HEREDOCREF">вложенном
+              документе</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+                      #  Простое экранирование и кавычки
+echo \z               #  z
+echo \\z              # \z
+echo &#39;\z&#39;             # \z
+echo &#39;\\z&#39;            # \\z
+echo &quot;\z&quot;             # \z
+echo &quot;\\z&quot;            # \z
+
+                      #  Подстановка команды
+echo `echo \z`        #  z
+echo `echo \\z`       #  z
+echo `echo \\\z`      # \z
+echo `echo \\\\z`     # \z
+echo `echo \\\\\\z`   # \z
+echo `echo \\\\\\\z`  # \\z
+echo `echo &quot;\z&quot;`      # \z
+echo `echo &quot;\\z&quot;`     # \z
+
+                      # Встроенный документ
+cat &lt;&lt;EOF
+\z
+EOF                   # \z
+
+cat &lt;&lt;EOF
+\\z
+EOF                   # \z
+
+# Эти примеры предоставил Stephane Chazelas.
+</pre>
+              <br>
+              <br>
+
+              <p>Отдельные символы в строке, которая записывается в
+              переменную, могут быть экранированы, исключение
+              составляет сам экранирующий символ.</p>
+<pre
+ class="PROGRAMLISTING">
+variable=\
+echo &quot;$variable&quot;
+# Не работает - дает сообщение об ошибке:
+# test.sh: : command not found
+# В &quot;чистом&quot; виде экранирующий (escape) символ не может быть записан в переменную.
+#
+#  Фактически, в данном примере, происходит экранирование символа перевода строки
+#+ в результате получается такая команда:   variable=echo &quot;$variable&quot;
+#+                                          ошибочное присваивание
+
+variable=\
+23skidoo
+echo &quot;$variable&quot;    #  23skidoo
+                    #  Здесь все в порядке, поскольку вторая строка
+                    #+ является нормальным, с точки зрения присваивания, выражением.
+
+variable=\
+#        \^    За escape-символом следует пробел
+echo &quot;$variable&quot;        # пробел
+
+variable=\\
+echo &quot;$variable&quot;        # \
+
+variable=\\\
+echo &quot;$variable&quot;
+# Не работает - сообщение об ошибке:
+# test.sh: \: command not found
+#
+#  Первый escape-символ экранирует второй, а третий оказывается неэкранированным,
+#+ результат тот же, что и в первом примере.
+
+variable=\\\\
+echo &quot;$variable&quot;        # \\
+                        # Второй и четвертый escape-символы экранированы.
+                        # Это нормально.
+</pre>
+              <br>
+              <br>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p>Экранирование пробелов предотвращает разбиение списка
+      аргументов командной строки на отдельные аргументы.</p>
+<pre
+ class="PROGRAMLISTING">
+file_list=&quot;/bin/cat /bin/gzip /bin/more /usr/bin/less /usr/bin/emacs-20.7&quot;
+# Список файлов как аргумент(ы) командной строки.
+
+# Добавить два файла в список и вывести список.
+ls -l /usr/X11R6/bin/xsetroot /sbin/dump $file_list
+
+echo &quot;-------------------------------------------------------------------------&quot;
+
+# Что произойдет, если экранировать пробелы в списке?
+ls -l /usr/X11R6/bin/xsetroot\ /sbin/dump\ $file_list
+# Ошибка: первые три файла будут &quot;слиты&quot; воедино
+# и переданы команде &#39;ls -l&#39; как один аргумент
+# потому что два пробела, разделяющие аргументы (слова) -- экранированы.
+</pre>
+      <br>
+      <br>
+
+      <p>Кроме того, <span
+       class="TOKEN">escape</span>-символ позволяет писать
+      многострочные команды. Обычно, каждая команда занимает одну
+      строку, но <span
+       class="TOKEN">escape</span>-символ позволяет <span
+       class="emphasis"><em
+       class="EMPHASIS">экранировать символ перевода
+      строки</em></span>, в результате чего одна команда может занимать
+      несколько строк.</p>
+<pre
+ class="PROGRAMLISTING">
+(cd /source/directory &amp;&amp; tar cf - . ) | \
+(cd /dest/directory &amp;&amp; tar xpvf -)
+# Команда копирования дерева каталогов.
+# Разбита на две строки для большей удобочитаемости.
+
+# Альтернативный вариант:
+tar cf - -C /source/directory . |
+tar xpvf - -C /dest/directory
+# См. примечание ниже.
+# (Спасибо Stephane Chazelas.)
+</pre>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Если строка сценария заканчивается символом создания
+              конвейера <span
+               class="TOKEN">|</span>, то необходимость в применении
+              символа <span
+               class="TOKEN">\</span>, для экранирования перевода
+              строки, отпадает. Тем не менее, считается хорошим тоном,
+              всегда использовать символ &quot;\&quot; в конце
+              промежуточных строк многострочных команд.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <br>
+      <br>
+<pre
+ class="PROGRAMLISTING">
+echo &quot;foo
+bar&quot;
+#foo
+#bar
+
+echo
+
+echo &#39;foo
+bar&#39;    # Никаких различий.
+#foo
+#bar
+
+echo
+
+echo foo\
+bar     # Перевод строки экранирован.
+#foobar
+
+echo
+
+echo &quot;foo\
+bar&quot;     # Внутри &quot;нестрогих&quot; кавычек символ &quot;\&quot; интерпретируется как экранирующий.
+#foobar
+
+echo
+
+echo &#39;foo\
+bar&#39;     # В &quot;строгих&quot; кавычках обратный слэш воспринимается как обычный символ.
+#foo\
+#bar
+
+# Примеры предложены Stephane Chazelas.
+</pre>
+      <br>
+      <br>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN1882"
+         href="c1833.html#AEN1882"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Символ <span
+           class="QUOTE">&quot;!&quot;</span>, помещенный в двойные
+          кавычки, порождает сообщение об ошибке, если команда вводится
+          <span
+           class="emphasis"><em
+           class="EMPHASIS">с командной строки</em></span>. Вероятно
+          это связано с тем, что этот символ интерпретируется как
+          попытка обращения к <a
+           href="a15070.html">истории команд</a>. Однако внутри
+          сценариев такой прием проблем не вызывает.</p>
+
+          <p>Не менее любопытно поведение символа <span
+           class="QUOTE">&quot;\&quot;</span>, употребляемого внутри
+          двойных кавычек.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo hello\!</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">hello!</tt>
+
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo &quot;hello\!&quot;</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">hello\!</tt>
+
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo -e x\ty</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">xty</tt>
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo -e &quot;x\ty&quot;</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">x       y</tt>
+             
+</pre>
+          (Спасибо Wayne Pollock за пояснения.) <br>
+          <br>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN1906"
+         href="c1833.html#AEN1906"><span
+         class="footnote">[2]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p><span
+           class="QUOTE">&quot;Разбиение на слова&quot;</span>, в
+          данном случае это означает разделение строки символов на
+          некоторое число аргументов.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x1716.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c2105.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Специальные типы переменных</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p299.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Завершение и код завершения</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

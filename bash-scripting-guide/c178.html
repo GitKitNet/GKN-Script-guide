@@ -1,0 +1,657 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Для начала о Sha-Bang</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Введение"
+     href="p112.html">
+    <link
+     rel="PREVIOUS"
+     title="Зачем необходимо знание языка Shell?"
+     href="c118.html">
+    <link
+     rel="NEXT"
+     title="Упражнения"
+     href="x288.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c118.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x288.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="SHA-BANG"></a>Глава 2. Для начала о Sha-Bang</h1>
+
+      <p>В простейшем случае, скрипт -- это ни что иное, как простой
+      список команд системы, записанный в файл. Создание скриптов
+      поможет сохранить ваше время и силы, которые тратятся на ввод
+      последовательности команд всякий раз, когда необходимо их
+      выполнить.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX1"></a>
+
+        <p><strong>Пример 2-1. cleanup: Сценарий очистки лог-файлов в
+        /var/log</strong></p>
+<pre
+ class="PROGRAMLISTING">
+# cleanup
+# Для работы сценария требуются права root.
+
+cd /var/log
+cat /dev/null &gt; messages
+cat /dev/null &gt; wtmp
+echo &quot;Лог-файлы очищены.&quot;
+</pre>
+      </div>
+
+      <p>Здесь нет ничего необычного, это простая последовательность
+      команд, которая может быть набрана в командной строке с консоли
+      или в xterm. Преимущество размещения последовательности команд в
+      скрипте состоит в том, что вам не придется всякий раз набирать
+      эту последовательность вручную. Кроме того, скрипты легко могут
+      быть модифицированы или обобщены для разных применений.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX2"></a>
+
+        <p><strong>Пример 2-2. cleanup: Расширенная версия предыдущего
+        сценария.</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# cleanup, version 2
+# Для работы сценария требуются права root.
+
+LOG_DIR=/var/log
+ROOT_UID=0     # Только пользователь с $UID 0 имеет привилегии root.
+LINES=50       # Количество сохраняемых строк по-умолчанию.
+E_XCD=66       # Невозможно сменить каталог?
+E_NOTROOT=67   # Признак отсутствия root-привилегий.
+
+
+if [ &quot;$UID&quot; -ne &quot;$ROOT_UID&quot; ]
+then
+  echo &quot;Для работы сценария требуются права root.&quot;
+  exit $E_NOTROOT
+fi
+
+if [ -n &quot;$1&quot; ]
+# Проверка наличия аргумента командной строки.
+then
+  lines=$1
+else
+  lines=$LINES # Значение по-умолчанию, если число не задано в командной строке
+fi
+
+
+#  Stephane Chazelas предложил следующее,
+#+ для проверки корректности аргумента, переданного из командной строки,
+#+ правда это достаточно сложно для данного руководства.
+#
+#    E_WRONGARGS=65  # Не числовой аргумент
+#
+#    case &quot;$1&quot; in
+#    &quot;&quot;      ) lines=50;;
+#    *[!0-9]*) echo &quot;Usage: `basename $0` file-to-cleanup&quot;; exit $E_WRONGARGS;;
+#    *       ) lines=$1;;
+#    esac
+#
+#* Конец проверки корректности аргумента
+
+
+cd $LOG_DIR
+
+if [ `pwd` != &quot;$LOG_DIR&quot; ]  # или   if [ &quot;$PWD&quot; != &quot;$LOG_DIR&quot; ]
+                            # Не в /var/log?
+then
+  echo &quot;Невозможно перейти в каталог $LOG_DIR.&quot;
+  exit $E_XCD
+fi  # Проверка каталога перед очисткой лог-файлов.
+
+# более эффективный вариант:
+#
+# cd /var/log || {
+#   echo &quot;Невозможно перейти в требуемый каталог.&quot; &gt;&amp;2
+#   exit $E_XCD;
+# }
+
+
+
+
+tail -$lines messages &gt; mesg.temp # Сохранить последние строки в лог-файле.
+mv mesg.temp messages
+
+
+# cat /dev/null &gt; messages
+#* Необходимость этой команды отпала, поскольку очистка выполняется выше.
+
+cat /dev/null &gt; wtmp  #  команды &#39;: &gt; wtmp&#39; и &#39;&gt; wtmp&#39;  имеют тот же эффект.
+echo &quot;Лог-файлы очищены.&quot;
+
+exit 0
+#  Возвращаемое значение 0
+#+ указывает на успешное завершение работы сценария.
+</pre>
+      </div>
+
+      <p>Если вы не желаете полностью вычищать системные логи, то выше
+      представлена улучшенная версия предыдущего сценария. Здесь
+      сохраняются последние несколько строк (по-умолчанию -- 50).</p>
+
+      <p>Если файл сценария начинается с последовательности <span
+       class="TOKEN">#!</span>, которая в мире UNIX называется <em
+       class="FIRSTTERM">sha-bang</em>, то это указывает системе какой
+      интерпретатор следует использовать для исполнения сценария. <a
+       name="MAGNUMREF"></a>Это двухбайтовая последовательность, или <a
+       name="AEN199"
+       href="#FTN.AEN199"><span
+       class="footnote">[1]</span></a> -- специальный маркер,
+      определяющий тип сценария, в данном случае -- сценарий командной
+      оболочки (см. <tt
+       class="USERINPUT"><strong>man magic</strong></tt>). Более точно,
+      <span
+       class="emphasis"><em
+       class="EMPHASIS">sha-bang</em></span> определяет интерпретатор,
+      который вызывается для исполнения сценария, это может быть
+      командная оболочка (shell), иной интерпретатор или утилита. <a
+       name="AEN207"
+       href="#FTN.AEN207"><span
+       class="footnote">[2]</span></a></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/sh
+#!/bin/bash
+#!/usr/bin/perl
+#!/usr/bin/tcl
+#!/bin/sed -f
+#!/usr/awk -f
+</pre>
+      <br>
+      <br>
+
+      <p>Каждая, из приведенных выше сигнатур, приводит к вызову
+      различных интерпретаторов, будь то <tt
+       class="FILENAME">/bin/sh</tt> -- командный интерпретатор
+      по-умолчанию (<strong
+       class="COMMAND">bash</strong> для Linux-систем), либо иной. <a
+       name="AEN220"
+       href="#FTN.AEN220"><span
+       class="footnote">[3]</span></a> При <a
+       href="x13898.html">переносе</a> сценариев с сигнатурой <tt
+       class="USERINPUT"><strong>#!/bin/sh</strong></tt> на другие UNIX
+      системы, где в качестве командного интерпретатора задан другой
+      shell, вы можете лишиться некоторых особенностей, присущих bash.
+      Поэтому такие сценарии должны быть <span
+       class="ACRONYM">POSIX</span> совместимыми. <a
+       name="AEN230"
+       href="#FTN.AEN230"><span
+       class="footnote">[4]</span></a>.</p>
+
+      <p>Обратите внимание на то, что сигнатура должна указывать
+      правильный путь к интерпретатору, в противном случае вы получите
+      сообщение об ошибке -- как правило это <span
+       class="QUOTE">&quot;Command not found&quot;</span>.</p>
+
+      <p>Сигнатура <span
+       class="TOKEN">#!</span> может быть опущена, если вы не
+      используете специфичных команд. Во втором примере (см. выше)
+      использование сигнатуры <span
+       class="TOKEN">#!</span> обязательно, поскольку сценарий
+      использует специфичную конструкцию присваивания значения
+      переменной <tt
+       class="USERINPUT"><strong>lines=50</strong></tt>. Еще раз
+      замечу, что сигнатура <tt
+       class="USERINPUT"><strong>#!/bin/sh</strong></tt> вызывает
+      командный интерпретатор по-умолчанию -- <tt
+       class="FILENAME">/bin/bash</tt> в Linux-системах.</p>
+
+      <div
+       class="IMPORTANT">
+        <table
+         class="IMPORTANT"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/important.gif"
+             hspace="5"
+             alt="Important"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>В данном руководстве приветствуется модульный подход к
+              построению сценариев. Записывайте, собирайте свою
+              коллекцию участков кода, который может вам встретиться. В
+              конечном итоге вы соберете свою &quot;библиотеку&quot;
+              подпрограмм, которые затем сможете использовать при
+              написании своих сценариев. Например, следующий отрывок
+              сценария проверяет количество аргументов в командной
+              строке:</p>
+<pre
+ class="PROGRAMLISTING">
+if [ $# -ne Number_of_expected_args ]
+then
+  echo &quot;Usage: `basename $0` whatever&quot;
+  exit $WRONG_ARGS
+fi
+</pre>
+              <br>
+              <br>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div
+       class="SECT1">
+        <h1
+         class="SECT1"><a
+         name="INVOKING"></a>2.1. Запуск сценария</h1>
+
+        <p>Запустить сценарий можно командой <tt
+         class="USERINPUT"><strong>sh scriptname</strong></tt> <a
+         name="AEN253"
+         href="#FTN.AEN253"><span
+         class="footnote">[5]</span></a> или <tt
+         class="USERINPUT"><strong>bash scriptname</strong></tt>. (Не
+        рекомендуется запуск сценария командой <tt
+         class="USERINPUT"><strong>sh &lt;scriptname&gt;</strong></tt>,
+        поскольку это запрещает использование устройства стандартного
+        ввода <tt
+         class="FILENAME">stdin</tt> в скрипте). Более удобный вариант
+        -- сделать файл скрипта исполняемым, командой <a
+         href="c6407.html#CHMODREF">chmod</a>.</p>
+
+        <div
+         class="VARIABLELIST">
+          <dl>
+            <dt>Это:</dt>
+
+            <dd>
+              <p><tt
+               class="USERINPUT"><strong>chmod 555
+              scriptname</strong></tt> (выдача прав на
+              чтение/исполнение любому пользователю в системе) <a
+               name="AEN266"
+               href="#FTN.AEN266"><span
+               class="footnote">[6]</span></a></p>
+            </dd>
+
+            <dt>или</dt>
+
+            <dd>
+              <p><tt
+               class="USERINPUT"><strong>chmod +rx
+              scriptname</strong></tt> (выдача прав на
+              чтение/исполнение любому пользователю в системе)</p>
+
+              <p><tt
+               class="USERINPUT"><strong>chmod u+rx
+              scriptname</strong></tt> (выдача прав на
+              чтение/исполнение только &quot;владельцу&quot;
+              скрипта)</p>
+            </dd>
+          </dl>
+        </div>
+        <br>
+        <br>
+
+        <p>После того, как вы сделаете файл сценария исполняемым, вы
+        можете запустить его примерно такой командой <tt
+         class="USERINPUT"><strong>./scriptname</strong></tt>. <a
+         name="AEN278"
+         href="#FTN.AEN278"><span
+         class="footnote">[7]</span></a> Если, при этом, текст сценария
+        начинается с корректной сигнатуры (<span
+         class="QUOTE">&quot;sha-bang&quot;</span>), то для его
+        исполнения будет вызван соответствующий интерпретатор.</p>
+
+        <p>И наконец, завершив отладку сценария, вы можете поместить
+        его в каталог <tt
+         class="FILENAME">/usr/local/bin</tt> (естественно, что для
+        этого вы должны обладать правами root), чтобы сделать его
+        доступным для себя и других пользователей системы. После этого
+        сценарий можно вызвать, просто напечатав название файла в
+        командной строке и нажав клавишу <strong
+         class="KEYCAP">[ENTER]</strong>.</p>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN199"
+         href="c178.html#AEN199"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Некоторые разновидности UNIX (основанные на 4.2BSD)
+          требуют, чтобы эта последовательность состояла из 4-х байт,
+          за счет добавления пробела после <span
+           class="TOKEN">!</span>, <tt
+           class="USERINPUT"><strong>#! /bin/sh</strong></tt>.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN207"
+         href="c178.html#AEN207"><span
+         class="footnote">[2]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>В shell-скриптах последовательность <span
+           class="TOKEN">#!</span> должна стоять самой первой и задает
+          интерпретатор (<strong
+           class="COMMAND">sh</strong> или <strong
+           class="COMMAND">bash</strong>). Интерпретатор, в свою
+          очередь, воспринимает эту строку как комментарий, поскольку
+          она начинается с символа <span
+           class="TOKEN">#</span>.</p>
+
+          <p>Если в сценарии имеются еще такие же строки, то они
+          воспринимаются как обычный комментарий.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+echo &quot;Первая часть сценария.&quot;
+a=1
+
+#!/bin/bash
+# Это *НЕ* означает запуск нового сценария.
+
+echo &quot;Вторая часть сценария.&quot;
+echo $a  # Значение переменной $a осталось равно 1.
+</pre>
+          <br>
+          <br>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN220"
+         href="c178.html#AEN220"><span
+         class="footnote">[3]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Эта особенность позволяет использовать различные
+          хитрости.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/rm
+# Самоуничтожающийся сценарий.
+
+# Этот скрипт ничего не делает -- только уничтожает себя.
+
+WHATEVER=65
+
+echo &quot;Эта строка никогда не будет напечатана.&quot;
+
+exit $WHATEVER  # Не имеет смысла, поскольку работа сценария завершается не здесь.
+</pre>
+          <br>
+          <br>
+
+          <p>Попробуйте запустить файл <tt
+           class="FILENAME">README</tt> с сигнатурой <tt
+           class="USERINPUT"><strong>#!/bin/more</strong></tt>
+          (предварительно не забудьте сделать его исполняемым).</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN230"
+         href="c178.html#AEN230"><span
+         class="footnote">[4]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p><span
+           class="strong"><strong
+           class="EMPHASIS">P</strong></span>ortable <span
+           class="strong"><strong
+           class="EMPHASIS">O</strong></span>perating <span
+           class="strong"><strong
+           class="EMPHASIS">S</strong></span>ystem <span
+           class="bold"><strong
+           class="EMPHASIS">I</strong></span>nterface, попытка
+          стандартизации UNI<span
+           class="strong"><strong
+           class="EMPHASIS">X</strong></span>-подобных операционных
+          систем.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN253"
+         href="c178.html#AEN253"><span
+         class="footnote">[5]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Внимание: вызов Bash-скрипта с помощью команды <tt
+           class="USERINPUT"><strong>sh scriptname</strong></tt>
+          отключает специфичные для Bash расширения, что может привести
+          к появлению ошибки и аварийному завершению работы
+          сценария.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN266"
+         href="c178.html#AEN266"><span
+         class="footnote">[6]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Сценарий должен иметь как право на исполнение, так и право
+          на <span
+           class="emphasis"><em
+           class="EMPHASIS">чтение</em></span>, поскольку shell должен
+          иметь возможность прочитать скрипт.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN278"
+         href="c178.html#AEN278"><span
+         class="footnote">[7]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Почему бы не запустить сценарий просто набрав название
+          файла <tt
+           class="USERINPUT"><strong>scriptname</strong></tt>, если
+          сценарий находится в текущем каталоге? Дело в том, что из
+          соображений безопасности, путь к текущему каталогу <span
+           class="QUOTE">&quot;.&quot;</span> не включен в переменную
+          окружения <a
+           href="c3270.html#PATHREF">$PATH</a>. Поэтому необходимо явно
+          указывать путь к текущему каталогу, в котором находится
+          сценарий, т.е. <tt
+           class="USERINPUT"><strong>./scriptname</strong></tt>.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c118.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x288.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Зачем необходимо знание языка Shell?</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p112.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Упражнения</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

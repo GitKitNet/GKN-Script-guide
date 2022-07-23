@@ -1,0 +1,1444 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Массивы</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Материал повышенной сложности"
+     href="p11889.html">
+    <link
+     rel="PREVIOUS"
+     title="Списки команд"
+     href="c12716.html">
+    <link
+     rel="NEXT"
+     title="Файлы"
+     href="c12891.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c12716.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c12891.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="ARRAYS"></a>Глава 25. Массивы</h1>
+
+      <p><a
+       name="ARRAYREF"></a></p>
+
+      <p>Новейшие версии Bash поддерживают одномерные массивы.
+      Инициализация элементов массива может быть произведена в виде:
+      <tt
+       class="USERINPUT"><strong>variable[xx]</strong></tt>. Можно явно
+      объявить массив в сценарии, с помощью директивы declare: <tt
+       class="USERINPUT"><strong>declare -a variable</strong></tt>.
+      Обращаться к отдельным элементам массива можно с помощью <em
+       class="FIRSTTERM">фигурных скобок</em>, т.е.: <tt
+       class="USERINPUT"><strong>${variable[xx]}</strong></tt>.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX66"></a>
+
+        <p><strong>Пример 25-1. Простой массив</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+
+area[11]=23
+area[13]=37
+area[51]=UFOs
+
+# Массивы не требуют, чтобы последовательность элементов в массиве была непрерывной.
+
+# Некоторые элементы массива могут оставаться неинициализированными.
+# &quot;Дыркм&quot; в массиве не являются ошибкой.
+
+
+echo -n &quot;area[11] = &quot;
+echo ${area[11]}    #  необходимы {фигурные скобки}
+
+echo -n &quot;area[13] = &quot;
+echo ${area[13]}
+
+echo &quot;содержимое area[51] = ${area[51]}.&quot;
+
+# Обращение к неинициализированным элементам дает пустую строку.
+echo -n &quot;area[43] = &quot;
+echo ${area[43]}
+echo &quot;(элемент area[43] -- неинициализирован)&quot;
+
+echo
+
+# Сумма двух элементов массива, записанная в третий элемент
+area[5]=`expr ${area[11]} + ${area[13]}`
+echo &quot;area[5] = area[11] + area[13]&quot;
+echo -n &quot;area[5] = &quot;
+echo ${area[5]}
+
+area[6]=`expr ${area[11]} + ${area[51]}`
+echo &quot;area[6] = area[11] + area[51]&quot;
+echo -n &quot;area[6] = &quot;
+echo ${area[6]}
+# Эта попытка закончится неудачей, поскольку сложение целого числа со строкой не допускается.
+
+echo; echo; echo
+
+# -----------------------------------------------------------------
+# Другой массив, &quot;area2&quot;.
+# И другой способ инициализации массива...
+# array_name=( XXX YYY ZZZ ... )
+
+area2=( ноль один два три четыре )
+
+echo -n &quot;area2[0] = &quot;
+echo ${area2[0]}
+# Ага, индексация начинается с нуля (первый элемент массива имеет индекс [0], а не [1]).
+
+echo -n &quot;area2[1] = &quot;
+echo ${area2[1]}    # [1] -- второй элемент массива.
+# -----------------------------------------------------------------
+
+echo; echo; echo
+
+# -----------------------------------------------
+# Еще один массив, &quot;area3&quot;.
+# И еще один способ инициализации...
+# array_name=([xx]=XXX [yy]=YYY ...)
+
+area3=([17]=семнадцать [21]=двадцать_один)
+
+echo -n &quot;area3[17] = &quot;
+echo ${area3[17]}
+
+echo -n &quot;area3[21] = &quot;
+echo ${area3[21]}
+# -----------------------------------------------
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Bash позволяет оперировать переменными, как массивами,
+              даже если они не были явно объявлены таковыми.</p>
+<pre
+ class="PROGRAMLISTING">
+string=abcABC123ABCabc
+echo ${string[@]}               # abcABC123ABCabc
+echo ${string[*]}               # abcABC123ABCabc
+echo ${string[0]}               # abcABC123ABCabc
+echo ${string[1]}               # Ничего не выводится!
+                                # Почему?
+echo ${#string[@]}              # 1
+                                # Количество элементов в массиве.
+
+# Спасибо Michael Zick за этот пример.
+</pre>
+              Эти примеры еще раз подтверждают <a
+               href="x1705.html#BVUNTYPED">отсутствие контроля типов в
+              Bash</a>. <br>
+              <br>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="POEM"></a>
+
+        <p><strong>Пример 25-2. Форматирование
+        стихотворения</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# poem.sh
+
+# Строки из стихотворения (одна строфа).
+Line[1]=&quot;Мой дядя самых честных правил,&quot;
+Line[2]=&quot;Когда не в шутку занемог;&quot;
+Line[3]=&quot;Он уважать себя заставил,&quot;
+Line[4]=&quot;И лучше выдумать не мог.&quot;
+Line[5]=&quot;Его пример другим наука...&quot;
+
+# Атрибуты.
+Attrib[1]=&quot; А.С. Пушкин&quot;
+Attrib[2]=&quot;\&quot;Евгений Онегин\&quot;&quot;
+
+for index in 1 2 3 4 5    # Пять строк.
+do
+  printf &quot;     %s\n&quot; &quot;${Line[index]}&quot;
+done
+
+for index in 1 2          # Две строки дополнительных атрибутов.
+do
+  printf &quot;          %s\n&quot; &quot;${Attrib[index]}&quot;
+done
+
+exit 0
+</pre>
+      </div>
+
+      <p>При работе с отдельными элементами массива можно использовать
+      специфический синтаксис, даже стандартные команды и операторы
+      Bash адаптированы для работы с массивами.</p>
+<pre
+ class="PROGRAMLISTING">
+array=( ноль один два три четыре пять )
+
+echo ${array[0]}       #  ноль
+echo ${array:0}        #  ноль
+                       #  Подстановка параметра -- первого элемента.
+echo ${array:1}        #  оль
+                       #  Подстановка параметра -- первого элемента,
+                       #+ начиная с позиции #1 (со 2-го символа).
+
+echo ${#array}         #  4
+                       #  Длина первого элемента массива.
+
+
+
+array2=( [0]=&quot;первый элемент&quot; [1]=&quot;второй элемент&quot; [3]=&quot;четвертый элемент&quot; )
+
+echo ${array2[0]}      # первый элемент
+echo ${array2[1]}      # второй элемент
+echo ${array2[2]}      #
+                       # Элемент неинициализирован, поэтому на экран ничего не выводится.
+echo ${array2[3]}      # четвертый элемент
+</pre>
+      <br>
+      <br>
+
+      <p>При работе с массивами, некоторые <a
+       href="c5358.html#BUILTINREF">встроенные команды</a> Bash имеют
+      несколько иной смысл. Например, <a
+       href="c5358.html#UNSETREF">unset</a> -- удаляет отдельные
+      элементы массива, или даже массив целиком.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX67"></a>
+
+        <p><strong>Пример 25-3. Некоторые специфичные особенности
+        массивов</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+declare -a colors
+# Допускается объявление массива без указания его размера.
+
+echo &quot;Введите ваши любимые цвета (разделяя их пробелами).&quot;
+
+read -a colors    # Введите хотя бы 3 цвета для демонстрации некоторых свойств массивов.
+#  Специфический ключ команды &#39;read&#39;,
+#+ позволяющий вводить несколько элементов массива.
+
+echo
+
+element_count=${#colors[@]}
+
+# Получение количества элементов в массиве.
+#     element_count=${#colors[*]} -- дает тот же результат.
+#
+#  Переменная &quot;@&quot; позволяет &quot;разбивать&quot; строку в кавычках на отдельные слова
+#+ (выделяются слова, разделенные пробелами).
+
+index=0
+
+while [ &quot;$index&quot; -lt &quot;$element_count&quot; ]
+do    # Список всех элементов в массиве.
+  echo ${colors[$index]}
+  let &quot;index = $index + 1&quot;
+done
+# Каждый элемент массива выводится в отдельной строке.
+# Если этого не требуется, то используйте  echo -n &quot;${colors[$index]} &quot;
+#
+# Эквивалентный цикл &quot;for&quot;:
+#   for i in &quot;${colors[@]}&quot;
+#   do
+#     echo &quot;$i&quot;
+#   done
+# (Спасибо S.C.)
+
+echo
+
+# Еще один, более элегантный, способ вывода списка всех элементов массива.
+  echo ${colors[@]}          # ${colors[*]} дает тот же результат.
+
+echo
+
+# Команда &quot;unset&quot; удаляет элементы из массива, или даже массив целиком.
+unset colors[1]              # Удаление 2-го элемента массива.
+                             # Тот же эффект дает команда   colors[1]=
+echo  ${colors[@]}           # Список всех элементов массива -- 2-й элемент отсутствует.
+
+unset colors                 # Удаление всего массива.
+                             #  Тот же эффект имеют команды unset colors[*]
+                             #+ и unset colors[@].
+echo; echo -n &quot;Массив цветов опустошен.&quot;
+echo ${colors[@]}            # Список элементов массива пуст.
+
+exit 0
+</pre>
+      </div>
+
+      <p>Как видно из предыдущего примера, обращение к <strong
+       class="COMMAND">${array_name[@]}</strong> или <strong
+       class="COMMAND">${array_name[*]}</strong> относится ко <span
+       class="emphasis"><em
+       class="EMPHASIS">всем</em></span> элементам массива. Чтобы
+      получить количество элементов массива, можно обратиться к <strong
+       class="COMMAND">${#array_name[@]}</strong> или к <strong
+       class="COMMAND">${#array_name[*]}</strong>. <strong
+       class="COMMAND">${#array_name}</strong> -- это длина (количество
+      символов) первого элемента массива, т.е. <strong
+       class="COMMAND">${array_name[0]}</strong>.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EMPTYARRAY"></a>
+
+        <p><strong>Пример 25-4. Пустые массивы и пустые
+        элементы</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# empty-array.sh
+
+#  Выражаю свою благодарность Stephane Chazelas за этот пример,
+#+ и Michael Zick за его доработку.
+
+
+# Пустой массив -- это не то же самое, что массив с пустыми элементами.
+
+array0=( первый второй третий )
+array1=( &#39;&#39; )   # &quot;array1&quot; имеет один пустой элемент.
+array2=( )      # Массив &quot;array2&quot; не имеет ни одного элемента, т.е. пуст.
+
+echo
+ListArray()
+{
+echo
+echo &quot;Элементы массива array0:  ${array0[@]}&quot;
+echo &quot;Элементы массива array1:  ${array1[@]}&quot;
+echo &quot;Элементы массива array2:  ${array2[@]}&quot;
+echo
+echo &quot;Длина первого элемента массива array0 = ${#array0}&quot;
+echo &quot;Длина первого элемента массива array1 = ${#array1}&quot;
+echo &quot;Длина первого элемента массива array2 = ${#array2}&quot;
+echo
+echo &quot;Число элементов в массиве array0 = ${#array0[*]}&quot;  # 3
+echo &quot;Число элементов в массиве array1 = ${#array1[*]}&quot;  # 1  (сюрприз!)
+echo &quot;Число элементов в массиве array2 = ${#array2[*]}&quot;  # 0
+}
+
+# ===================================================================
+
+ListArray
+
+# Попробуем добавить новые элементы в массивы
+
+# Добавление новых элементов в массивы.
+array0=( &quot;${array0[@]}&quot; &quot;новый1&quot; )
+array1=( &quot;${array1[@]}&quot; &quot;новый1&quot; )
+array2=( &quot;${array2[@]}&quot; &quot;новый1&quot; )
+
+ListArray
+
+# или
+array0[${#array0[*]}]=&quot;новый2&quot;
+array1[${#array1[*]}]=&quot;новый2&quot;
+array2[${#array2[*]}]=&quot;новый2&quot;
+
+ListArray
+
+# Теперь представим каждый массив как &#39;стек&#39; (&#39;stack&#39;)
+# Команды выше, можно считать командами &#39;push&#39; -- добавление нового значения на вершину стека
+# &#39;Глубина&#39; стека:
+height=${#array2[@]}
+echo
+echo &quot;Глубина стека array2 = $height&quot;
+
+# Команда &#39;pop&#39; -- выталкивание элемента стека, находящегося на вершине:
+unset array2[${#array2[@]}-1]   # Индексация массивов начинается с нуля
+height=${#array2[@]}
+echo
+echo &quot;POP&quot;
+echo &quot;Глубина стека array2, после выталкивания = $height&quot;
+
+ListArray
+
+# Вывести только 2-й и 3-й элементы массива array0
+from=1          # Индексация массивов начинается с нуля
+to=2              #
+declare -a array3=( ${array0[@]:1:2} )
+echo
+echo &quot;Элементы массива array3:  ${array3[@]}&quot;
+
+# Замена элементов по шаблону
+declare -a array4=( ${array0[@]/второй/2-й} )
+echo
+echo &quot;Элементы массива array4:  ${array4[@]}&quot;
+
+# Замена строк по шаблону
+declare -a array5=( ${array0[@]//новый?/старый} )
+echo
+echo &quot;Элементы массива array5:  ${array5[@]}&quot;
+
+# Надо лишь привыкнуть к такой записи...
+declare -a array6=( ${array0[@]#*новый} )
+echo # Это может вас несколько удивить
+echo &quot;Элементы массива array6:  ${array6[@]}&quot;
+
+declare -a array7=( ${array0[@]#новый1} )
+echo # Теперь это вас уже не должно удивлять
+echo &quot;Элементы массива array7:  ${array7[@]}&quot;
+
+# Выглядить очень похоже на предыдущий вариант...
+declare -a array8=( ${array0[@]/новый1/} )
+echo
+echo &quot;Элементы массива array8:  ${array8[@]}&quot;
+
+#  Итак, что вы можете сказать обо всем этом?
+
+#  Строковые операции выполняются последовательно, над каждым элементом
+#+ в массиве var[@].
+#  Таким образом, BASH поддерживает векторные операции
+#  Если в результате операции получается пустая строка, то
+#+ элемент массива &quot;исчезает&quot;.
+
+#  Вопрос: это относится к строкам в &quot;строгих&quot; или &quot;мягких&quot; кавычках?
+
+zap=&#39;новый*&#39;
+declare -a array9=( ${array0[@]/$zap/} )
+echo
+echo &quot;Элементы массива array9:  ${array9[@]}&quot;
+
+# &quot;...А с платформы говорят: &quot;Это город Ленинград!&quot;...&quot;
+declare -a array10=( ${array0[@]#$zap} )
+echo
+echo &quot;Элементы массива array10:  ${array10[@]}&quot;
+
+# Сравните массивы array7 и array10
+# Сравните массивы array8 и array9
+
+# Ответ: в &quot;мягких&quot; кавычках.
+
+exit 0
+</pre>
+      </div>
+
+      <p>Разница между <strong
+       class="COMMAND">${array_name[@]}</strong> и <strong
+       class="COMMAND">${array_name[*]}</strong> такая же, как между <a
+       href="c3270.html#APPREF">$@ и $*</a>. Эти свойства массивов
+      широко применяются на практике.</p>
+<pre
+ class="PROGRAMLISTING">
+# Копирование массивов.
+array2=( &quot;${array1[@]}&quot; )
+# или
+array2=&quot;${array1[@]}&quot;
+
+# Добавить элемент.
+array=( &quot;${array[@]}&quot; &quot;новый элемент&quot; )
+# или
+array[${#array[*]}]=&quot;новый элемент&quot;
+
+# Спасибо S.C.
+</pre>
+      <br>
+      <br>
+
+      <div
+       class="TIP">
+        <table
+         class="TIP"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/tip.gif"
+             hspace="5"
+             alt="Tip"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Операция <a
+               href="c11441.html#COMMANDSUBREF">подстановки команд</a>
+              -- <strong
+               class="COMMAND">array=( element1 element2 ... elementN
+              )</strong>, позволяет загружать содержимое текстовых
+              файлов в массивы.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+filename=sample_file
+
+#            cat sample_file
+#
+#            1 a b c
+#            2 d e fg
+
+
+declare -a array1
+
+array1=( `cat &quot;$filename&quot; | tr &#39;\n&#39; &#39; &#39;`)  # Загрузка содержимого файла
+                                           # $filename в массив array1.
+#         Вывод на stdout.
+#                         с заменой символов перевода строки на пробелы.
+
+echo ${array1[@]}            # список элементов массива.
+#                              1 a b c 2 d e fg
+#
+#  Каждое &quot;слово&quot;, в текстовом файле, отделяемое от других пробелами
+#+ заносится в отдельный элемент массива.
+
+element_count=${#array1[*]}
+echo $element_count          # 8
+</pre>
+              <br>
+              <br>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="COPYARRAY"></a>
+
+        <p><strong>Пример 25-5. Копирование и конкатенация
+        массивов</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#! /bin/bash
+# CopyArray.sh
+#
+# Автор: Michael Zick.
+# Используется с его разрешения.
+
+#  &quot;Принять из массива с заданным именем записать в массив с заданным именем&quot;
+#+ или &quot;собственный Оператор Присваивания&quot;.
+
+
+CpArray_Mac() {
+
+# Оператор Присваивания
+
+    echo -n &#39;eval &#39;
+    echo -n &quot;$2&quot;                    # Имя массива-результата
+    echo -n &#39;=( ${&#39;
+    echo -n &quot;$1&quot;                    # Имя исходного массива
+    echo -n &#39;[@]} )&#39;
+
+# Все это могло бы быть объединено в одну команду.
+# Это лишь вопрос стиля.
+}
+
+declare -f CopyArray                # &quot;Указатель&quot; на функцию
+CopyArray=CpArray_Mac               # Оператор Присваивания
+
+Hype()
+{
+
+# Исходный массив с именем в $1.
+# (Слить с массивом, содержащим &quot;-- Настоящий Рок-н-Ролл&quot;.)
+# Вернуть результат в массиве с именем $2.
+
+    local -a TMP
+    local -a hype=( -- Настоящий Рок-н-Ролл )
+
+    $($CopyArray $1 TMP)
+    TMP=( ${TMP[@]} ${hype[@]} )
+    $($CopyArray TMP $2)
+}
+
+declare -a before=( Advanced Bash Scripting )
+declare -a after
+
+echo &quot;Массив before = ${before[@]}&quot;
+
+Hype before after
+
+echo &quot;Массив after  = ${after[@]}&quot;
+
+# Еще?
+
+echo &quot;Что такое ${after[@]:4:2}?&quot;
+
+declare -a modest=( ${after[@]:2:1} ${after[@]:3:3} )
+#                    ---- выделение подстроки ----
+
+echo &quot;Массив Modest = ${modest[@]}&quot;
+
+# А что в массиве &#39;before&#39; ?
+
+echo &quot;Массив Before = ${before[@]}&quot;
+
+exit 0
+</pre>
+      </div>
+
+      <p>--</p>
+
+      <p>Массивы допускают перенос хорошо известных алгоритмов в
+      сценарии на языке командной оболочки. Хорошо ли это -- решать
+      вам.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="BUBBLE"></a>
+
+        <p><strong>Пример 25-6. Старая, добрая: <span
+         class="emphasis"><em
+         class="EMPHASIS">&quot;Пузырьковая&quot;
+        сортировка</em></span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# bubble.sh: &quot;Пузырьковая&quot; сортировка.
+
+#  На каждом проходе по сортируемому массиву,
+#+ сравниваются два смежных элемента, и, если необходимо, они меняются местами.
+#  В конце первого прохода, самый &quot;тяжелый&quot; элемент &quot;опускается&quot; в конец массива.
+#  В конце второго прохода, следующий по &quot;тяжести&quot; элемент занимает второе место снизу.
+#  И так далее.
+#  Каждый последующий проход требует на одно сравнение меньше предыдущего.
+#  Поэтому вы должны заметить ускорение работы сценария на последних проходах.
+
+
+exchange()
+{
+  # Поменять местами два элемента массива.
+  local temp=${Countries[$1]} #  Временная переменная
+  Countries[$1]=${Countries[$2]}
+  Countries[$2]=$temp
+
+  return
+}
+
+declare -a Countries  #  Объявление массива,
+                      #+ необязательно, поскольку он явно инициализируется ниже.
+
+#  Допустимо ли выполнять инициализацию массива в нескольки строках?
+#  ДА!
+
+Countries=(Нидерланды Украина Заир Турция Россия Йемен Сирия \
+Бразилия Аргентина Никарагуа Япония Мексика Венесуэла Греция Англия \
+Израиль Перу Канада Оман Дания Уэльс Франция Кения \
+Занаду Катар Лихтенштейн Венгрия)
+
+# &quot;Занаду&quot; -- это мифическое государство, где, согласно Coleridge,
+#+ Kubla Khan построил величественный дворец.
+
+
+clear                      # Очистка экрана.
+
+echo &quot;0: ${Countries[*]}&quot;  # Список элементов несортированного массива.
+
+number_of_elements=${#Countries[@]}
+let &quot;comparisons = $number_of_elements - 1&quot;
+
+count=1 # Номер прохода.
+
+while [ &quot;$comparisons&quot; -gt 0 ]          # Начало внешнего цикла
+do
+
+  index=0  # Сбросить индекс перед началом каждого прохода.
+
+  while [ &quot;$index&quot; -lt &quot;$comparisons&quot; ] # Начало внутреннего цикла
+  do
+    if [ ${Countries[$index]} \&gt; ${Countries[`expr $index + 1`]} ]
+    #  Если элементы стоят не по порядку...
+    #  Оператор \&gt; выполняет сравнение ASCII-строк
+    #+ внутри одиночных квадратных скобок.
+
+    #  if [[ ${Countries[$index]} &gt; ${Countries[`expr $index + 1`]} ]]
+    #+ дает тот же результат.
+    then
+      exchange $index `expr $index + 1`  # Поменять местами.
+    fi
+    let &quot;index += 1&quot;
+  done # Конец внутреннего цикла
+
+
+let &quot;comparisons -= 1&quot; #  Поскольку самый &quot;тяжелый&quot; элемент уже &quot;опустился&quot; на дно,
+                       #+ то на каждом последующем проходе нужно выполнять на одно сравнение меньше.
+
+echo
+echo &quot;$count: ${Countries[@]}&quot;  # Вывести содержимое массива после каждого прохода.
+echo
+let &quot;count += 1&quot;                # Увеличить счетчик проходов.
+
+done                            # Конец внешнего цикла
+
+exit 0
+</pre>
+      </div>
+
+      <p>--</p>
+
+      <p>Можно ли вложить один массив в другой?</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Вложенный массив.
+
+# Автор: Michael Zick.
+
+AnArray=( $(ls --inode --ignore-backups --almost-all \
+        --directory --full-time --color=none --time=status \
+        --sort=time -l ${PWD} ) )  # Команды и опции.
+
+# Пробелы важны . . .
+
+SubArray=( ${AnArray[@]:11:1}  ${AnArray[@]:6:5} )
+# Массив имеет два элемента, каждый из которых, в свою очередь, является массивом.
+
+echo &quot;Текущий каталог и дата последнего изменения:&quot;
+echo &quot;${SubArray[@]}&quot;
+
+exit 0
+</pre>
+      <br>
+      <br>
+
+      <p>--</p>
+
+      <p>Вложенные массивы, в комбинации с <a
+       href="c13936.html#VARREFNEW">косвенными ссылками</a>,
+      предоставляют в распоряжение программиста ряд замечательных
+      возможностей</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EMBARR"></a>
+
+        <p><strong>Пример 25-7. Вложенные массивы и косвенные
+        ссылки</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# embedded-arrays.sh
+# Вложенные массивы и косвенные ссылки.
+
+# Автор: Dennis Leeuw.
+# Используется с его разрешения.
+# Дополнен автором документа.
+
+
+ARRAY1=(
+        VAR1_1=value11
+        VAR1_2=value12
+        VAR1_3=value13
+)
+
+ARRAY2=(
+        VARIABLE=&quot;test&quot;
+        STRING=&quot;VAR1=value1 VAR2=value2 VAR3=value3&quot;
+        ARRAY21=${ARRAY1[*]}
+)       # Вложение массива ARRAY1 в массив ARRAY2.
+
+function print () {
+        OLD_IFS=&quot;$IFS&quot;
+        IFS=$&#39;\n&#39;       #  Вывод каждого элемента массива
+                        #+ в отдельной строке.
+        TEST1=&quot;ARRAY2[*]&quot;
+        local ${!TEST1} # Посмотрите, что произойдет, если убрать эту строку.
+        #  Косвенная ссылка.
+        #  Позволяет получить доступ к компонентам $TEST1
+        #+ в этой функции.
+
+
+        #  Посмотрим, что получилось.
+        echo
+        echo &quot;\$TEST1 = $TEST1&quot;       #  Просто имя переменной.
+        echo; echo
+        echo &quot;{\$TEST1} = ${!TEST1}&quot;  #  Вывод на экран содержимого переменной.
+                                      #  Это то, что дает
+                                      #+ косвенная ссылка.
+        echo
+        echo &quot;-------------------------------------------&quot;; echo
+        echo
+
+
+        # Вывод переменной
+        echo &quot;Переменная VARIABLE: $VARIABLE&quot;
+
+        # Вывод элементов строки
+        IFS=&quot;$OLD_IFS&quot;
+        TEST2=&quot;STRING[*]&quot;
+        local ${!TEST2}      # Косвенная ссылка (то же, что и выше).
+        echo &quot;Элемент VAR2: $VAR2 из строки STRING&quot;
+
+        # Вывод элемента массива
+        TEST2=&quot;ARRAY21[*]&quot;
+        local ${!TEST2}      # Косвенная ссылка.
+        echo &quot;Элемент VAR1_1: $VAR1_1 из массива ARRAY21&quot;
+}
+
+print
+echo
+
+exit 0
+</pre>
+      </div>
+
+      <p>--</p>
+
+      <p>С помощью массивов, на языке командной оболочки, вполне
+      возможно реализовать алгоритм <span
+       class="emphasis"><em
+       class="EMPHASIS">Решета Эратосфена</em></span>. Конечно же --
+      это очень ресурсоемкая задача. В виде сценария она будет работать
+      мучительно долго, так что лучше всего реализовать ее на каком
+      либо другом, компилирующем, языке программирования, таком как
+      C.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX68"></a>
+
+        <p><strong>Пример 25-8. Пример реализации алгоритма <span
+         class="emphasis"><em
+         class="EMPHASIS">Решето Эратосфена</em></span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# sieve.sh
+
+# Решето Эратосфена
+# Очень старый алгоритм поиска простых чисел.
+
+# Этот сценарий выполняется во много раз медленнее
+# чем аналогичная программа на C.
+
+LOWER_LIMIT=1       # Начиная с 1.
+UPPER_LIMIT=1000    # До 1000.
+# (Вы можете установить верхний предел и выше...  если вам есть чем себя занять.)
+
+PRIME=1
+NON_PRIME=0
+
+declare -a Primes
+# Primes[] -- массив.
+
+
+initialize ()
+{
+# Инициализация массива.
+
+i=$LOWER_LIMIT
+until [ &quot;$i&quot; -gt &quot;$UPPER_LIMIT&quot; ]
+do
+  Primes[i]=$PRIME
+  let &quot;i += 1&quot;
+done
+# Все числа в заданном диапазоне считать простыми,
+# пока не доказано обратное.
+}
+
+print_primes ()
+{
+# Вывод индексов элементов массива Primes[], которые признаны простыми.
+
+i=$LOWER_LIMIT
+
+until [ &quot;$i&quot; -gt &quot;$UPPER_LIMIT&quot; ]
+do
+
+  if [ &quot;${Primes[i]}&quot; -eq &quot;$PRIME&quot; ]
+  then
+    printf &quot;%8d&quot; $i
+    # 8 пробелов перед числом придают удобочитаемый табличный вывод на экран.
+  fi
+
+  let &quot;i += 1&quot;
+
+done
+
+}
+
+sift () # Отсеивание составных чисел.
+{
+
+let i=$LOWER_LIMIT+1
+# Нам известно, что 1 -- это простое число, поэтому начнем с 2.
+
+until [ &quot;$i&quot; -gt &quot;$UPPER_LIMIT&quot; ]
+do
+
+if [ &quot;${Primes[i]}&quot; -eq &quot;$PRIME&quot; ]
+# Не следует проверять вторично числа, которые уже признаны составными.
+then
+
+  t=$i
+
+  while [ &quot;$t&quot; -le &quot;$UPPER_LIMIT&quot; ]
+  do
+    let &quot;t += $i &quot;
+    Primes[t]=$NON_PRIME
+    # Все числа, которые делятся на $t без остатка, пометить как составные.
+  done
+
+fi
+
+  let &quot;i += 1&quot;
+done
+
+
+}
+
+
+# Вызов функций.
+initialize
+sift
+print_primes
+# Это называется структурным программированием.
+
+echo
+
+exit 0
+
+
+
+# ----------------------------------------------- #
+# Код, приведенный ниже, не исполняется из-за команды exit, стоящей выше.
+
+# Улучшенная версия, предложенная Stephane Chazelas,
+# работает несколько быстрее.
+
+# Должен вызываться с аргументом командной строки, определяющем верхний предел.
+
+UPPER_LIMIT=$1                  # Из командной строки.
+let SPLIT=UPPER_LIMIT/2         # Рассматривать делители только до середины диапазона.
+
+Primes=( &#39;&#39; $(seq $UPPER_LIMIT) )
+
+i=1
+until (( ( i += 1 ) &gt; SPLIT ))  # Числа из верхней половины диапазона могут не рассматриваться.
+do
+  if [[ -n $Primes[i] ]]
+  then
+    t=$i
+    until (( ( t += i ) &gt; UPPER_LIMIT ))
+    do
+      Primes[t]=
+    done
+  fi
+done
+echo ${Primes[*]}
+
+exit 0
+</pre>
+      </div>
+
+      <p>Сравните этот сценарий с генератором простых чисел, не
+      использующим массивов, <a
+       href="a14477.html#PRIMES">Пример A-18</a>.</p>
+
+      <p>--</p>
+
+      <p>Массивы позволяют эмулировать некоторые структуры данных,
+      поддержка которых в Bash не предусмотрена.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="STACKEX"></a>
+
+        <p><strong>Пример 25-9. Эмуляция структуры &quot;СТЕК&quot;
+        (&quot;первый вошел -- последний вышел&quot;)</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# stack.sh: Эмуляция структуры &quot;СТЕК&quot; (&quot;первый вошел -- последний вышел&quot;)
+
+#  Подобно стеку процессора, этот &quot;стек&quot; сохраняет и возвращает данные по принципу
+#+ &quot;первый вошел -- последний вышел&quot;.
+
+BP=100            # Базовый указатель на массив-стек.
+                  # Дно стека -- 100-й элемент.
+
+SP=$BP            # Указатель вершины стека.
+                  # Изначально -- стек пуст.
+
+Data=             #  Содержимое вершины стека.
+                  #  Следует использовать дополнительную переменную,
+                  #+ из-за ограничений на диапазон возвращаемых функциями значений.
+
+declare -a stack
+
+
+push()            # Поместить элемент на вершину стека.
+{
+if [ -z &quot;$1&quot; ]    # А вообще, есть что помещать на стек?
+then
+  return
+fi
+
+let &quot;SP -= 1&quot;     # Переместить указатель стека.
+stack[$SP]=$1
+
+return
+}
+
+pop()                    # Снять элемент с вершины стека.
+{
+Data=                    # Очистить переменную.
+
+if [ &quot;$SP&quot; -eq &quot;$BP&quot; ]   # Стек пуст?
+then
+  return
+fi                       #  Это предохраняет от выхода SP за границу стека -- 100,
+
+Data=${stack[$SP]}
+let &quot;SP += 1&quot;            # Переместить указатель стека.
+return
+}
+
+status_report()          # Вывод вспомогательной информации.
+{
+echo &quot;-------------------------------------&quot;
+echo &quot;ОТЧЕТ&quot;
+echo &quot;Указатель стека SP = $SP&quot;
+echo &quot;Со стека был снят элемент \&quot;&quot;$Data&quot;\&quot;&quot;
+echo &quot;-------------------------------------&quot;
+echo
+}
+
+
+# =======================================================
+# А теперь позабавимся.
+
+echo
+
+# Попробуем вытолкнуть что-нибудь из пустого стека.
+pop
+status_report
+
+echo
+
+push garbage
+pop
+status_report     # Втолкнуть garbage, вытолкнуть garbage.
+
+value1=23; push $value1
+value2=skidoo; push $value2
+value3=FINAL; push $value3
+
+pop              # FINAL
+status_report
+pop              # skidoo
+status_report
+pop              # 23
+status_report    # Первый вошел -- последний вышел!
+
+#  Обратите внимание как изменяется указатель стека на каждом вызове функций push и pop.
+
+echo
+# =======================================================
+
+
+# Упражнения:
+# -----------
+
+# 1)  Измените функцию &quot;push()&quot; таким образом,
+#   + чтобы она позволяла помещать на стек несколько значений за один вызов.
+
+# 2)  Измените функцию &quot;pop()&quot; таким образом,
+#   + чтобы она позволяла снимать со стека несколько значений за один вызов.
+
+# 3)  Попробуйте написать простейший калькулятор, выполняющий 4 арифметических действия?
+#   + используя этот пример.
+
+exit 0
+</pre>
+      </div>
+
+      <p>--</p>
+
+      <p>Иногда, манипуляции с <span
+       class="QUOTE">&quot;индексами&quot;</span> массивов могут
+      потребовать введения переменных для хранения промежуточных
+      результатов. В таких случаях вам предоставляется лишний повод
+      подумать о реализации проекта на более мощном языке
+      программирования, например Perl или C.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="QFUNCTION"></a>
+
+        <p><strong>Пример 25-10. <span
+         class="emphasis"><em
+         class="EMPHASIS">Исследование математических
+        последовательностей</em></span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Пресловутая &quot;Q-последовательность&quot; Дугласа Хольфштадтера *Douglas Hofstadter):
+
+# Q(1) = Q(2) = 1
+# Q(n) = Q(n - Q(n-1)) + Q(n - Q(n-2)), для n&gt;2
+
+# Это &quot;хаотическая&quot; последовательность целых чисел с непредсказуемым поведением.
+# Первые 20 членов последовательности:
+# 1 1 2 3 3 4 5 5 6 6 6 8 8 8 10 9 10 11 11 12
+
+# См. книгу Дугласа Хольфштадтера, &quot;Goedel, Escher, Bach: An Eternal Golden Braid&quot;,
+# p. 137, ff.
+
+
+LIMIT=100     # Найти первые 100 членов последовательности
+LINEWIDTH=20  # Число членов последовательности, выводимых на экран в одной строке
+
+Q[1]=1        # Первые два члена последовательности равны 1.
+Q[2]=1
+
+echo
+echo &quot;Q-последовательность [первые $LIMIT членов]:&quot;
+echo -n &quot;${Q[1]} &quot;             # Вывести первые два члена последовательности.
+echo -n &quot;${Q[2]} &quot;
+
+for ((n=3; n &lt;= $LIMIT; n++))  # C-подобное оформление цикла.
+do   # Q[n] = Q[n - Q[n-1]] + Q[n - Q[n-2]]  для n&gt;2
+# Это выражение необходимо разбить на отдельные действия,
+# поскольку Bash не очень хорошо поддерживает сложные арифметические действия над элементами массивов.
+
+  let &quot;n1 = $n - 1&quot;        # n-1
+  let &quot;n2 = $n - 2&quot;        # n-2
+
+  t0=`expr $n - ${Q[n1]}`  # n - Q[n-1]
+  t1=`expr $n - ${Q[n2]}`  # n - Q[n-2]
+
+  T0=${Q[t0]}              # Q[n - Q[n-1]]
+  T1=${Q[t1]}              # Q[n - Q[n-2]]
+
+Q[n]=`expr $T0 + $T1`      # Q[n - Q[n-1]] + Q[n - Q[n-2]]
+echo -n &quot;${Q[n]} &quot;
+
+if [ `expr $n % $LINEWIDTH` -eq 0 ]    # Если выведено очередные 20 членов в строке.
+then   # то
+  echo # перейти на новую строку.
+fi
+
+done
+
+echo
+
+exit 0
+
+# Этот сценарий реализует итеративный алгоритм поиска членов Q-последовательности.
+# Рекурсивную реализацию, как более интуитивно понятную, оставляю вам, в качестве упражнения.
+# Внимание: рекурсивный поиск членов последовательности будет занимать *очень* продолжительное время.
+</pre>
+      </div>
+
+      <p>--</p>
+
+      <p>Bash поддерживает только одномерные массивы, но, путем
+      небольших ухищрений, можно эмулировать многомерные массивы.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="TWODIM"></a>
+
+        <p><strong>Пример 25-11. Эмуляция массива с двумя
+        измерениями</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Эмуляция двумерного массива.
+
+# Второе измерение представлено как последовательность строк.
+
+Rows=5
+Columns=5
+
+declare -a alpha     # char alpha [Rows] [Columns];
+                     # Необязательное объявление массива.
+
+load_alpha ()
+{
+local rc=0
+local index
+
+
+for i in A B C D E F G H I J K L M N O P Q R S T U V W X Y
+do
+  local row=`expr $rc / $Columns`
+  local column=`expr $rc % $Rows`
+  let &quot;index = $row * $Rows + $column&quot;
+  alpha[$index]=$i   # alpha[$row][$column]
+  let &quot;rc += 1&quot;
+done
+
+# Более простой вариант
+#   declare -a alpha=( A B C D E F G H I J K L M N O P Q R S T U V W X Y )
+# но при таком объявлении второе измерение массива завуалировано.
+}
+
+print_alpha ()
+{
+local row=0
+local index
+
+echo
+
+while [ &quot;$row&quot; -lt &quot;$Rows&quot; ]   # Вывод содержимого массива построчно
+do
+
+  local column=0
+
+  while [ &quot;$column&quot; -lt &quot;$Columns&quot; ]
+  do
+    let &quot;index = $row * $Rows + $column&quot;
+    echo -n &quot;${alpha[index]} &quot;  # alpha[$row][$column]
+    let &quot;column += 1&quot;
+  done
+
+  let &quot;row += 1&quot;
+  echo
+
+done
+
+# Более простой эквивалент:
+#   echo ${alpha[*]} | xargs -n $Columns
+
+echo
+}
+
+filter ()     # Отфильтровывание отрицательных индексов.
+{
+
+echo -n &quot;  &quot;
+
+if [[ &quot;$1&quot; -ge 0 &amp;&amp;  &quot;$1&quot; -lt &quot;$Rows&quot; &amp;&amp; &quot;$2&quot; -ge 0 &amp;&amp; &quot;$2&quot; -lt &quot;$Columns&quot; ]]
+then
+    let &quot;index = $1 * $Rows + $2&quot;
+    echo -n &quot; ${alpha[index]}&quot;  # alpha[$row][$column]
+fi
+
+}
+
+rotate ()  # Поворот массива на 45 градусов
+{
+local row
+local column
+
+for (( row = Rows; row &gt; -Rows; row-- ))  # В обратном порядке.
+do
+
+  for (( column = 0; column &lt; Columns; column++ ))
+  do
+
+    if [ &quot;$row&quot; -ge 0 ]
+    then
+      let &quot;t1 = $column - $row&quot;
+      let &quot;t2 = $column&quot;
+    else
+      let &quot;t1 = $column&quot;
+      let &quot;t2 = $column + $row&quot;
+    fi
+
+    filter $t1 $t2   # Отфильтровать отрицательный индекс.
+  done
+
+  echo; echo
+
+done
+
+# Поворот массива выполнен на основе примеров (стр. 143-146)
+# из книги &quot;Advanced C Programming on the IBM PC&quot;, автор Herbert Mayer
+# (см. библиографию).
+
+}
+
+
+#-----------------------------------------------------#
+load_alpha     # Инициализация массива.
+print_alpha    # Вывод на экран.
+rotate         # Повернуть на 45 градусов против часовой стрелки.
+#-----------------------------------------------------#
+
+
+# Упражнения:
+# -----------
+# 1)  Сделайте инициализацию и вывод массива на экран
+#   + более простым и элегантным способом.
+#
+# 2)  Объясните принцип работы функции rotate().
+
+exit 0
+</pre>
+      </div>
+
+      <p>По существу, двумерный массив эквивалентен одномерному, с тем
+      лишь различием, что для индексации отдельных элементов
+      используются два индекса -- <span
+       class="QUOTE">&quot;строка&quot;</span> и <span
+       class="QUOTE">&quot;столбец&quot;</span>.</p>
+
+      <p>Более сложный пример эмуляции двумерного массива вы найдете в
+      <a
+       href="a14477.html#LIFESLOW">Пример A-11</a>.</p>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c12716.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c12891.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Списки команд</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p11889.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Файлы</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

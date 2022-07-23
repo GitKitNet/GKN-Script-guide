@@ -1,0 +1,928 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Операции и смежные темы</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Основы"
+     href="p299.html">
+    <link
+     rel="PREVIOUS"
+     title="Проверка степени усвоения материала"
+     href="x2780.html">
+    <link
+     rel="NEXT"
+     title="Числовые константы"
+     href="x3255.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x2780.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x3255.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="OPERATIONS"></a>Глава 8. Операции и смежные темы</h1>
+
+      <div
+       class="SECT1">
+        <h1
+         class="SECT1"><a
+         name="OPS"></a>8.1. Операторы</h1>
+
+        <div
+         class="VARIABLELIST">
+          <p><strong><a
+           name="ASNOP1"></a>присваивание</strong></p>
+
+          <dl>
+            <dt><tt
+             class="REPLACEABLE"><em>variable assignment</em></tt></dt>
+
+            <dd>
+              <p>Инициализация переменной или изменение ее значения</p>
+            </dd>
+
+            <dt>=</dt>
+
+            <dd>
+              <p>Универсальный оператор присваивания, пригоден как для
+              сравнения целых чисел, так и для сравнения строк.</p>
+<pre
+ class="PROGRAMLISTING">
+var=27
+category=minerals  # Пробелы до и после оператора &quot;=&quot; -- недопустимы.
+</pre>
+              <br>
+              <br>
+
+              <div
+               class="CAUTION">
+                <table
+                 class="CAUTION"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/caution.gif"
+                     hspace="5"
+                     alt="Caution"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>Пусть вас не смущает, что оператор
+                      присваивания (<span
+                       class="QUOTE">&quot;=&quot;</span>), по своему
+                      внешнему виду, совпадает с оператором сравнения
+                      (<a
+                       href="x2565.html#EQUALSIGNREF">=</a>).</p>
+<pre
+ class="PROGRAMLISTING">
+#    Здесь знак &quot;=&quot;  выступает в качестве оператора сравнения
+
+if [ &quot;$string1&quot; = &quot;$string2&quot; ]
+# if [ &quot;X$string1&quot; = &quot;X$string2&quot; ] более отказоустойчивый вариант,
+# предохраняет от &quot;сваливания&quot; по ошибке в случае, когда одна из переменных пуста.
+# (добавленные символы &quot;X&quot; компенсируют друг друга.)
+then
+   command
+fi
+</pre>
+                      <br>
+                      <br>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </dd>
+          </dl>
+        </div>
+
+        <div
+         class="VARIABLELIST">
+          <p><strong><a
+           name="AROPS1"></a>арифметические операторы</strong></p>
+
+          <dl>
+            <dt><span
+             class="TOKEN">+</span></dt>
+
+            <dd>
+              <p>сложение</p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">-</span></dt>
+
+            <dd>
+              <p>вычитание</p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">*</span></dt>
+
+            <dd>
+              <p>умножение</p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">/</span></dt>
+
+            <dd>
+              <p>деление</p>
+            </dd>
+
+            <dt><a
+             name="EXPONENTIATIONREF"></a><span
+             class="TOKEN">**</span></dt>
+
+            <dd>
+              <p>возведение в степень</p>
+<pre
+ class="PROGRAMLISTING">
+# В Bash, начиная с версии 2.02, был введен оператор возведения в степень -- &quot;**&quot;.
+
+let &quot;z=5**3&quot;
+echo &quot;z = $z&quot;   # z = 125
+</pre>
+              <br>
+              <br>
+            </dd>
+
+            <dt><a
+             name="MODULOREF"></a><span
+             class="TOKEN">%</span></dt>
+
+            <dd>
+              <p>модуль (деление по модулю), возвращает остаток от
+              деления</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo `expr 5 % 3`</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">2</tt>
+             
+</pre>
+              <br>
+              <br>
+
+              <p>Этот оператор может применяться в алгоритмах генерации
+              псевдослучайных чисел в заданном диапазоне (см. <a
+               href="x4812.html#EX21">Пример 9-23</a> и <a
+               href="x4812.html#RANDOMTEST">Пример 9-25</a>), для
+              форматирования вывода на экран (см. <a
+               href="c12790.html#QFUNCTION">Пример 25-10</a> и <a
+               href="a14477.html#COLLATZ">Пример A-7</a>), и даже для
+              генерации простых чисел (см. <a
+               href="a14477.html#PRIMES">Пример A-18</a>). На удивление
+              часто операцию деления по модулю можно встретить в
+              различных численных алгоритмах.</p>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="GCD"></a>
+
+                <p><strong>Пример 8-1. Наибольший общий
+                делитель</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# gcd.sh: поиск наибольшего общего делителя
+#         по алгоритму Эвклида
+
+#  Под &quot;наибольшим общим делителем&quot; (нод) двух целых чисел
+#+ понимается наибольшее целое число, которое делит оба делимых без остатка.
+
+#  Алгоритм Эвклида выполняет последовательное деление.
+#  В каждом цикле,
+#+ делимое  &lt;---  делитель
+#+ делитель &lt;---  остаток
+#+ до тех пор, пока остаток не станет равным нулю (остаток = 0).
+#+ The gcd = dividend, on the final pass.
+#
+#  Замечательное описание алгоритма Эвклида можно найти
+#  на сайте Jim Loy, http://www.jimloy.com/number/euclids.htm.
+
+
+# ------------------------------------------------------
+# Проверка входных параметров
+ARGS=2
+E_BADARGS=65
+
+if [ $# -ne &quot;$ARGS&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` первое-число второе-число&quot;
+  exit $E_BADARGS
+fi
+# ------------------------------------------------------
+
+
+gcd ()
+{
+
+                                 #  Начальное присваивание.
+  dividend=$1                    #  В сущности, не имеет значения
+  divisor=$2                     #+ какой из них больше.
+                                 #  Почему?
+
+  remainder=1                    #  Если переменные неинициализировать,
+                                 #+ то работа сценария будет прервана по ошибке
+                                 #+ в первом же цикле.
+
+  until [ &quot;$remainder&quot; -eq 0 ]
+  do
+    let &quot;remainder = $dividend % $divisor&quot;
+    dividend=$divisor            # Повторить цикл с новыми исходными данными
+    divisor=$remainder
+  done                           # алгоритм Эвклида
+
+}                                # последнее $dividend и есть нод.
+
+
+gcd $1 $2
+
+echo; echo &quot;НОД чисел $1 и $2 = $dividend&quot;; echo
+
+
+# Упражнение :
+# --------
+#  Вставьте дополнительную проверку входных аргументов,
+#+ и предусмотрите завершение работы сценария с сообщением об ошибке, если
+#+ входные аргументы не являются целыми числами.
+
+exit 0
+</pre>
+              </div>
+            </dd>
+
+            <dt><span
+             class="TOKEN">+=</span></dt>
+
+            <dd>
+              <p><span
+               class="QUOTE">&quot;плюс-равно&quot;</span> (увеличивает
+              значение переменной на заданное число)</p>
+
+              <p><tt
+               class="USERINPUT"><strong>let &quot;var +=
+              5&quot;</strong></tt> значение переменной <tt
+               class="VARNAME">var</tt> будет увеличено на <tt
+               class="LITERAL">5</tt>.</p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">-=</span></dt>
+
+            <dd>
+              <p><span
+               class="QUOTE">&quot;минус-равно&quot;</span> (уменьшение
+              значения переменной на заданное число)</p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">*=</span></dt>
+
+            <dd>
+              <p><span
+               class="QUOTE">&quot;умножить-равно&quot;</span>
+              (умножить значение переменной на заданное число,
+              результат записать в переменную)</p>
+
+              <p><tt
+               class="USERINPUT"><strong>let &quot;var *=
+              4&quot;</strong></tt> значение переменной <tt
+               class="VARNAME">var</tt> будет увеличено в <tt
+               class="LITERAL">4</tt> раза.</p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">/=</span></dt>
+
+            <dd>
+              <p><span
+               class="QUOTE">&quot;слэш-равно&quot;</span> (уменьшение
+              значения переменной в заданное число раз)</p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">%=</span></dt>
+
+            <dd>
+              <p><span
+               class="QUOTE">&quot;процент-равно&quot;</span> (найти
+              остаток от деления значения переменной на заданное число,
+              результат записать в переменную)</p>
+
+              <p><span
+               class="emphasis"><em
+               class="EMPHASIS">Арифметические операторы очень часто
+              используются совместно с командами <a
+               href="x6646.html#EXPRREF">expr</a> и <a
+               href="c5358.html#LETREF">let</a>.</em></span></p>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="ARITHOPS"></a>
+
+                <p><strong>Пример 8-2. Арифметические
+                операции</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# От 1 до 6 пятью различными способами.
+
+n=1; echo -n &quot;$n &quot;
+
+let &quot;n = $n + 1&quot;   # let &quot;n = n + 1&quot;   тоже допустимо
+echo -n &quot;$n &quot;
+
+: $((n = $n + 1))
+# оператор &quot;:&quot; обязателен, поскольку в противном случае, Bash будет
+#+ интерпретировать выражение &quot;$((n = $n + 1))&quot; как команду.
+echo -n &quot;$n &quot;
+
+n=$(($n + 1))
+echo -n &quot;$n &quot;
+
+: $[ n = $n + 1 ]
+# оператор &quot;:&quot; обязателен, поскольку в противном случае, Bash будет
+#+ интерпретировать выражение &quot;$[ n = $n + 1 ]&quot; как команду.
+# Не вызывает ошибки даже если &quot;n&quot; содержит строку.
+echo -n &quot;$n &quot;
+
+n=$[ $n + 1 ]
+#  Не вызывает ошибки даже если &quot;n&quot; содержит строку.
+#* Старайтесь избегать употребления такой конструкции,
+#+ поскольку она уже давно устарела и не переносима.
+echo -n &quot;$n &quot;; echo
+
+# Спасибо Stephane Chazelas.
+
+exit 0
+</pre>
+              </div>
+            </dd>
+          </dl>
+        </div>
+
+        <div
+         class="NOTE">
+          <table
+           class="NOTE"
+           width="100%"
+           border="0">
+            <tr>
+              <td
+               width="25"
+               align="center"
+               valign="top"><img
+               src="misc/abs-book/images/note.gif"
+               hspace="5"
+               alt="Note"></td>
+
+              <td
+               align="left"
+               valign="top">
+                <p>Целые числа в Bash фактически являются знаковыми
+                <span
+                 class="emphasis"><em
+                 class="EMPHASIS">длинными</em></span> целыми (32-бит),
+                с диапазоном изменений от -2147483648 до 2147483647.
+                Если в результате какой либо операции эти пределы будут
+                превышены, то результат получится ошибочным.</p>
+<pre
+ class="PROGRAMLISTING">
+a=2147483646
+echo &quot;a = $a&quot;      # a = 2147483646
+let &quot;a+=1&quot;         # Увеличить &quot;a&quot; на 1.
+echo &quot;a = $a&quot;      # a = 2147483647
+let &quot;a+=1&quot;         # увеличить &quot;a&quot; еще раз, с выходом за границы диапазона.
+echo &quot;a = $a&quot;      # a = -2147483648
+                   #      ОШИБКА! (выход за границы диапазона)
+</pre>
+                <br>
+                <br>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div
+         class="CAUTION">
+          <table
+           class="CAUTION"
+           width="100%"
+           border="0">
+            <tr>
+              <td
+               width="25"
+               align="center"
+               valign="top"><img
+               src="misc/abs-book/images/caution.gif"
+               hspace="5"
+               alt="Caution"></td>
+
+              <td
+               align="left"
+               valign="top">
+                <p>Bash ничего не знает о существовании чисел с
+                плавающей запятой. Такие числа, из-за наличия символа
+                десятичной точки, он воспринимает как строки.</p>
+<pre
+ class="PROGRAMLISTING">
+a=1.5
+
+let &quot;b = $a + 1.3&quot;  # Ошибка.
+# t2.sh: let: b = 1.5 + 1.3: syntax error in expression (error token is &quot;.5 + 1.3&quot;)
+
+echo &quot;b = $b&quot;       # b=1
+</pre>
+                Для работы с числами с плавающей запятой в сценариях
+                можно использовать утилиту-калькулятор <a
+                 href="x9199.html#BCREF">bc</a>.<br>
+                <br>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div
+         class="FORMALPARA">
+          <p><strong>битовые операции.</strong> Битовые операции очень
+          редко используются в сценариях командного интерпретатора. Их
+          главное назначение, на мой взгляд, установка и проверка
+          некоторых значений, читаемых из портов ввода-вывода и
+          сокетов. <span
+           class="QUOTE">&quot;Битовые операции&quot;</span> гораздо
+          более уместны в компилирующих языках программирования, таких
+          как C и C++.</p>
+        </div>
+
+        <div
+         class="VARIABLELIST">
+          <p><strong><a
+           name="BITWSOPS1"></a>битовые операции</strong></p>
+
+          <dl>
+            <dt><span
+             class="TOKEN">&lt;&lt;</span></dt>
+
+            <dd>
+              <p>сдвигает на 1 бит влево (умножение на <tt
+               class="LITERAL">2</tt>)</p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">&lt;&lt;=</span></dt>
+
+            <dd>
+              <p><span
+               class="QUOTE">&quot;сдвиг-влево-равно&quot;</span></p>
+
+              <p><tt
+               class="USERINPUT"><strong>let &quot;var &lt;&lt;=
+              2&quot;</strong></tt> значение переменной <tt
+               class="VARNAME">var</tt> сдвигается влево на 2 бита
+              (умножается на <tt
+               class="LITERAL">4</tt>)</p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">&gt;&gt;</span></dt>
+
+            <dd>
+              <p>сдвиг вправо на 1 бит (деление на <tt
+               class="LITERAL">2</tt>)</p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">&gt;&gt;=</span></dt>
+
+            <dd>
+              <p><span
+               class="QUOTE">&quot;сдвиг-вправо-равно&quot;</span>
+              (имеет смысл обратный <span
+               class="TOKEN">&lt;&lt;=</span>)</p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">&amp;</span></dt>
+
+            <dd>
+              <p>по-битовое И (AND)</p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">&amp;=</span></dt>
+
+            <dd>
+              <p><span
+               class="QUOTE">&quot;по-битовое И-равно&quot;</span></p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">|</span></dt>
+
+            <dd>
+              <p>по-битовое ИЛИ (OR)</p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">|=</span></dt>
+
+            <dd>
+              <p><span
+               class="QUOTE">&quot;по-битовое
+              ИЛИ-равно&quot;</span></p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">~</span></dt>
+
+            <dd>
+              <p>по-битовая инверсия</p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">!</span></dt>
+
+            <dd>
+              <p>По-битовое отрицание</p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">^</span></dt>
+
+            <dd>
+              <p>по-битовое ИСКЛЮЧАЮЩЕЕ ИЛИ (XOR)</p>
+            </dd>
+
+            <dt><span
+             class="TOKEN">^=</span></dt>
+
+            <dd>
+              <p><span
+               class="QUOTE">&quot;по-битовое
+              ИСКЛЮЧАЮЩЕЕ-ИЛИ-равно&quot;</span></p>
+            </dd>
+          </dl>
+        </div>
+
+        <div
+         class="VARIABLELIST">
+          <p><strong><a
+           name="LOGOPS1"></a>логические операции</strong></p>
+
+          <dl>
+            <dt><span
+             class="TOKEN">&amp;&amp;</span></dt>
+
+            <dd>
+              <p>логическое И (and)</p>
+<pre
+ class="PROGRAMLISTING">
+if [ $condition1 ] &amp;&amp; [ $condition2 ]
+# То же самое, что:  if [ $condition1 -a $condition2 ]
+# Возвращает true если оба операнда condition1 и condition2 истинны...
+
+if [[ $condition1 &amp;&amp; $condition2 ]]    # То же верно
+# Обратите внимание: оператор &amp;&amp; не должен использоваться внутри [ ... ].
+</pre>
+              <br>
+              <br>
+
+              <div
+               class="NOTE">
+                <table
+                 class="NOTE"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/note.gif"
+                     hspace="5"
+                     alt="Note"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>оператор <span
+                       class="TOKEN">&amp;&amp;</span>, в зависимости
+                      от контекста, может так же использоваться в <a
+                       href="c12716.html#LISTCONSREF">И-списках</a> для
+                      построения составных команд.</p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </dd>
+
+            <dt><a
+             name="ORREF"></a><span
+             class="TOKEN">||</span></dt>
+
+            <dd>
+              <p>логическое ИЛИ (or)</p>
+<pre
+ class="PROGRAMLISTING">
+if [ $condition1 ] || [ $condition2 ]
+# То же самое, что:  if [ $condition1 -o $condition2 ]
+# Возвращает true если хотя бы один из операндов истинен...
+
+if [[ $condition1 || $condition2 ]]    # Also works.
+# Обратите внимание: оператор || не должен использоваться внутри [ ... ].
+</pre>
+              <br>
+              <br>
+
+              <div
+               class="NOTE">
+                <table
+                 class="NOTE"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/note.gif"
+                     hspace="5"
+                     alt="Note"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>Bash производит проверку <a
+                       href="c2105.html#EXITSTATUSREF">кода
+                      возврата</a> КАЖДОГО из операндов в логических
+                      выражениях.</p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="ANDOR"></a>
+
+                <p><strong>Пример 8-3. Построение сложных условий,
+                использующих &amp;&amp; и ||</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+a=24
+b=47
+
+if [ &quot;$a&quot; -eq 24 ] &amp;&amp; [ &quot;$b&quot; -eq 47 ]
+then
+  echo &quot;Первая проверка прошла успешно.&quot;
+else
+  echo &quot;Первая проверка не прошла.&quot;
+fi
+
+# ОКА:  if [ &quot;$a&quot; -eq 24 &amp;&amp; &quot;$b&quot; -eq 47 ]
+#          пытается выполнить  &#39; [ &quot;$a&quot; -eq 24 &#39;
+#          и терпит неудачу наткнувшись на &#39;]&#39;.
+#
+#    if [[ $a -eq 24 &amp;&amp; $b -eq 24 ]]   это правильный вариант
+#    (в строке 17 оператор &quot;&amp;&amp;&quot; имеет иной смысл, нежели в строке 6.)
+#    Спасибо Stephane Chazelas.
+
+
+if [ &quot;$a&quot; -eq 98 ] || [ &quot;$b&quot; -eq 47 ]
+then
+  echo &quot;Вторая проверка прошла успешно.&quot;
+else
+  echo &quot;Вторая проверка не прошла.&quot;
+fi
+
+
+#  Опции -a и -o предоставляют
+#+ альтернативный механизм проверки условий.
+#  Спасибо Patrick Callahan.
+
+
+if [ &quot;$a&quot; -eq 24 -a &quot;$b&quot; -eq 47 ]
+then
+  echo &quot;Третья проверка прошла успешно.&quot;
+else
+  echo &quot;Третья проверка не прошла.&quot;
+fi
+
+
+if [ &quot;$a&quot; -eq 98 -o &quot;$b&quot; -eq 47 ]
+then
+  echo &quot;Четвертая проверка прошла успешно.&quot;
+else
+  echo &quot;Четвертая проверка не прошла.&quot;
+fi
+
+
+a=rhino
+b=crocodile
+if [ &quot;$a&quot; = rhino ] &amp;&amp; [ &quot;$b&quot; = crocodile ]
+then
+  echo &quot;Пятая проверка прошла успешно.&quot;
+else
+  echo &quot;Пятая проверка не прошла.&quot;
+fi
+
+exit 0
+</pre>
+              </div>
+
+              <p>Операторы <span
+               class="TOKEN">&amp;&amp;</span> и <span
+               class="TOKEN">||</span> могут использоваться и в
+              арифметических вычислениях.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class=
+"USERINPUT"><strong>echo $(( 1 &amp;&amp; 2 )) $((3 &amp;&amp; 0)) $((4 || 0)) $((0 || 0))</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">1 0 1 0</tt>
+             
+</pre>
+              <br>
+              <br>
+            </dd>
+          </dl>
+        </div>
+
+        <div
+         class="VARIABLELIST">
+          <p><strong><a
+           name="MISCOP1"></a>прочие операции</strong></p>
+
+          <dl>
+            <dt><a
+             name="COMMAOP"></a><span
+             class="TOKEN">,</span></dt>
+
+            <dd>
+              <p>запятая</p>
+
+              <p>С помощью оператора <strong
+               class="COMMAND">запятая</strong> можно связать несколько
+              арифметических в одну последовательность. При разборе
+              таких последовательностей, командный интерпретатор
+              вычисляет все выражения (которые могут иметь побочные
+              эффекты) в последовательности и возвращает результат
+              последнего.</p>
+<pre
+ class="PROGRAMLISTING">
+let &quot;t1 = ((5 + 3, 7 - 1, 15 - 4))&quot;
+echo &quot;t1 = $t1&quot;               # t1 = 11
+
+let &quot;t2 = ((a = 9, 15 / 3))&quot;  #  Выполняется присваивание &quot;a&quot; = 9,
+                              #+ а затем вычисляется &quot;t2&quot;.
+echo &quot;t2 = $t2    a = $a&quot;     # t2 = 5    a = 9
+</pre>
+              <br>
+              <br>
+
+              <p>Оператор запятая чаще всего находит применение в <a
+               href="c4875.html#FORLOOPREF1">циклах for</a>. См. <a
+               href="c4875.html#FORLOOPC">Пример 10-12</a>.</p>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x2780.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x3255.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Проверка степени усвоения материала</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p299.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Числовые константы</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

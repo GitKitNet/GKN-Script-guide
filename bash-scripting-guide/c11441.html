@@ -1,0 +1,715 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Подстановка команд</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Углубленный материал"
+     href="p3268.html">
+    <link
+     rel="PREVIOUS"
+     title="Команды системного администрирования"
+     href="c9708.html">
+    <link
+     rel="NEXT"
+     title="Арифметические подстановки"
+     href="c11565.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c9708.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="c11565.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="COMMANDSUB"></a>Глава 14. Подстановка команд</h1>
+
+      <p><a
+       name="COMMANDSUBREF"></a><strong
+       class="COMMAND">Подстановка команд</strong> -- это подстановка
+      результатов выполнения команды <a
+       name="AEN11451"
+       href="#FTN.AEN11451"><span
+       class="footnote">[1]</span></a> или даже серии команд;
+      буквально, эта операция позволяет вызвать команду в другом
+      окружении.</p>
+
+      <p><a
+       name="BACKQUOTESREF"></a>Классический пример подстановки команд
+      -- использование обратных одиночных кавычек (`...`). Команды
+      внутри этих кавычек представляют собой текст командной
+      строки.</p>
+<pre
+ class="PROGRAMLISTING">
+script_name=`basename $0`
+echo &quot;Имя этого файла-сценария: $script_name.&quot;
+</pre>
+      <br>
+      <br>
+
+      <div
+       class="FORMALPARA">
+        <p><strong>Вывод от команд может использоваться: как аргумент
+        другой команды, для установки значения переменной и даже для
+        генерации списка аргументов цикла <a
+         href="c4875.html#FORLOOPREF1">for</a>.</strong></p>
+      </div>
+<pre
+ class="PROGRAMLISTING">
+rm `cat filename`   # здесь <span
+ class=
+"QUOTE">&quot;filename&quot;</span> содержит список удаляемых файлов.
+#
+# S. C. предупреждает, что в данном случае может возникнуть ошибка &quot;arg list too long&quot;.
+# Такой вариант будет лучше:   xargs rm -- &lt; filename
+# ( -- подходит для случая, когда <span
+ class="QUOTE">&quot;filename&quot;</span> начинается с символа <span
+ class="QUOTE">&quot;-&quot;</span> )
+
+textfile_listing=`ls *.txt`
+# Переменная содержит имена всех файлов *.txt в текущем каталоге.
+echo $textfile_listing
+
+textfile_listing2=$(ls *.txt)   # Альтернативный вариант.
+echo $textfile_listing2
+# Результат будет тем же самым.
+
+# Проблема записи списка файлов в строковую переменную состоит в том,
+# что символы перевода строки заменяются на пробел.
+#
+# Как вариант решения проблемы -- записывать список файлов в массив.
+#      shopt -s nullglob    # При несоответствии, имя файла игнорируется.
+#      textfile_listing=( *.txt )
+#
+# Спасибо S.C.
+</pre>
+      <br>
+      <br>
+
+      <div
+       class="CAUTION">
+        <table
+         class="CAUTION"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/caution.gif"
+             hspace="5"
+             alt="Caution"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Подстанавливаемая команда может получиться разбитой на
+              отдельные слова.</p>
+<pre
+ class="PROGRAMLISTING">
+COMMAND `echo a b`     # 2 аргумента: a и b
+
+COMMAND &quot;`echo a b`&quot;   # 1 аргумент: &quot;a b&quot;
+
+COMMAND `echo`         # без аргументов
+
+COMMAND &quot;`echo`&quot;       # один пустой аргумент
+
+
+# Спасибо S.C.
+</pre>
+              <br>
+              <br>
+
+              <p>Даже когда не происходит разбиения на слова, операция
+              подстановки команд может удалять завершающие символы
+              перевода строки.</p>
+<pre
+ class="PROGRAMLISTING">
+# cd &quot;`pwd`&quot;  # Должна выполняться всегда.
+# Однако...
+
+mkdir &#39;dir with trailing newline
+&#39;
+
+cd &#39;dir with trailing newline
+&#39;
+
+cd &quot;`pwd`&quot;  # Ошибка:
+# bash: cd: /tmp/dir with trailing newline: No such file or directory
+
+cd &quot;$PWD&quot;   # Выполняется без ошибки.
+
+
+
+
+
+old_tty_setting=$(stty -g)   # Сохранить настройки терминала.
+echo &quot;Нажмите клавишу &quot;
+stty -icanon -echo           # Запретить &quot;канонический&quot; режим терминала.
+                             # Также запрещает эхо-вывод.
+key=$(dd bs=1 count=1 2&gt; /dev/null)   # Поймать нажатие на клавишу.
+stty &quot;$old_tty_setting&quot;      # Восстановить настройки терминала.
+echo &quot;Количество нажатых клавиш = ${#key}.&quot;  # ${#variable} = количество символов в переменной $variable
+#
+# Нажмите любую клавишу, кроме RETURN, на экране появится &quot;Количество нажатых клавиш = 1.&quot;
+# Нажмите RETURN, и получите: &quot;Количество нажатых клавиш = 0.&quot;
+# Символ перевода строки будет &quot;съеден&quot; операцией подстановки команды.
+
+Спасибо S.C.
+</pre>
+              <br>
+              <br>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div
+       class="CAUTION">
+        <table
+         class="CAUTION"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/caution.gif"
+             hspace="5"
+             alt="Caution"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>При выводе значений переменных, полученных в
+              результате подстановки команд, командой <strong
+               class="COMMAND">echo</strong>, без кавычек, символы
+              перевода строки будут удалены. Это может оказаться
+              неприятным сюрпризом.</p>
+<pre
+ class="PROGRAMLISTING">
+dir_listing=`ls -l`
+echo $dir_listing     # без кавычек
+
+# Вы наверно ожидали увидеть удобочитаемый список каталогов.
+
+# Однако, вы получите:
+# total 3 -rw-rw-r-- 1 bozo bozo 30 May 13 17:15 1.txt -rw-rw-r-- 1 bozo
+# bozo 51 May 15 20:57 t2.sh -rwxr-xr-x 1 bozo bozo 217 Mar 5 21:13 wi.sh
+
+# Символы перевода строки были заменены пробелами.
+
+
+echo &quot;$dir_listing&quot;   # в кавычках
+# -rw-rw-r--    1 bozo       30 May 13 17:15 1.txt
+# -rw-rw-r--    1 bozo       51 May 15 20:57 t2.sh
+# -rwxr-xr-x    1 bozo      217 Mar  5 21:13 wi.sh
+</pre>
+              <br>
+              <br>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p>Подстановка команд позволяет даже записывать в переменные
+      содержимое целых файлов, с помощью <a
+       href="c11620.html#IOREDIRREF">перенаправления</a> или команды <a
+       href="c6407.html#CATREF">cat</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+variable1=`&lt;file1`      # Записать в переменную  &quot;variable1&quot; содержимое файла &quot;file1&quot;.
+variable2=`cat file2`   # Записать в переменную &quot;variable2&quot; содержимое файла &quot;file2&quot;.
+
+#  Замечание 1:
+#  Удаляются символы перевода строки.
+#
+#  Замечание 2:
+#  В переменные можно записать даже управляющие символы.
+</pre>
+      <br>
+      <br>
+<pre
+ class="PROGRAMLISTING">
+#  Выдержки из системного файла /etc/rc.d/rc.sysinit
+#+ (Red Hat Linux)
+
+
+if [ -f /fsckoptions ]; then
+        fsckoptions=`cat /fsckoptions`
+...
+fi
+#
+#
+if [ -e &quot;/proc/ide/${disk[$device]}/media&quot; ] ; then
+             hdmedia=`cat /proc/ide/${disk[$device]}/media`
+...
+fi
+#
+#
+if [ ! -n &quot;`uname -r | grep -- &quot;-&quot;`&quot; ]; then
+       ktag=&quot;`cat /proc/version`&quot;
+...
+fi
+#
+#
+if [ $usb = &quot;1&quot; ]; then
+    sleep 5
+    mouseoutput=`cat /proc/bus/usb/devices 2&gt;/dev/null|grep -E &quot;^I.*Cls=03.*Prot=02&quot;`
+    kbdoutput=`cat /proc/bus/usb/devices 2&gt;/dev/null|grep -E &quot;^I.*Cls=03.*Prot=01&quot;`
+...
+fi
+</pre>
+      <br>
+      <br>
+
+      <div
+       class="CAUTION">
+        <table
+         class="CAUTION"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/caution.gif"
+             hspace="5"
+             alt="Caution"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Не используйте переменные для хранения содержимого
+              текстовых файлов <span
+               class="emphasis"><em
+               class="EMPHASIS">большого</em></span> объема, без веских
+              на то оснований. Не записывайте в переменные содержимое
+              <span
+               class="emphasis"><em
+               class="EMPHASIS">бинарных</em></span> файлов, даже шутки
+              ради.</p>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="STUPSCR"></a>
+
+                <p><strong>Пример 14-1. Глупая выходка</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# stupid-script-tricks.sh: Люди! Будьте благоразумны!
+# Из &quot;Глупые выходки&quot;, том I.
+
+
+dangerous_variable=`cat /boot/vmlinuz`   # Сжатое ядро Linux.
+
+echo &quot;длина строки \$dangerous_variable = ${#dangerous_variable}&quot;
+# длина строки $dangerous_variable = 794151
+# (&#39;wc -c /boot/vmlinuz&#39; даст другой результат.)
+
+# echo &quot;$dangerous_variable&quot;
+# Даже не пробуйте раскомментарить эту строку! Это приведет к зависанию сценария.
+
+
+#  Автор этого документа не знает, где можно было бы использовать
+#+ запись содержимого двоичных файлов в переменные.
+
+exit 0
+</pre>
+              </div>
+
+              <p>Обратите внимание: в данной ситуации не возникает
+              ошибки <span
+               class="emphasis"><em
+               class="EMPHASIS">переполнения буфера</em></span>. Этот
+              пример показывает превосходство защищенности
+              интерпретирующих языков, таких как Bash, от ошибок
+              программиста, над компилирующими языками
+              программирования.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p>Подстановка команд, позволяет записать в переменную результаты
+      выполнения <a
+       href="c4875.html#FORLOOPREF1">цикла</a>. Ключевым моментом здесь
+      является команда <a
+       href="c5358.html#ECHOREF">echo</a>, в теле цикла.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="CSUBLOOP"></a>
+
+        <p><strong>Пример 14-2. Запись результатов выполнения цикла в
+        переменную</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# csubloop.sh: Запись результатов выполнения цикла в переменную
+
+variable1=`for i in 1 2 3 4 5
+do
+  echo -n &quot;$i&quot;                 #  Здесь &#39;echo&#39; -- это ключевой момент
+done`
+
+echo &quot;variable1 = $variable1&quot;  # variable1 = 12345
+
+
+i=0
+variable2=`while [ &quot;$i&quot; -lt 10 ]
+do
+  echo -n &quot;$i&quot;                 # Опять же, команда &#39;echo&#39; просто необходима.
+  let &quot;i += 1&quot;                 # Увеличение на 1.
+done`
+
+echo &quot;variable2 = $variable2&quot;  # variable2 = 0123456789
+
+exit 0
+</pre>
+      </div>
+
+      <table
+       class="SIDEBAR"
+       border="1"
+       cellpadding="5">
+        <tr>
+          <td>
+            <div
+             class="SIDEBAR">
+              <a
+               name="AEN11497"></a>
+
+              <p>Подстановка команд позволяет существенно расширить
+              набор инструментальных средств, которыми располагает
+              Bash. Суть состоит в том, чтобы написать программу или
+              сценарий, которая выводит результаты своей работы на <tt
+               class="FILENAME">stdout</tt> (как это делает подавляющее
+              большинство утилит в UNIX) и записать вывод от программы
+              в переменную.</p>
+<pre
+ class="PROGRAMLISTING">
+#include &lt;stdio.h&gt;
+
+/*  Программа на C &quot;Hello, world.&quot;  */
+
+int main()
+{
+  printf( &quot;Hello, world.&quot; );
+  return (0);
+}
+</pre>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>gcc -o hello hello.c</strong></tt>
+             
+</pre>
+              <br>
+              <br>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# hello.sh
+
+greeting=`./hello`
+echo $greeting
+</pre>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>sh hello.sh</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">Hello, world.</tt>
+               
+</pre>
+              <br>
+              <br>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Альтернативой обратным одиночным кавычкам,
+              используемым для подстановки команд, можно считать такую
+              форму записи: <strong
+               class="COMMAND">$(COMMAND)</strong>.</p>
+<pre
+ class="PROGRAMLISTING">
+output=$(sed -n /&quot;$1&quot;/p $file)   # К примеру из &quot;grp.sh&quot;.
+
+# Запись в переменную содержимого текстового файла.
+File_contents1=$(cat $file1)
+File_contents2=$(&lt;$file2)        # Bash допускает и такую запись.
+</pre>
+              <br>
+              <br>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p>Примеры подстановки команд в сценариях:</p>
+
+      <ol
+       type="1">
+        <li>
+          <p><a
+           href="c4875.html#BINGREP">Пример 10-7</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x5210.html#CASECMD">Пример 10-26</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x4812.html#SEEDINGRANDOM">Пример 9-26</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x6646.html#EX57">Пример 12-2</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x7050.html#LOWERCASE">Пример 12-15</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x7050.html#GRP">Пример 12-12</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x9307.html#EX53">Пример 12-39</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="c4875.html#EX24">Пример 10-13</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="c4875.html#SYMLINKS">Пример 10-10</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x7794.html#STRIPC">Пример 12-24</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x11731.html#REDIR4">Пример 16-7</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="a14477.html#TREE">Пример A-19</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x12987.html#PIDID">Пример 27-1</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x9199.html#MONTHLYPMT">Пример 12-32</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x9199.html#BASE">Пример 12-33</a></p>
+        </li>
+
+        <li>
+          <p><a
+           href="x9199.html#ALTBC">Пример 12-34</a></p>
+        </li>
+      </ol>
+      <br>
+      <br>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN11451"
+         href="c11441.html#AEN11451"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p><span
+           class="emphasis"><em
+           class="EMPHASIS">Замещающая команда</em></span> может быть
+          внешней системной командой, внутренней (встроенной) командой
+          или даже функцией в сценарии.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c9708.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="c11565.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Команды системного администрирования</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p3268.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Арифметические подстановки</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

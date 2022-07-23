@@ -1,0 +1,2685 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Дополнительные примеры сценариев</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="PREVIOUS"
+     title="Литература"
+     href="b14059.html">
+    <link
+     rel="NEXT"
+     title="Маленький учебник по Sed и Awk"
+     href="a14586.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="b14059.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="a14586.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="APPENDIX">
+      <h1><a
+       name="CONTRIBUTED-SCRIPTS"></a>Приложение A. Дополнительные
+      примеры сценариев</h1>
+
+      <p>В этом приложении собраны сценарии, которые не попали в
+      основной текст документа. Однако, они определенно стоят того, что
+      бы вы потратили время на их изучение.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="MANVIEW"></a>
+
+        <p><strong>Пример A-1. manview: Просмотр страниц руководств
+        man</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# manview.sh: Просмотр страниц руководств man в форматированном виде.
+
+#  Полезен писателям страниц руководств, позволяет просмотреть страницы в исходном коде
+#+ как они будут выглядеть в конечном виде.
+
+E_WRONGARGS=65
+
+if [ -z &quot;$1&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` имя_файла&quot;
+  exit $E_WRONGARGS
+fi
+
+groff -Tascii -man $1 | less
+
+# Если страница руководства включает в себя таблицы и/или выражения,
+# то этот сценарий &quot;стошнит&quot;.
+# Для таких случаев можно использовать следующую строку.
+#
+#   gtbl &lt; &quot;$1&quot; | geqn -Tlatin1 | groff -Tlatin1 -mtty-char -man
+#
+#   Спасибо S.C.
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="MAILFORMAT"></a>
+
+        <p><strong>Пример A-2. mailformat: Форматирование электронных
+        писем</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# mail-format.sh: Форматирование электронных писем.
+
+# Удаляет символы &quot;^&quot;, табуляции и ограничивает чрезмерно длинные строки.
+
+# =================================================================
+#                 Стандартная проверка аргументов
+ARGS=1
+E_BADARGS=65
+E_NOFILE=66
+
+if [ $# -ne $ARGS ]  # Проверка числа аргументов
+then
+  echo &quot;Порядок использования: `basename $0` имя_файла&quot;
+  exit $E_BADARGS
+fi
+
+if [ -f &quot;$1&quot; ]       # Проверка наличия файла.
+then
+    file_name=$1
+else
+    echo &quot;Файл \&quot;$1\&quot; не найден.&quot;
+    exit $E_NOFILE
+fi
+# =================================================================
+
+MAXWIDTH=70          # Максимальная длина строки.
+
+#  Удаление символов &quot;^&quot; начиная с первого символа строки,
+#+ и ограничить длину строки 70-ю символами.
+sed &#39;
+s/^&gt;//
+s/^  *&gt;//
+s/^  *//
+s/              *//
+&#39; $1 | fold -s --width=$MAXWIDTH
+          # ключ -s команды &quot;fold&quot; разрывает, если это возможно, строку по пробельному символу.
+
+#  Этот сценарий был написан после прочтения статьи, в котором расхваливалась
+#+ утилита под Windows, размером в 164K, с подобной функциональностью.
+#
+#  Хороший набор утилит для обработки текста и эффективный
+#+ скриптовый язык -- это все, что необходимо, чтобы составить серьезную конкуренцию
+#+ чрезмерно &quot;раздутым&quot; программам.
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="RN"></a>
+
+        <p><strong>Пример A-3. rn: Очень простая утилита для
+        переименования файлов</strong></p>
+
+        <p>Этот сценарий является модификацией <a
+         href="x7050.html#LOWERCASE">Пример 12-15</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+#! /bin/bash
+#
+# Очень простая утилита для переименования файлов
+#
+#  Утилита &quot;ren&quot;, автор Vladimir Lanin (lanin@csd2.nyu.edu),
+#+ выполняет эти же действия много лучше.
+
+
+ARGS=2
+E_BADARGS=65
+ONE=1                     # Единственное или множественное число (см. ниже).
+
+if [ $# -ne &quot;$ARGS&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` старый_шаблон новый_шаблон&quot;
+  # Например: &quot;rn gif jpg&quot;, поменяет расширения всех файлов в текущем каталоге с gif на jpg.
+  exit $E_BADARGS
+fi
+
+number=0                  # Количество переименованных файлов.
+
+
+for filename in *$1*      # Проход по списку файлов в текущем каталоге.
+do
+   if [ -f &quot;$filename&quot; ]
+   then
+     fname=`basename $filename`            # Удалить путь к файлу из имени.
+     n=`echo $fname | sed -e &quot;s/$1/$2/&quot;`   # Поменять старое имя на новое.
+     mv $fname $n                          # Переименовать.
+     let &quot;number += 1&quot;
+   fi
+done
+
+if [ &quot;$number&quot; -eq &quot;$ONE&quot; ]                # Соблюдение правил грамматики.
+then
+ echo &quot;$number файл переименован.&quot;
+else
+ echo &quot;Переименовано файлов: $number.&quot;
+fi
+
+exit 0
+
+
+# Упражнения:
+# ----------
+# С какими типами файлов этот сценарий не будет работать?
+# Как это исправить?
+#
+#  Переделайте сценарий таким образом, чтобы он мог обрабатывать все файлы в каталоге,
+#+ в именах которых содержатся пробелы, заменяя пробелы символом подчеркивания.
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="BLANKRENAME"></a>
+
+        <p><strong>Пример A-4. blank-rename: переименование файлов, чьи
+        имена содержат пробелы</strong></p>
+
+        <p>Это даже более простая версия предыдущего примера.</p>
+<pre
+ class="PROGRAMLISTING">
+#! /bin/bash
+# blank-rename.sh
+#
+# Заменяет пробелы символом подчеркивания в именах файлов в текущем каталоге.
+
+ONE=1                     # единственное или множественное число (см. ниже).
+number=0                  # Количество переименованных файлов.
+FOUND=0                   # Код завершения в случае успеха.
+
+for filename in *         # Перебор всех файлов в текущем каталоге.
+do
+     echo &quot;$filename&quot; | grep -q &quot; &quot;         #  Проверить -- содержит ли имя файла
+     if [ $? -eq $FOUND ]                   #+ пробелы.
+     then
+       fname=$filename                      # Удалить путь из имени файла.
+       n=`echo $fname | sed -e &quot;s/ /_/g&quot;`   # Заменить пробелы символом подчеркивания.
+       mv &quot;$fname&quot; &quot;$n&quot;                     # Переименование.
+       let &quot;number += 1&quot;
+     fi
+done
+
+if [ &quot;$number&quot; -eq &quot;$ONE&quot; ]
+then
+ echo &quot;$number файл переименован.&quot;
+else
+ echo &quot;Переименовано файлов: $number&quot;
+fi
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="ENCRYPTEDPW"></a>
+
+        <p><strong>Пример A-5. encryptedpw: Передача файла на
+        ftp-сервер, с использованием пароля</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Модификация примера &quot;ex72.sh&quot;, добавлено шифрование пароля.
+
+#  Обратите внимание: этот вариант все еще нельзя считать безопасным,
+#+ поскольку в сеть пароль уходит в незашифрованном виде.
+# Используйте &quot;ssh&quot;, если вас это беспокоит.
+
+E_BADARGS=65
+
+if [ -z &quot;$1&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` имя_файла&quot;
+  exit $E_BADARGS
+fi
+
+Username=bozo           # Измените на свой.
+pword=/home/bozo/secret/password_encrypted.file
+# Файл, содержащий пароль в зашифрованном виде.
+
+Filename=`basename $1`  # Удалить путь из имени файла
+
+Server=&quot;XXX&quot;
+Directory=&quot;YYY&quot;         # Подставьте фактические имя сервера и каталога.
+
+
+Password=`cruft &lt;$pword`          # Расшифровка.
+#  Используется авторская программа &quot;cruft&quot;,
+#+ основанная на алгоритме &quot;onetime pad&quot;,
+#+ ее можно скачать с :
+#+ Primary-site:   ftp://ibiblio.org/pub/Linux/utils/file
+#+                 cruft-0.2.tar.gz [16k]
+
+
+ftp -n $Server &lt;&lt;End-Of-Session
+user $Username $Password
+binary
+bell
+cd $Directory
+put $Filename
+bye
+End-Of-Session
+# ключ -n, команды &quot;ftp&quot;, запрещает автоматический вход.
+# &quot;bell&quot; -- звонок (звуковой сигнал) после передачи каждого файла.
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="COPYCD"></a>
+
+        <p><strong>Пример A-6. copy-cd: Копирование компакт-дисков с
+        данными</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# copy-cd.sh: copying a data CD
+
+CDROM=/dev/cdrom                           # устройство CD ROM
+OF=/home/bozo/projects/cdimage.iso         # промежуточный файл
+#       /xxxx/xxxxxxx/                     измените для своей системы.
+BLOCKSIZE=2048
+SPEED=2                                    # Можно задать более высокую скорость, если поддерживается.
+
+echo; echo &quot;Вставьте исходный CD, но *НЕ* монтируйте его.&quot;
+echo &quot;Нажмите ENTER, когда будете готовы. &quot;
+read ready                                 # Ожидание.
+
+echo; echo &quot;Создается промежуточный файл $OF.&quot;
+echo &quot;Это может занять какое-то время. Пожалуйста подождите.&quot;
+
+dd if=$CDROM of=$OF bs=$BLOCKSIZE          # Копирование.
+
+
+echo; echo &quot;Выньте исходный CD.&quot;
+echo &quot;Вставьте чистую болванку CDR.&quot;
+echo &quot;Нажмите ENTER, когда будете готовы. &quot;
+read ready                                 # Ожидание.
+
+echo &quot;Копируется файл $OF на болванку.&quot;
+
+cdrecord -v -isosize speed=$SPEED dev=0,0 $OF
+# Используется пакет Joerg Schilling -- &quot;cdrecord&quot; .
+# http://www.fokus.gmd.de/nthp/employees/schilling/cdrecord.html
+
+
+echo; echo &quot;Копирование завершено.&quot;
+
+echo &quot;Желаете удалить промежуточный файл (y/n)? &quot;  # Наверняка большой файл получился.
+read answer
+
+case &quot;$answer&quot; in
+[yY]) rm -f $OF
+      echo &quot;Файл $OF удален.&quot;
+      ;;
+*)    echo &quot;Файл $OF не был удален.&quot;;;
+esac
+
+echo
+
+# Упражнение:
+# Добавьте в оператор &quot;case&quot; возможность обработки, введенных пользователем, &quot;yes&quot; и &quot;Yes&quot;.
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="COLLATZ"></a>
+
+        <p><strong>Пример A-7. Последовательности Коллаца
+        (Collatz)</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# collatz.sh
+
+#  Широко известная последовательность Коллаца (Collatz) (гипотеза Коллаца).
+#  -------------------------------------------
+#  1) Принимает из командной строки &quot;начальное&quot; целое число.
+#  2) ЧИСЛО &lt;--- НАЧАЛЬНОЕ ЗНАЧЕНИЕ
+#  3) Вывести ЧИСЛО.
+#  4)  Если ЧИСЛО четное, разделить на 2,
+#  5)+ Если не четное -- умножить на 3 и прибавить 1.
+#  6) ЧИСЛО &lt;--- РЕЗУЛЬТАТ
+#  7) Повторить, начиная с п. 3, заданное число раз.
+#
+#  Теоретически, такая последовательность должна сходиться,
+#+ не зависимо от величины начального значения,
+#+ к повторению циклов &quot;4,2,1...&quot;,
+#+ даже после значительных флуктуаций в самом начале.
+
+
+MAX_ITERATIONS=200
+# Для больших начальных значений (&gt;32000), это значение придется увеличить.
+
+h=${1:-$$}                      #  Начальное значение
+                                #  если из командной строки ничего не задано, то берется $PID,
+
+echo
+echo &quot;C($h) --- $MAX_ITERATIONS итераций&quot;
+echo
+
+for ((i=1; i&lt;=MAX_ITERATIONS; i++))
+do
+
+echo -n &quot;$h     &quot;
+#          ^^^^^
+#           табуляция
+
+  let &quot;remainder = h % 2&quot;
+  if [ &quot;$remainder&quot; -eq 0 ]   # Четное?
+  then
+    let &quot;h /= 2&quot;              # Разделить на 2.
+  else
+    let &quot;h = h*3 + 1&quot;         # Умножить на 3 и прибавить 1.
+  fi
+
+
+COLUMNS=10                    # Выводить по 10 значений в строке.
+let &quot;line_break = i % $COLUMNS&quot;
+if [ &quot;$line_break&quot; -eq 0 ]
+then
+  echo
+fi
+
+done
+
+echo
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="DAYSBETWEEN"></a>
+
+        <p><strong>Пример A-8. days-between: Подсчет числа дней между
+        двумя датами</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# days-between.sh:    Подсчет числа дней между двумя датами.
+# Порядок использования: ./days-between.sh [M]M/[D]D/YYYY [M]M/[D]D/YYYY
+
+ARGS=2                # Ожидается два аргумента из командной строки.
+E_PARAM_ERR=65        # Ошибка в числе ожидаемых аргументов.
+
+REFYR=1600            # Начальный год.
+CENTURY=100
+DIY=365
+ADJ_DIY=367           # Корректировка на високосный год + 1.
+MIY=12
+DIM=31
+LEAPCYCLE=4
+
+MAXRETVAL=255         # Максимально возможное возвращаемое значение
+                      # для положительных чисел.
+
+diff=                         # Количество дней между датами.
+value=                # Абсолютное значение.
+day=                  # день, месяц, год.
+month=
+year=
+
+
+Param_Error ()        # Ошибка в пвраметрах командной строки.
+{
+  echo &quot;Порядок использования: `basename $0` [M]M/[D]D/YYYY [M]M/[D]D/YYYY&quot;
+  echo &quot;       (даты должны быть после 1/3/1600)&quot;
+  exit $E_PARAM_ERR
+}
+
+
+Parse_Date ()                 # Разбор даты.
+{
+  month=${1%%/**}
+  dm=${1%/**}                 # День и месяц.
+  day=${dm#*/}
+  let &quot;year = `basename $1`&quot;  # Хотя это и не имя файла, но результат тот же.
+}
+
+
+check_date ()                 # Проверка даты.
+{
+  [ &quot;$day&quot; -gt &quot;$DIM&quot; ] || [ &quot;$month&quot; -gt &quot;$MIY&quot; ] || [ &quot;$year&quot; -lt &quot;$REFYR&quot; ] &amp;&amp; Param_Error
+  # Выход из сценария при обнаружении ошибки.
+  # Используется комбинация &quot;ИЛИ-списка / И-списка&quot;.
+  #
+  # Упражнение: Реализуйте более строгую проверку даты.
+}
+
+
+strip_leading_zero () # Удалить ведущий ноль
+{
+  val=${1#0}          # иначе Bash будет считать числа
+  return $val         # восьмеричными (POSIX.2, sect 2.9.2.1).
+}
+
+
+day_index ()          # Формула Гаусса:
+{                     # Количество дней от 3 Янв. 1600 до заданной даты.
+
+  day=$1
+  month=$2
+  year=$3
+
+  let &quot;month = $month - 2&quot;
+  if [ &quot;$month&quot; -le 0 ]
+  then
+    let &quot;month += 12&quot;
+    let &quot;year -= 1&quot;
+  fi
+
+  let &quot;year -= $REFYR&quot;
+  let &quot;indexyr = $year / $CENTURY&quot;
+
+
+  let &quot;Days = $DIY*$year + $year/$LEAPCYCLE - $indexyr + $indexyr/$LEAPCYCLE + $ADJ_DIY*$month/$MIY + $day - $DIM&quot;
+  # Более подробное объяснение алгоритма вы найдете в
+  # http://home.t-online.de/home/berndt.schwerdtfeger/cal.htm
+
+
+  if [ &quot;$Days&quot; -gt &quot;$MAXRETVAL&quot; ]  # Если больше 255,
+  then                             # то поменять знак
+    let &quot;dindex = 0 - $Days&quot;       # чтобы функция смогла вернуть полное значение.
+  else let &quot;dindex = $Days&quot;
+  fi
+
+  return $dindex
+
+}
+
+
+calculate_difference ()            # Разница между двумя датами.
+{
+  let &quot;diff = $1 - $2&quot;             # Глобальная переменная.
+}
+
+
+abs ()                             # Абсолютное значение
+{                                  # Используется глобальная переменная &quot;value&quot;.
+  if [ &quot;$1&quot; -lt 0 ]                # Если число отрицательное
+  then                             # то
+    let &quot;value = 0 - $1&quot;           # изменить знак,
+  else                             # иначе
+    let &quot;value = $1&quot;               # оставить как есть.
+  fi
+}
+
+
+
+if [ $# -ne &quot;$ARGS&quot; ]              # Требуется два аргумента командной строки.
+then
+  Param_Error
+fi
+
+Parse_Date $1
+check_date $day $month $year      # Проверка даты.
+
+strip_leading_zero $day           # Удалить ведущие нули
+day=$?                            # в номере дня и/или месяца.
+strip_leading_zero $month
+month=$?
+
+day_index $day $month $year
+date1=$?
+
+abs $date1                         # Абсолютное значение
+date1=$value
+
+Parse_Date $2
+check_date $day $month $year
+
+strip_leading_zero $day
+day=$?
+strip_leading_zero $month
+month=$?
+
+day_index $day $month $year
+date2=$?
+
+abs $date2                         # Абсолютное значение
+date2=$value
+
+calculate_difference $date1 $date2
+
+abs $diff                          # Абсолютное значение
+diff=$value
+
+echo $diff
+
+exit 0
+# Сравните этот сценарий с реализацией формулы Гаусса на C
+# http://buschencrew.hypermart.net/software/datedif
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="MAKEDICT"></a>
+
+        <p><strong>Пример A-9. Создание <span
+         class="QUOTE">&quot;словаря&quot;</span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# makedict.sh  [создание словаря]
+
+# Модификация сценария /usr/sbin/mkdict.
+# Авторские права на оригинальный сценарий принадлежат Alec Muffett.
+#
+#  Этот модифицированный вариант включен в документ на основе
+#+ документа &quot;LICENSE&quot; из пакета &quot;Crack&quot;
+#+ с которым распространяется оригинальный сценарий.
+
+#  Этот скрипт обрабатывает текстовые файлы и создает отсортированный список
+#+ слов, найденных в этих файлах.
+#  Он может оказаться полезным для сборки словарей
+#+ и проведения лексикографического анализа.
+
+
+E_BADARGS=65
+
+if [ ! -r &quot;$1&quot; ]                     #  Необходим хотя бы один аргумент --
+then                                 #+ имя файла.
+  echo &quot;Порядок использования: $0 имена_файлов&quot;
+  exit $E_BADARGS
+fi
+
+
+# SORT=&quot;sort&quot;                        #  Необходимость задания ключей сортировки отпала.
+                                     #+ Изменено, по отношению к оригинальному сценарию.
+
+cat $* |                             # Выдать содержимое файлов на stdout.
+        tr A-Z a-z |                 # Преобразовать в нижний регистр.
+        tr &#39; &#39; &#39;\012&#39; |              # Новое: заменить пробелы символами перевода строки.
+#       tr -cd &#39;\012[a-z][0-9]&#39; |    #  В оригинальном сценарии: удалить все символы,
+                                     #+ которые не являются буквами или цифрами.
+        tr -c &#39;\012a-z&#39;  &#39;\012&#39; |    #  Вместо удаления
+                                     #+ неалфавитно-цифровые символы заменяются на перевод строки.
+        sort |
+        uniq |                       # Удалить повторяющиеся слова.
+        grep -v &#39;^#&#39; |               # Удалить строки, начинающиеся с &quot;#&quot;.
+        grep -v &#39;^$&#39;                 # Удалить пустые строки.
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="SOUNDEX"></a>
+
+        <p><strong>Пример A-10. Расчет индекса
+        &quot;созвучности&quot;</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# soundex.sh: Расчет индекса &quot;созвучности&quot;
+
+# =======================================================
+#       Сценарий Soundex
+#            Автор
+#         Mendel Cooper
+#     thegrendel@theriver.com
+#       23 Января 2002 г.
+#
+#   Условия распространения: Public Domain.
+#
+# Несколько отличающаяся версия этого сценария была опубликована
+#+ Эдом Шэфером (Ed Schaefer) в Июле 2002 года в колонке &quot;Shell Corner&quot;
+#+ &quot;Unix Review&quot; on-line,
+#+ http://www.unixreview.com/documents/uni1026336632258/
+# =======================================================
+
+
+ARGCOUNT=1                     # Требуется аргумент командной строки.
+E_WRONGARGS=70
+
+if [ $# -ne &quot;$ARGCOUNT&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` имя&quot;
+  exit $E_WRONGARGS
+fi
+
+
+assign_value ()                #  Присвоить числовые значения
+{                              #+ символам в имени.
+
+  val1=bfpv                    # &#39;b,f,p,v&#39; = 1
+  val2=cgjkqsxz                # &#39;c,g,j,k,q,s,x,z&#39; = 2
+  val3=dt                      #  и т.п.
+  val4=l
+  val5=mn
+  val6=r
+
+# Попробуйте разобраться в том, что здесь происходит.
+
+value=$( echo &quot;$1&quot; \
+| tr -d wh \
+| tr $val1 1 | tr $val2 2 | tr $val3 3 \
+| tr $val4 4 | tr $val5 5 | tr $val6 6 \
+| tr -s 123456 \
+| tr -d aeiouy )
+
+# Символам в имени присваиваются числовые значения.
+# Удаляются повторяющиеся числа, если они не разделены гласными.
+# Гласные игнорируются, если они не являются разделителями, которые удаляются в последнюю очередь.
+# Символы &#39;w&#39; и &#39;h&#39; удаляются в первую очередь.
+}
+
+
+input_name=&quot;$1&quot;
+echo
+echo &quot;Имя = $input_name&quot;
+
+
+# Перевести все символы в имени в нижний регистр.
+# ------------------------------------------------
+name=$( echo $input_name | tr A-Z a-z )
+# ------------------------------------------------
+
+
+# Начальный символ в индекса &quot;созвучия&quot;: первая буква в имени.
+# --------------------------------------------
+
+
+char_pos=0                     # Начальная позиция в имени.
+prefix0=${name:$char_pos:1}
+prefix=`echo $prefix0 | tr a-z A-Z`
+                               # Первую букву в имени -- в верхний регистр.
+
+let &quot;char_pos += 1&quot;            # Передвинуть &quot;указатель&quot; на один символ.
+name1=${name:$char_pos}
+
+
+# ++++++++++++++++++++++++++++ Исключение отдельных ситуаций +++++++++++++++++++++++++++++++
+#  Теперь мы передвинулись на один символ вправо.
+#  Если второй символ в имени совпадает с первым
+#+ то его нужно отбросить.
+#  Кроме того, мы должны проверить -- не является ли первый символ
+#+ гласной, &#39;w&#39; или &#39;h&#39;.
+
+char1=`echo $prefix | tr A-Z a-z`    # Первый символ -- в нижний регистр.
+
+assign_value $name
+s1=$value
+assign_value $name1
+s2=$value
+assign_value $char1
+s3=$value
+s3=9$s3                              #  Если первый символ в имени -- гласная буква
+                                     #+ или &#39;w&#39; или &#39;h&#39;,
+                                     #+ то ее &quot;значение&quot; нужно отбросить.
+                                     #+ Поэтому ставим 9, или другое
+                                     #+ неиспользуемое значение, которое можно будет проверить.
+
+
+if [[ &quot;$s1&quot; -ne &quot;$s2&quot; || &quot;$s3&quot; -eq 9 ]]
+then
+  suffix=$s2
+else
+  suffix=${s2:$char_pos}
+fi
+# ++++++++++++++++++++++++ Конец исключения отдельных ситуаций +++++++++++++++++++++++++++++++
+
+
+padding=000                    # Дополнить тремя нулями.
+
+
+soun=$prefix$suffix$padding    # Нули добавить в конец получившегося индекса.
+
+MAXLEN=4                       # Ограничить длину индекса 4-мя символами.
+soundex=${soun:0:$MAXLEN}
+
+echo &quot;Индекс созвучия = $soundex&quot;
+
+echo
+
+#  Индекс &quot;созвучия&quot; - это метод индексации и классификации имен
+#+ по подобию звучания.
+#  Индекс &quot;созвучия&quot; начинается с первого символа в имени,
+#+ за которым следуют 3-значный расчетный код.
+#  Имена, которые произносятся примерно одинаково, имеют близкие индексы &quot;созвучия&quot;.
+
+#   Например:
+#   Smith и Smythe -- оба имеют индекс &quot;созвучия&quot; &quot;S530&quot;.
+#   Harrison = H625
+#   Hargison = H622
+#   Harriman = H655
+
+#  Как правило эта методика дает неплохой результат, но имеются и аномалии.
+#
+#
+#  Дополнительную информацию вы найдете на
+#+ &quot;National Archives and Records Administration home page&quot;,
+#+ http://www.nara.gov/genealogy/soundex/soundex.html
+
+
+
+# Упражнение:
+# ----------
+# Упростите блок &quot;Исключение отдельных ситуаций&quot; .
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="LIFESLOW"></a>
+
+        <p><strong>Пример A-11. <span
+         class="QUOTE">&quot;Игра
+        &quot;Жизнь&quot;&quot;</span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# life.sh: Игра &quot;Жизнь&quot;
+
+# ##################################################################### #
+# Это Bash-версия известной игры Джона Конвея (John Conway) &quot;Жизнь&quot;.    #
+# --------------------------------------------------------------------- #
+# Прямоугольное игровое поле разбито на ячейки, в каждой ячейке может   #
+#+ располагаться живая особь.                                           #
+# Соответственно, ячейка с живой особью отмечается точкой,              #
+#+ не занятая ячейка -- остается пустой.                                #
+#  Изначально, ячейки заполняются из файла --                           #
+#+ это первое поколение, или &quot;поколение 0&quot;                              #
+# Воспроизводство особей, в каждом последующем поколении,               #
+#+ определяется следующими правилами                                    #
+# 1) Каждая ячейка имеет &quot;соседей&quot;                                      #
+#+   слева, справа, сверху, снизу и 4 по диагоналям.                    #
+#                       123                                             #
+#                       4*5                                             #
+#                       678                                             #
+#                                                                       #
+# 2) Если живая особь имеет 2 или 3 живых соседей, то она остается жить.#
+# 3) Если пустая ячейка имеет 3 живых соседей --                        #
+#+   в ней &quot;рождается&quot; новая особь                                      #
+SURVIVE=2                                                               #
+BIRTH=3                                                                 #
+# 4) В любом другом случае, живая особь &quot;погибает&quot;                      #
+# ##################################################################### #
+
+
+startfile=gen0   # Начальное поколение из файла по-умолчанию -- &quot;gen0&quot;.
+                 # если не задан другой файл, из командной строки.
+                 #
+if [ -n &quot;$1&quot; ]   # Проверить аргумент командной строки -- файл с &quot;поколениемn 0&quot;.
+then
+  if [ -e &quot;$1&quot; ] # Проверка наличия файла.
+  then
+    startfile=&quot;$1&quot;
+  fi
+fi
+
+
+ALIVE1=.
+DEAD1=_
+                 # Представление &quot;живых&quot; особей и пустых ячеек в файле с &quot;поколением 0&quot;.
+
+#  Этот сценарий работает с игровым полем 10 x 10 grid (может быть увеличено,
+#+ но большое игровое поле будет обрабатываться очень медленно).
+ROWS=10
+COLS=10
+
+GENERATIONS=10          #  Максимальное число поколений.
+
+NONE_ALIVE=80           #  Код завершения на случай,
+                        #+ если не осталось ни одной &quot;живой&quot; особи.
+TRUE=0
+FALSE=1
+ALIVE=0
+DEAD=1
+
+avar=                   # Текущее поколение.
+generation=0            # Инициализация счетчика поколений.
+
+# =================================================================
+
+
+let &quot;cells = $ROWS * $COLS&quot;
+                        # Количество ячеек на игровом поле.
+
+declare -a initial      # Массивы ячеек.
+declare -a current
+
+display ()
+{
+
+alive=0                 # Количество &quot;живых&quot; особей.
+                        # Изначально -- ноль.
+
+declare -a arr
+arr=( `echo &quot;$1&quot;` )     # Преобразовать аргумент в массив.
+
+element_count=${#arr[*]}
+
+local i
+local rowcheck
+
+for ((i=0; i&lt;$element_count; i++))
+do
+
+  # Символ перевода строки -- в конец каждой строки.
+  let &quot;rowcheck = $i % ROWS&quot;
+  if [ &quot;$rowcheck&quot; -eq 0 ]
+  then
+    echo                # Перевод строки.
+    echo -n &quot;      &quot;    # Выравнивание.
+  fi
+
+  cell=${arr[i]}
+
+  if [ &quot;$cell&quot; = . ]
+  then
+    let &quot;alive += 1&quot;
+  fi
+
+  echo -n &quot;$cell&quot; | sed -e &#39;s/_/ /g&#39;
+  # Вывести массив, по пути заменяя символы подчеркивания на пробелы.
+done
+
+return
+
+}
+
+IsValid ()                            # Проверка корректности координат ячейки.
+{
+
+  if [ -z &quot;$1&quot;  -o -z &quot;$2&quot; ]          # Проверка наличия входных аргументов.
+  then
+    return $FALSE
+  fi
+
+local row
+local lower_limit=0                   # Запрет на отрицательные координаты.
+local upper_limit
+local left
+local right
+
+let &quot;upper_limit = $ROWS * $COLS - 1&quot; # Номер последней ячейки на игровом поле.
+
+
+if [ &quot;$1&quot; -lt &quot;$lower_limit&quot; -o &quot;$1&quot; -gt &quot;$upper_limit&quot; ]
+then
+  return $FALSE                       # Выход за границы массива.
+fi
+
+row=$2
+let &quot;left = $row * $ROWS&quot;             # Левая граница.
+let &quot;right = $left + $COLS - 1&quot;       # Правая граница.
+
+if [ &quot;$1&quot; -lt &quot;$left&quot; -o &quot;$1&quot; -gt &quot;$right&quot; ]
+then
+  return $FALSE                       # Выхол за нижнюю строку.
+fi
+
+return $TRUE                          # Координаты корректны.
+
+}
+
+
+IsAlive ()              # Проверка наличия &quot;живой&quot; особи в ячейке.
+                        # Принимает массив и номер ячейки в качестве входных аргументов.
+{
+  GetCount &quot;$1&quot; $2      # Подсчитать кол-во &quot;живых&quot; соседей.
+  local nhbd=$?
+
+
+  if [ &quot;$nhbd&quot; -eq &quot;$BIRTH&quot; ]  # &quot;Живая&quot;.
+  then
+    return $ALIVE
+  fi
+
+  if [ &quot;$3&quot; = &quot;.&quot; -a &quot;$nhbd&quot; -eq &quot;$SURVIVE&quot; ]
+  then                  # &quot;Живая&quot; если перед этим была &quot;живая&quot;.
+    return $ALIVE
+  fi
+
+  return $DEAD          # По-умолчанию.
+
+}
+
+
+GetCount ()             # Подсчет &quot;живых&quot; соседей.
+                        # Необходимо 2 аргумента:
+                        # $1) переменная-массив
+                        # $2) cell номер ячейки
+{
+  local cell_number=$2
+  local array
+  local top
+  local center
+  local bottom
+  local r
+  local row
+  local i
+  local t_top
+  local t_cen
+  local t_bot
+  local count=0
+  local ROW_NHBD=3
+
+  array=( `echo &quot;$1&quot;` )
+
+  let &quot;top = $cell_number - $COLS - 1&quot;    # Номера соседних ячеек.
+  let &quot;center = $cell_number - 1&quot;
+  let &quot;bottom = $cell_number + $COLS - 1&quot;
+  let &quot;r = $cell_number / $ROWS&quot;
+
+  for ((i=0; i&lt;$ROW_NHBD; i++))           # Просмотр слева-направо.
+  do
+    let &quot;t_top = $top + $i&quot;
+    let &quot;t_cen = $center + $i&quot;
+    let &quot;t_bot = $bottom + $i&quot;
+
+
+    let &quot;row = $r&quot;                        # Пройти по соседям в средней строке.
+    IsValid $t_cen $row                   # Координаты корректны?
+    if [ $? -eq &quot;$TRUE&quot; ]
+    then
+      if [ ${array[$t_cen]} = &quot;$ALIVE1&quot; ] # &quot;Живая&quot;?
+      then                                # Да!
+        let &quot;count += 1&quot;                  # Нарастить счетчик.
+      fi
+    fi
+
+    let &quot;row = $r - 1&quot;                    # По верхней строке.
+    IsValid $t_top $row
+    if [ $? -eq &quot;$TRUE&quot; ]
+    then
+      if [ ${array[$t_top]} = &quot;$ALIVE1&quot; ]
+      then
+        let &quot;count += 1&quot;
+      fi
+    fi
+
+    let &quot;row = $r + 1&quot;                    # По нижней строке.
+    IsValid $t_bot $row
+    if [ $? -eq &quot;$TRUE&quot; ]
+    then
+      if [ ${array[$t_bot]} = &quot;$ALIVE1&quot; ]
+      then
+        let &quot;count += 1&quot;
+      fi
+    fi
+
+  done
+
+
+  if [ ${array[$cell_number]} = &quot;$ALIVE1&quot; ]
+  then
+    let &quot;count -= 1&quot;        #  Убедиться, что сама проверяемая ячейка
+  fi                        #+ не была подсчитана.
+
+
+  return $count
+
+}
+
+next_gen ()               # Обновить массив, в котором содержится информация о новом &quot;поколении&quot;.
+{
+
+local array
+local i=0
+
+array=( `echo &quot;$1&quot;` )     # Преобразовать в массив.
+
+while [ &quot;$i&quot; -lt &quot;$cells&quot; ]
+do
+  IsAlive &quot;$1&quot; $i ${array[$i]}   # &quot;Живая&quot;?
+  if [ $? -eq &quot;$ALIVE&quot; ]
+  then                           #  Если &quot;живая&quot;, то
+    array[$i]=.                  #+ записать точку.
+  else
+    array[$i]=&quot;_&quot;                #  Иначе -- символ подчеркивания
+   fi                            #+ (который позднее заменится на пробел).
+  let &quot;i += 1&quot;
+done
+
+
+# let &quot;generation += 1&quot;   # Увеличить счетчик поколений.
+
+# Подготовка переменных, для передачи в функцию &quot;display&quot;.
+avar=`echo ${array[@]}`   # Преобразовать массив в строку.
+display &quot;$avar&quot;           # Вывести его.
+echo; echo
+echo &quot;Поколение $generation -- живых особей $alive&quot;
+
+if [ &quot;$alive&quot; -eq 0 ]
+then
+  echo
+  echo &quot;Преждеверменное завершение: не осталось ни одной живой особи!&quot;
+  exit $NONE_ALIVE        #  Нет смысла продолжать
+fi                        #+ если не осталось ни одной живой особи
+
+}
+
+
+# =========================================================
+
+# main ()
+
+# Загрузить начальное поколение из файла.
+initial=( `cat &quot;$startfile&quot; | sed -e &#39;/#/d&#39; | tr -d &#39;\n&#39; |\
+sed -e &#39;s/\./\. /g&#39; -e &#39;s/_/_ /g&#39;` )
+# Удалить строки, начинающиеся с символа &#39;#&#39; -- комментарии.
+# Удалить строки перевода строки и вставить пробелы между элементами.
+
+clear          # Очистка экрана.
+
+echo #       Заголовок
+echo &quot;=======================&quot;
+echo &quot;    $GENERATIONS поколений&quot;
+echo &quot;           в&quot;
+echo &quot;      игре \&quot; ЖИЗНЬ\&quot;&quot;
+echo &quot;=======================&quot;
+
+
+# -------- Вывести первое поколение. --------
+Gen0=`echo ${initial[@]}`
+display &quot;$Gen0&quot;           # Тлько вывод.
+echo; echo
+echo &quot;Поколение $generation -- живых особей $alive&quot;
+# -------------------------------------------
+
+
+let &quot;generation += 1&quot;     # Нарастить счетчик поколений.
+echo
+
+# ------- Вывести второе поколение. -------
+Cur=`echo ${initial[@]}`
+next_gen &quot;$Cur&quot;          # Обновить и вывести.
+# ------------------------------------------
+
+let &quot;generation += 1&quot;     # Нарастить счетчик поколений.
+
+# ------ Основной цикл игры ------
+while [ &quot;$generation&quot; -le &quot;$GENERATIONS&quot; ]
+do
+  Cur=&quot;$avar&quot;
+  next_gen &quot;$Cur&quot;
+  let &quot;generation += 1&quot;
+done
+# ==============================================================
+
+echo
+
+exit 0
+
+# --------------------------------------------------------------
+# Этот сценарий имеет недоработку.
+# Граничные ячейки сверху, снизу и сбоков  остаются пустыми.
+# Упражнение: Доработайте сценарий таким образом, чтобы ,
+# +         левая и правая стороны как бы &quot;соприкасались&quot;,
+# +         так же и верхняя и нижняя стороны.
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="GEN0DATA"></a>
+
+        <p><strong>Пример A-12. Файл с первым поколением для игры <span
+         class="QUOTE">&quot;Жизнь&quot;</span></strong></p>
+<pre
+ class="PROGRAMLISTING">
+# Это файл-пример, содержащий &quot;поколение 0&quot;, для сценария &quot;life.sh&quot;.
+# --------------------------------------------------------------
+#  Игровое поле имеет размер 10 x 10, точкой обозначается &quot;живая&quot; особь,
+#+ символом подчеркивания -- пустая ячейка. Мы не можем использовать пробелы,
+#+ для обозначения пустых ячеек, из-за особенностей строения массивов в Bash.
+#  [Упражнение для читателей: объясните, почему?.]
+#
+# Строки, начинающиеся с символа &#39;#&#39; считаются комментариями, сценарий их игнорирует.
+__.__..___
+___._.____
+____.___..
+_._______.
+____._____
+..__...___
+____._____
+___...____
+__.._..___
+_..___..__
+</pre>
+      </div>
+
+      <p>+++</p>
+
+      <p>Следующие два сценария предоставил Mark Moraes, из
+      университета в Торонто. См. файл <span
+       class="QUOTE">&quot;Moraes-COPYRIGHT&quot;</span>, который
+      содержит указание на авторские права.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="BEHEAD"></a>
+
+        <p><strong>Пример A-13. behead: Удаление заголовков из
+        электронных писем и новостей</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#! /bin/sh
+# Удаление заголовков из электронных писем и новостей т.е. до первой
+# пустой строки
+# Mark Moraes, Университет в Торонто
+
+# ==&gt; Такие комментарии добавлены автором документа.
+
+if [ $# -eq 0 ]; then
+# ==&gt; Если входной аргумент не задан (файл), то выводить результат на stdin.
+        sed -e &#39;1,/^$/d&#39; -e &#39;/^[        ]*$/d&#39;
+        # --&gt; Удалить пустые строки и все строки предшествующие им
+else
+# ==&gt; Если аргумент командной строки задан, то использовать его как имя файла.
+        for i do
+                sed -e &#39;1,/^$/d&#39; -e &#39;/^[        ]*$/d&#39; $i
+                # --&gt; То же, что и выше.
+        done
+fi
+
+# ==&gt; Упражнение: Добавьте проверку на наличие ошибок.
+# ==&gt;
+# ==&gt; Обратите внимание -- как похожи маленькие сценарии sed, за исключением передачи аргумента.
+# ==&gt; Можно ли его оформит в виде функции? Почему да или почему нет?
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="FTPGET"></a>
+
+        <p><strong>Пример A-14. ftpget: Скачивание файлов по
+        ftp</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#! /bin/sh
+# $Id: ftpget,v 1.2 91/05/07 21:15:43 moraes Exp $
+# Сценарий устанавливает анонимное соединение с ftp-сервером.
+# Простой и быстрый - написан как дополнение к ftplist
+# -h -- удаленный сервер (по-умолчанию prep.ai.mit.edu)
+# -d -- каталог на сервере - вы можете указать последовательность из нескольких ключей -d
+# Если вы используете относительные пути,
+# будьте внимательны при задании последовательности.
+# (по-умолчанию -- каталог пользователя ftp)
+# -v -- &quot;многословный&quot; режим, будет показывать все ответы ftp-сервера
+# -f -- file[:localfile] скачивает удаленный file и записывает под именем localfile
+# -m -- шаблон для mget. Не забудьте взять в кавычки!
+# -c -- локальный каталог
+# Например,
+#       ftpget -h expo.lcs.mit.edu -d contrib -f xplaces.shar:xplaces.sh \
+#               -d ../pub/R3/fixes -c ~/fixes -m &#39;fix*&#39;
+# Эта команда загрузит файл xplaces.shar из ~ftp/contrib с expo.lcs.mit.edu
+# и сохранит под именем xplaces.sh в текущем каталоге, затем заберет все исправления (fixes)
+# из ~ftp/pub/R3/fixes и поместит их в каталог ~/fixes.
+# Очевидно, что последовательность ключей и аргументов очень важна, поскольку
+# она определяет последовательность операций, выполняемых с удаленным ftp-сервером
+#
+# Mark Moraes (moraes@csri.toronto.edu), Feb 1, 1989
+#
+
+
+# ==&gt; Эти комментарии добавлены автором документа.
+
+# PATH=/local/bin:/usr/ucb:/usr/bin:/bin
+# export PATH
+# ==&gt; Первые две строки в оригинальном сценарии вероятно излишни.
+
+TMPFILE=/tmp/ftp.$$
+# ==&gt; Создан временный файл
+
+SITE=`domainname`.toronto.edu
+# ==&gt; &#39;domainname&#39; подобен &#39;hostname&#39;
+
+usage=&quot;Порядок использования: $0 [-h удаленный_сервер] [-d удаленный_каталог]... [-f удаленный_файл:локальный_файл]... \
+                [-c локальный_каталог] [-m шаблон_имен_файлов] [-v]&quot;
+ftpflags=&quot;-i -n&quot;
+verbflag=
+set -f          # разрешить подстановку имен файлов (globbing) для опции -m
+set x `getopt vh:d:c:m:f: $*`
+if [ $? != 0 ]; then
+        echo $usage
+        exit 65
+fi
+shift
+trap &#39;rm -f ${TMPFILE} ; exit&#39; 0 1 2 3 15
+echo &quot;user anonymous ${USER-gnu}@${SITE} &gt; ${TMPFILE}&quot;
+# ==&gt; Добавлены кавычки (рекомендуется).
+echo binary &gt;&gt; ${TMPFILE}
+for i in $*   # ==&gt; Разбор командной строки.
+do
+        case $i in
+        -v) verbflag=-v; echo hash &gt;&gt; ${TMPFILE}; shift;;
+        -h) remhost=$2; shift 2;;
+        -d) echo cd $2 &gt;&gt; ${TMPFILE};
+            if [ x${verbflag} != x ]; then
+                echo pwd &gt;&gt; ${TMPFILE};
+            fi;
+            shift 2;;
+        -c) echo lcd $2 &gt;&gt; ${TMPFILE}; shift 2;;
+        -m) echo mget &quot;$2&quot; &gt;&gt; ${TMPFILE}; shift 2;;
+        -f) f1=`expr &quot;$2&quot; : &quot;\([^:]*\).*&quot;`; f2=`expr &quot;$2&quot; : &quot;[^:]*:\(.*\)&quot;`;
+            echo get ${f1} ${f2} &gt;&gt; ${TMPFILE}; shift 2;;
+        --) shift; break;;
+        esac
+done
+if [ $# -ne 0 ]; then
+        echo $usage
+        exit 65   # ==&gt; В оригинале было &quot;exit 2&quot;, изменено в соответствии со стандартами.
+fi
+if [ x${verbflag} != x ]; then
+        ftpflags=&quot;${ftpflags} -v&quot;
+fi
+if [ x${remhost} = x ]; then
+        remhost=prep.ai.mit.edu
+        # ==&gt; Здесь можете указать свой ftp-сервер по-умолчанию.
+fi
+echo quit &gt;&gt; ${TMPFILE}
+# ==&gt; Все команды сохранены во временном файле.
+
+ftp ${ftpflags} ${remhost} &lt; ${TMPFILE}
+# ==&gt; Теперь обработать пакетный файл.
+
+rm -f ${TMPFILE}
+# ==&gt; В заключение, удалить временный файл (можно скопировать его в системный журнал).
+
+
+# ==&gt; Упражнения:
+# ==&gt; ----------
+# ==&gt; 1) Добавьте обработку ошибок.
+# ==&gt; 2) Добавьте уведомление звуковым сигналом.
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="MORCOPY"></a>
+
+        <p><strong>Пример A-15. Указание на авторские
+        права</strong></p>
+<pre
+ class="PROGRAMLISTING">
+Следующее соглащение об авторских правах относится к двум, включенным в книгу,
+сценариям от Mark Moraes: &quot;behead.sh&quot; и &quot;ftpget.sh&quot;
+
+/*
+ * Copyright University of Toronto 1988, 1989.
+ * Автор: Mark Moraes
+ *
+ * Автор дает право на использование этого программного обеспечения
+ * его изменение и рапространение со следующими ограничениями:
+ *
+ * 1. Автор и Университет Торонто не отвечают
+ *    за последствия использования этого программного обеспечения,
+ *    какими ужасными бы они ни были,
+ *    даже если они вызваны ошибками в нем.
+ *
+ * 2. Указание на происхождение программного обеспечения не должно подвергаться изменениям,
+ *    явно или по оплошности. Так как некоторые пользователи обращаются к исходным текстам,
+ *    они обязательно должны быть включены в документацию.
+ *
+ * 3. Измененная версия должна содержать явное упоминание об этом и не должна
+ *    выдаваться за оригинал. Так как некоторые пользователи обращаются к исходным текстам,
+ *    они обязательно должны быть включены в документацию.
+ *
+ * 4. Это соглашение не может удаляться и/или изменяться.
+ */
+</pre>
+      </div>
+
+      <p>+</p>
+
+      <p>Antek Sawicki предоставил следующий сценарий, который
+      демонстрирует операцию подстановки параметров, обсуждавшуюся в <a
+       href="x4462.html">Section 9.3</a>.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="PW"></a>
+
+        <p><strong>Пример A-16. password: Генератор случайного 8-ми
+        символьного пароля</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Для старых систем может потребоваться указать  #!/bin/bash2.
+#
+# Генератор случайных паролей для bash 2.x
+# Автор: Antek Sawicki &lt;tenox@tenox.tc&gt;,
+# который великодушно позволил использовать его в данном документе.
+#
+# ==&gt; Комментарии, добавленные автором документа ==&gt;
+
+
+MATRIX=&quot;0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&quot;
+LENGTH=&quot;8&quot;
+# ==&gt; &#39;LENGTH&#39; можно увеличить, для генерации более длинных паролей.
+
+
+while [ &quot;${n:=1}&quot; -le &quot;$LENGTH&quot; ]
+# ==&gt; Напоминаю, что &quot;:=&quot; -- это оператор &quot;подстановки значения по-умолчанию&quot;.
+# ==&gt; Таким образом, если &#39;n&#39; не инициализирована, то в нее заносится 1.
+do
+        PASS=&quot;$PASS${MATRIX:$(($RANDOM%${#MATRIX})):1}&quot;
+        # ==&gt; Хитро, хитро....
+
+        # ==&gt; Начнем с самых внутренних скобок...
+        # ==&gt; ${#MATRIX} -- возвращает длину массива MATRIX.
+
+        # ==&gt; $RANDOM%${#MATRIX} -- возвращает случайное число
+        # ==&gt; в диапазоне 1 .. ДЛИНА_МАССИВА(MATRIX) - 1.
+
+        # ==&gt; ${MATRIX:$(($RANDOM%${#MATRIX})):1}
+        # ==&gt; возвращает символ из MATRIX, из случайной позиции (найденной выше).
+        # ==&gt; См. подстановку параметров {var:pos:len} в Разделе 3.3.1
+        # ==&gt; и примеры в этом разделе.
+
+        # ==&gt; PASS=... -- добавление символа к строке PASS, полученной на предыдущих итерациях.
+
+        # ==&gt; Чтобы детальнее проследить ход работы цикла, раскомментируйте следующую строку
+        # ==&gt;             echo &quot;$PASS&quot;
+        # ==&gt; Вы увидите, как на каждом проходе цикла,
+        # ==&gt; к строке PASS добавляется по одному символу.
+
+        let n+=1
+        # ==&gt; Увеличить &#39;n&#39; перед началом следующей итерации.
+done
+
+echo &quot;$PASS&quot;      # ==&gt; Или перенаправьте в файл, если пожелаете.
+
+exit 0
+</pre>
+      </div>
+
+      <p>+</p>
+
+      <p>James R. Van Zandt предоставил следующий сценарий, который
+      демонстрирует применение именованных каналов, по его словам,
+      <span
+       class="QUOTE">&quot;на самом деле -- упражнение на применение
+      кавычек и на экранирование&quot;</span>.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="FIFO"></a>
+
+        <p><strong>Пример A-17. fifo: Создание резервных копий с
+        помощью именованных каналов</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# ==&gt; Автор:James R. Van Zandt
+# ==&gt; используется с его разрешения.
+
+# ==&gt; Комментарии, добавленные автором документа.
+
+
+  HERE=`uname -n`    # ==&gt; hostname
+  THERE=bilbo
+  echo &quot;начало создания резервной копии на $THERE, за `date +%r`&quot;
+  # ==&gt; `date +%r` возвращает время в 12-ти часовом формате, т.е. &quot;08:08:34 PM&quot;.
+
+  # убедиться в том, что /pipe -- это действительно канал, а не простой файл
+  rm -rf /pipe
+  mkfifo /pipe       # ==&gt; Создание &quot;именованного канала&quot;, с именем &quot;/pipe&quot;.
+
+  # ==&gt; &#39;su xyz&#39; -- запускает команду от имени порльзователя &quot;xyz&quot;.
+  # ==&gt; &#39;ssh&#39; -- вызов secure shell (вход на удаленную систему).
+  su xyz -c &quot;ssh $THERE \&quot;cat &gt;/home/xyz/backup/${HERE}-daily.tar.gz\&quot; &lt; /pipe&quot;&amp;
+  cd /
+  tar -czf - bin boot dev etc home info lib man root sbin share usr var &gt;/pipe
+  # ==&gt; Именованный канал /pipe, используется для передачи данных между процессами:
+  # ==&gt; &#39;tar/gzip&#39; пишет в /pipe, а &#39;ssh&#39; -- читает из /pipe.
+
+  # ==&gt; В результате будет получена резервная копия всех основных каталогов.
+
+  # ==&gt; В чем состоит преимущество именованного канала, в данной ситуации,
+        # ==&gt; перед неименованным каналом &quot;|&quot; ?
+  # ==&gt; Будет ли работать неименованный канал в данной ситуации?
+
+
+  exit 0
+</pre>
+      </div>
+
+      <p>+</p>
+
+      <p>Stephane Chazelas предоставил следующий сценарий, который
+      демонстрирует возможность генерации простых чисел без
+      использования массивов.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="PRIMES"></a>
+
+        <p><strong>Пример A-18. Генерация простых чисел, с
+        использованием оператора деления по модулю (остаток от
+        деления)</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# primes.sh: Генерация простых чисел, без использования массивов.
+# Автор: Stephane Chazelas.
+
+#  Этот сценарий не использует класический алгоритм &quot;Решето Эратосфена&quot;,
+#+ вместо него используется более понятный метод проверки каждого кандидата в простые числа
+#+ путем поиска делителей, с помощью оператора нахождения остатка от деления &quot;%&quot;.
+
+
+LIMIT=1000                    # Простые от 2 до 1000
+
+Primes()
+{
+ (( n = $1 + 1 ))             # Перейти к следующему числу.
+ shift                        # Следующий параметр в списке.
+#  echo &quot;_n=$n i=$i_&quot;
+
+ if (( n == LIMIT ))
+ then echo $*
+ return
+ fi
+
+ for i; do                    # &quot;i&quot; устанавливается в &quot;@&quot;, предыдущее значение $n.
+#   echo &quot;-n=$n i=$i-&quot;
+   (( i * i &gt; n )) &amp;&amp; break   # Оптимизация.
+   (( n % i )) &amp;&amp; continue    # Отсечь составное число с помощью оператора &quot;%&quot;.
+   Primes $n $@               # Рекурсивный вызов внутри цикла.
+   return
+   done
+
+   Primes $n $@ $n            # Рекурсивный вызов за пределами цикла.
+                              # Последовательное накопление позиционных параметров.
+                              # в &quot;$@&quot; накапливаются простые числа.
+}
+
+Primes 1
+
+exit 0
+
+# Раскомментарьте строки 16 и 24, это поможет понять суть происходящего.
+
+# Сравните скоростные характеристики этого сценария и сценария (ex68.sh),
+# реализующего алгоритм &quot;Решето Эратосфена&quot;.
+
+# Упражнение: Попробуйте реализовать этот сценарий без использования рекурсии.
+#             Это даст некоторый выигрыш в скорости.
+</pre>
+      </div>
+
+      <p>+</p>
+
+      <p>Jordi Sanfeliu дал согласие на публикацию своего сценария
+      <span
+       class="emphasis"><em
+       class="EMPHASIS">tree</em></span>.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="TREE"></a>
+
+        <p><strong>Пример A-19. tree: Вывод дерева
+        каталогов</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/sh
+#         @(#) tree      1.1  30/11/95       by Jordi Sanfeliu
+#                                         email: mikaku@fiwix.org
+#
+#         Начальная версия:  1.0  30/11/95
+#         Следующая версия:  1.1  24/02/97   Now, with symbolic links
+#         Исправления     :  Ian Kjos, поддержка недоступных каталогов
+#                           email: beth13@mail.utexas.edu
+#
+#         Tree -- средство просмотра дерева каталогов (очевидно :-) )
+#
+
+# ==&gt; Используется в данном документе с разрешения автора сценария, Jordi Sanfeliu.
+# ==&gt; Комментарии, добавленные автором документа.
+# ==&gt; Добавлено &quot;окавычивание&quot; аргументов.
+
+
+search () {
+   for dir in `echo *`
+   # ==&gt; `echo *` список всех файлов в текущем каталоге, без символов перевода строки.
+   # ==&gt; Тот же эффект дает     for dir in *
+   # ==&gt; но &quot;dir in `echo *`&quot; не обрабатывет файлы, чьи имена содержат пробелы.
+   do
+      if [ -d &quot;$dir&quot; ] ; then   # ==&gt; Если это каталог (-d)...
+         zz=0   # ==&gt; Временная переменная, для сохранения уровня вложенности каталога.
+         while [ $zz != $deep ]    # Keep track of inner nested loop.
+         do
+            echo -n &quot;|   &quot;    # ==&gt; Показать символ вертикальной связи,
+                              # ==&gt; с 2 пробелами и без перевода строки.
+            zz=`expr $zz + 1` # ==&gt; Нарастить zz.
+         done
+         if [ -L &quot;$dir&quot; ] ; then   # ==&gt; Если символическая ссылка на каталог...
+            echo &quot;+---$dir&quot; `ls -l $dir | sed &#39;s/^.*&#39;$dir&#39; //&#39;`
+            # ==&gt; Показать горизонтальный соединитель и имя связянного каталога, но...
+            # ==&gt; без указания даты/времени.
+         else
+            echo &quot;+---$dir&quot;      # ==&gt; Вывести горизонтальный соединитель...
+                                 # ==&gt; и название каталога.
+            if cd &quot;$dir&quot; ; then  # ==&gt; Если можно войти в каталог...
+               deep=`expr $deep + 1`   # ==&gt; Нарастить уровень вложенности.
+               search     # рекурсия ;-)
+               numdirs=`expr $numdirs + 1`   # ==&gt; Нарастить счетчик каталогов.
+            fi
+         fi
+      fi
+   done
+   cd ..   # ==&gt; Подняться на один уровень вверх.
+   if [ &quot;$deep&quot; ] ; then  # ==&gt; Если depth = 0 (возвращает TRUE)...
+      swfi=1              # ==&gt; выставить признак окончания поиска.
+   fi
+   deep=`expr $deep - 1`  # ==&gt; Уменьшить уровень вложенности.
+}
+
+# - Main -
+if [ $# = 0 ] ; then
+   cd `pwd`    # ==&gt; Если аргумент командной строки отсутствует, то используется текущий каталог.
+else
+   cd $1       # ==&gt; иначе перейти в заданный каталог.
+fi
+echo &quot;Начальный каталог = `pwd`&quot;
+swfi=0      # ==&gt; Признак завершения поиска.
+deep=0      # ==&gt; Уровень вложенности.
+numdirs=0
+zz=0
+
+while [ &quot;$swfi&quot; != 1 ]   # Пока поиск не закончен...
+do
+   search   # ==&gt; Вызвать функцию поиска.
+done
+echo &quot;Всего каталогов = $numdirs&quot;
+
+exit 0
+# ==&gt; Попробуйте разобраться в том как этот сценарий работает.
+</pre>
+      </div>
+
+      <p>Noah Friedman дал разрешение на публикацию своей библиотеки
+      <span
+       class="emphasis"><em
+       class="EMPHASIS">функций для работы со строками</em></span>,
+      которая, по сути, воспроизводит некоторые библиотечные функции
+      языка C.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="STRING"></a>
+
+        <p><strong>Пример A-20. Функции для работы со
+        строками</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# string.bash --- эмуляция библиотеки функций string(3)
+# Автор: Noah Friedman &lt;friedman@prep.ai.mit.edu&gt;
+# ==&gt;     Используется с его разрешения.
+# Дата создания: 1992-07-01
+# Дата последней модификации: 1993-09-29
+# Public domain
+
+# Преобразование в синтаксис bash v2 выполнил Chet Ramey
+
+# Комментарий:
+# Код:
+
+#:docstring strcat:
+# Порядок использования: strcat s1 s2
+#
+# Strcat добавляет содержимое переменной s2 к переменной s1.
+#
+# Пример:
+#    a=&quot;foo&quot;
+#    b=&quot;bar&quot;
+#    strcat a b
+#    echo $a
+#    =&gt; foobar
+#
+#:end docstring:
+
+###;;;autoload
+function strcat ()
+{
+    local s1_val s2_val
+
+    s1_val=${!1}                        # косвенная ссылка
+    s2_val=${!2}
+    eval &quot;$1&quot;=\&#39;&quot;${s1_val}${s2_val}&quot;\&#39;
+    # ==&gt; eval $1=&#39;${s1_val}${s2_val}&#39; во избежание проблем,
+    # ==&gt; если одна из переменных содержит одиночную кавычку.
+}
+
+#:docstring strncat:
+# Порядок использования: strncat s1 s2 $n
+#
+# Аналог strcat, но добавляет не более n символов из
+# переменной s2. Результат выводится на stdout.
+#
+# Пример:
+#    a=foo
+#    b=barbaz
+#    strncat a b 3
+#    echo $a
+#    =&gt; foobar
+#
+#:end docstring:
+
+###;;;autoload
+function strncat ()
+{
+    local s1=&quot;$1&quot;
+    local s2=&quot;$2&quot;
+    local -i n=&quot;$3&quot;
+    local s1_val s2_val
+
+    s1_val=${!s1}                       # ==&gt; косвенная ссылка
+    s2_val=${!s2}
+
+    if [ ${#s2_val} -gt ${n} ]; then
+       s2_val=${s2_val:0:$n}            # ==&gt; выделение подстроки
+    fi
+
+    eval &quot;$s1&quot;=\&#39;&quot;${s1_val}${s2_val}&quot;\&#39;
+    # ==&gt; eval $1=&#39;${s1_val}${s2_val}&#39; во избежание проблем,
+    # ==&gt; если одна из переменных содержит одиночную кавычку.
+}
+
+#:docstring strcmp:
+# Порядок использования: strcmp $s1 $s2
+#
+# Strcmp сравнивает две строки и возвращает число меньше, равно
+# или больше нуля, в зависимости от результатов сравнения.
+#:end docstring:
+
+###;;;autoload
+function strcmp ()
+{
+    [ &quot;$1&quot; = &quot;$2&quot; ] &amp;&amp; return 0
+
+    [ &quot;${1}&quot; &#39;&lt;&#39; &quot;${2}&quot; ] &gt; /dev/null &amp;&amp; return -1
+
+    return 1
+}
+
+#:docstring strncmp:
+# Порядок использования: strncmp $s1 $s2 $n
+#
+# Подобна strcmp, но сравнивает не более n символов
+#:end docstring:
+
+###;;;autoload
+function strncmp ()
+{
+    if [ -z &quot;${3}&quot; -o &quot;${3}&quot; -le &quot;0&quot; ]; then
+       return 0
+    fi
+
+    if [ ${3} -ge ${#1} -a ${3} -ge ${#2} ]; then
+       strcmp &quot;$1&quot; &quot;$2&quot;
+       return $?
+    else
+       s1=${1:0:$3}
+       s2=${2:0:$3}
+       strcmp $s1 $s2
+       return $?
+    fi
+}
+
+#:docstring strlen:
+# Порядок использования: strlen s
+#
+# возвращает количество символов в строке s.
+#:end docstring:
+
+###;;;autoload
+function strlen ()
+{
+    eval echo &quot;\${#${1}}&quot;
+    # ==&gt; Возвращает длину переменной,
+    # ==&gt; чье имя передается как аргумент.
+}
+
+#:docstring strspn:
+# Порядок использования: strspn $s1 $s2
+#
+# Strspn возвращает максимальную длину сегмента в строке s1,
+# который полностью состоит из символов строки s2.
+#:end docstring:
+
+###;;;autoload
+function strspn ()
+{
+    # Сброс содержимого переменной IFS позволяет обрабатывать пробелы как обычные символы.
+    local IFS=
+    local result=&quot;${1%%[!${2}]*}&quot;
+
+    echo ${#result}
+}
+
+#:docstring strcspn:
+# Порядок использования: strcspn $s1 $s2
+#
+# Strcspn возвращает максимальную длину сегмента в строке s1,
+# который полностью не содержит символы из строки s2.
+#:end docstring:
+
+###;;;autoload
+function strcspn ()
+{
+    # Сброс содержимого переменной IFS позволяет обрабатывать пробелы как обычные символы.
+    local IFS=
+    local result=&quot;${1%%[${2}]*}&quot;
+
+    echo ${#result}
+}
+
+#:docstring strstr:
+# Порядок использования: strstr s1 s2
+#
+# Strstr выводит подстроку первого вхождения строки s2
+# в строке s1, или ничего не выводит, если подстрока s2 в строке s1 не найдена.
+# Если s2 содержит строку нулевой длины, то strstr выводит строку s1.
+#:end docstring:
+
+###;;;autoload
+function strstr ()
+{
+    # Если s2 -- строка нулевой длины, то вывести строку s1
+    [ ${#2} -eq 0 ] &amp;&amp; { echo &quot;$1&quot; ; return 0; }
+
+    # не выводить ничего, если s2 не найдена в s1
+    case &quot;$1&quot; in
+    *$2*) ;;
+    *) return 1;;
+    esac
+
+    # использовать шаблон, для удаления всех несоответствий после s2 в s1
+    first=${1/$2*/}
+
+    # Затем удалить все несоответствия с начала строки
+    echo &quot;${1##$first}&quot;
+}
+
+#:docstring strtok:
+# Порядок использования: strtok s1 s2
+#
+# Strtok рассматривает строку s1, как последовательность из 0, или более,
+# лексем (токенов), разделенных символами строки s2
+# При первом вызове (с непустым аргументом s1)
+# выводит первую лексему на stdout.
+# Функция запоминает свое положение в строке s1 от вызова к вызову,
+# так что последующие вызовы должны производиться с пустым первым аргументом,
+# чтобы продолжить выделение лексем из строки s1.
+# После вывода последней лексемы, все последующие вызовы будут выводить на stdout
+# пустое значение. Строка-разделитель может изменяться от вызова к вызову.
+#:end docstring:
+
+###;;;autoload
+function strtok ()
+{
+ :
+}
+
+#:docstring strtrunc:
+# Порядок использования: strtrunc $n $s1 {$s2} {$...}
+#
+# Используется многими функциями, такими как strncmp, чтобы отсечь &quot;лишние&quot; символы.
+# Выводит первые n символов в каждой из строк s1 s2 ... на stdout.
+#:end docstring:
+
+###;;;autoload
+function strtrunc ()
+{
+    n=$1 ; shift
+    for z; do
+        echo &quot;${z:0:$n}&quot;
+    done
+}
+
+# provide string
+
+# string.bash конец библиотеки
+
+
+# ========================================================================== #
+# ==&gt; Все, что находится ниже, добавлено автором документа.
+
+# ==&gt; Чтобы этот сценарий можно было использовать как &quot;библиотеку&quot;, необходимо
+# ==&gt; удалить все, что находится ниже и &quot;source&quot; этот файл в вашем сценарии.
+
+# strcat
+string0=one
+string1=two
+echo
+echo &quot;Проверка функции \&quot;strcat\&quot; :&quot;
+echo &quot;Изначально \&quot;string0\&quot; = $string0&quot;
+echo &quot;\&quot;string1\&quot; = $string1&quot;
+strcat string0 string1
+echo &quot;Теперь \&quot;string0\&quot; = $string0&quot;
+echo
+
+# strlen
+echo
+echo &quot;Проверка функции  \&quot;strlen\&quot; :&quot;
+str=123456789
+echo &quot;\&quot;str\&quot; = $str&quot;
+echo -n &quot;Длина строки \&quot;str\&quot; = &quot;
+strlen str
+echo
+
+
+
+# Упражнение:
+# ---------
+# Добавьте проверку остальных функций.
+
+
+exit 0
+</pre>
+      </div>
+
+      <p>Michael Zick предоставил очень сложный пример работы с
+      массивами и утилитой <a
+       href="x7794.html#MD5SUMREF">md5sum</a>, используемой для
+      кодирования сведений о каталоге.</p>
+
+      <p>От переводчика:</p>
+
+      <p>К своему стыду вынужден признаться, что перевод комментариев
+      оказался мне не &quot;по зубам&quot;, поэтому оставляю этот
+      сценарий без перевода.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="DIRECTORYINFO"></a>
+
+        <p><strong>Пример A-21. Directory information</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#! /bin/bash
+# directory-info.sh
+# Parses and lists directory information.
+
+# NOTE: Change lines 273 and 353 per &quot;README&quot; file.
+
+# Michael Zick is the author of this script.
+# Used here with his permission.
+
+# Controls
+# If overridden by command arguments, they must be in the order:
+#   Arg1: &quot;Descriptor Directory&quot;
+#   Arg2: &quot;Exclude Paths&quot;
+#   Arg3: &quot;Exclude Directories&quot;
+#
+# Environment Settings override Defaults.
+# Command arguments override Environment Settings.
+
+# Default location for content addressed file descriptors.
+MD5UCFS=${1:-${MD5UCFS:-&#39;/tmpfs/ucfs&#39;}}
+
+# Directory paths never to list or enter
+declare -a \
+  EXCLUDE_PATHS=${2:-${EXCLUDE_PATHS:-&#39;(/proc /dev /devfs /tmpfs)&#39;}}
+
+# Directories never to list or enter
+declare -a \
+  EXCLUDE_DIRS=${3:-${EXCLUDE_DIRS:-&#39;(ucfs lost+found tmp wtmp)&#39;}}
+
+# Files never to list or enter
+declare -a \
+  EXCLUDE_FILES=${3:-${EXCLUDE_FILES:-&#39;(core &quot;Name with Spaces&quot;)&#39;}}
+
+
+# Here document used as a comment block.
+: &lt;&lt; LSfieldsDoc
+# # # # # List Filesystem Directory Information # # # # #
+#
+#       ListDirectory &quot;FileGlob&quot; &quot;Field-Array-Name&quot;
+# or
+#       ListDirectory -of &quot;FileGlob&quot; &quot;Field-Array-Filename&quot;
+#       &#39;-of&#39; meaning &#39;output to filename&#39;
+# # # # #
+
+String format description based on: ls (GNU fileutils) version 4.0.36
+
+Produces a line (or more) formatted:
+inode permissions hard-links owner group ...
+32736 -rw-------    1 mszick   mszick
+
+size    day month date hh:mm:ss year path
+2756608 Sun Apr 20 08:53:06 2003 /home/mszick/core
+
+Unless it is formatted:
+inode permissions hard-links owner group ...
+266705 crw-rw----    1    root  uucp
+
+major minor day month date hh:mm:ss year path
+4,  68 Sun Apr 20 09:27:33 2003 /dev/ttyS4
+NOTE: that pesky comma after the major number
+
+NOTE: the &#39;path&#39; may be multiple fields:
+/home/mszick/core
+/proc/982/fd/0 -&gt; /dev/null
+/proc/982/fd/1 -&gt; /home/mszick/.xsession-errors
+/proc/982/fd/13 -&gt; /tmp/tmpfZVVOCs (deleted)
+/proc/982/fd/7 -&gt; /tmp/kde-mszick/ksycoca
+/proc/982/fd/8 -&gt; socket:[11586]
+/proc/982/fd/9 -&gt; pipe:[11588]
+
+If that isn&#39;t enough to keep your parser guessing,
+either or both of the path components may be relative:
+../Built-Shared -&gt; Built-Static
+../linux-2.4.20.tar.bz2 -&gt; ../../../SRCS/linux-2.4.20.tar.bz2
+
+The first character of the 11 (10?) character permissions field:
+&#39;s&#39; Socket
+&#39;d&#39; Directory
+&#39;b&#39; Block device
+&#39;c&#39; Character device
+&#39;l&#39; Symbolic link
+NOTE: Hard links not marked - test for identical inode numbers
+on identical filesystems.
+All information about hard linked files are shared, except
+for the names and the name&#39;s location in the directory system.
+NOTE: A &quot;Hard link&quot; is known as a &quot;File Alias&quot; on some systems.
+&#39;-&#39; An undistingushed file
+
+Followed by three groups of letters for: User, Group, Others
+Character 1: &#39;-&#39; Not readable; &#39;r&#39; Readable
+Character 2: &#39;-&#39; Not writable; &#39;w&#39; Writable
+Character 3, User and Group: Combined execute and special
+&#39;-&#39; Not Executable, Not Special
+&#39;x&#39; Executable, Not Special
+&#39;s&#39; Executable, Special
+&#39;S&#39; Not Executable, Special
+Character 3, Others: Combined execute and sticky (tacky?)
+&#39;-&#39; Not Executable, Not Tacky
+&#39;x&#39; Executable, Not Tacky
+&#39;t&#39; Executable, Tacky
+&#39;T&#39; Not Executable, Tacky
+
+Followed by an access indicator
+Haven&#39;t tested this one, it may be the eleventh character
+or it may generate another field
+&#39; &#39; No alternate access
+&#39;+&#39; Alternate access
+LSfieldsDoc
+
+
+ListDirectory()
+{
+        local -a T
+        local -i of=0           # Default return in variable
+#       OLD_IFS=$IFS            # Using BASH default &#39; \t\n&#39;
+
+        case &quot;$#&quot; in
+        3)      case &quot;$1&quot; in
+                -of)    of=1 ; shift ;;
+                 * )    return 1 ;;
+                esac ;;
+        2)      : ;;            # Poor man&#39;s &quot;continue&quot;
+        *)      return 1 ;;
+        esac
+
+        # NOTE: the (ls) command is NOT quoted (&quot;)
+        T=( $(ls --inode --ignore-backups --almost-all --directory \
+        --full-time --color=none --time=status --sort=none \
+        --format=long $1) )
+
+        case $of in
+        # Assign T back to the array whose name was passed as $2
+                0) eval $2=\( \&quot;\$\{T\[@\]\}\&quot; \) ;;
+        # Write T into filename passed as $2
+                1) echo &quot;${T[@]}&quot; &gt; &quot;$2&quot; ;;
+        esac
+        return 0
+   }
+
+# # # # # Is that string a legal number? # # # # #
+#
+#       IsNumber &quot;Var&quot;
+# # # # # There has to be a better way, sigh...
+
+IsNumber()
+{
+        local -i int
+        if [ $# -eq 0 ]
+        then
+                return 1
+        else
+                (let int=$1)  2&gt;/dev/null
+                return $?       # Exit status of the let thread
+        fi
+}
+
+# # # # # Index Filesystem Directory Information # # # # #
+#
+#       IndexList &quot;Field-Array-Name&quot; &quot;Index-Array-Name&quot;
+# or
+#       IndexList -if Field-Array-Filename Index-Array-Name
+#       IndexList -of Field-Array-Name Index-Array-Filename
+#       IndexList -if -of Field-Array-Filename Index-Array-Filename
+# # # # #
+
+: &lt;&lt; IndexListDoc
+Walk an array of directory fields produced by ListDirectory
+
+Having suppressed the line breaks in an otherwise line oriented
+report, build an index to the array element which starts each line.
+
+Each line gets two index entries, the first element of each line
+(inode) and the element that holds the pathname of the file.
+
+The first index entry pair (Line-Number==0) are informational:
+Index-Array-Name[0] : Number of &quot;Lines&quot; indexed
+Index-Array-Name[1] : &quot;Current Line&quot; pointer into Index-Array-Name
+
+The following index pairs (if any) hold element indexes into
+the Field-Array-Name per:
+Index-Array-Name[Line-Number * 2] : The &quot;inode&quot; field element.
+NOTE: This distance may be either +11 or +12 elements.
+Index-Array-Name[(Line-Number * 2) + 1] : The &quot;pathname&quot; element.
+NOTE: This distance may be a variable number of elements.
+Next line index pair for Line-Number+1.
+IndexListDoc
+
+
+
+IndexList()
+{
+        local -a LIST                   # Local of listname passed
+        local -a -i INDEX=( 0 0 )       # Local of index to return
+        local -i Lidx Lcnt
+        local -i if=0 of=0              # Default to variable names
+
+        case &quot;$#&quot; in                    # Simplistic option testing
+                0) return 1 ;;
+                1) return 1 ;;
+                2) : ;;                 # Poor man&#39;s continue
+                3) case &quot;$1&quot; in
+                        -if) if=1 ;;
+                        -of) of=1 ;;
+                         * ) return 1 ;;
+                   esac ; shift ;;
+                4) if=1 ; of=1 ; shift ; shift ;;
+                *) return 1
+        esac
+
+        # Make local copy of list
+        case &quot;$if&quot; in
+                0) eval LIST=\( \&quot;\$\{$1\[@\]\}\&quot; \) ;;
+                1) LIST=( $(cat $1) ) ;;
+        esac
+
+        # Grok (grope?) the array
+        Lcnt=${#LIST[@]}
+        Lidx=0
+        until (( Lidx &gt;= Lcnt ))
+        do
+        if IsNumber ${LIST[$Lidx]}
+        then
+                local -i inode name
+                local ft
+                inode=Lidx
+                local m=${LIST[$Lidx+2]}        # Hard Links field
+                ft=${LIST[$Lidx+1]:0:1}         # Fast-Stat
+                case $ft in
+                b)      ((Lidx+=12)) ;;         # Block device
+                c)      ((Lidx+=12)) ;;         # Character device
+                *)      ((Lidx+=11)) ;;         # Anything else
+                esac
+                name=Lidx
+                case $ft in
+                -)      ((Lidx+=1)) ;;          # The easy one
+                b)      ((Lidx+=1)) ;;          # Block device
+                c)      ((Lidx+=1)) ;;          # Character device
+                d)      ((Lidx+=1)) ;;          # The other easy one
+                l)      ((Lidx+=3)) ;;          # At LEAST two more fields
+#  A little more elegance here would handle pipes,
+#+ sockets, deleted files - later.
+                *)      until IsNumber ${LIST[$Lidx]} || ((Lidx &gt;= Lcnt))
+                        do
+                                ((Lidx+=1))
+                        done
+                        ;;                      # Not required
+                esac
+                INDEX[${#INDEX[*]}]=$inode
+                INDEX[${#INDEX[*]}]=$name
+                INDEX[0]=${INDEX[0]}+1          # One more &quot;line&quot; found
+# echo &quot;Line: ${INDEX[0]} Type: $ft Links: $m Inode: \
+# ${LIST[$inode]} Name: ${LIST[$name]}&quot;
+
+        else
+                ((Lidx+=1))
+        fi
+        done
+        case &quot;$of&quot; in
+                0) eval $2=\( \&quot;\$\{INDEX\[@\]\}\&quot; \) ;;
+                1) echo &quot;${INDEX[@]}&quot; &gt; &quot;$2&quot; ;;
+        esac
+        return 0                                # What could go wrong?
+}
+
+# # # # # Content Identify File # # # # #
+#
+#       DigestFile Input-Array-Name Digest-Array-Name
+# or
+#       DigestFile -if Input-FileName Digest-Array-Name
+# # # # #
+
+# Here document used as a comment block.
+: &lt;&lt;DigestFilesDoc
+
+The key (no pun intended) to a Unified Content File System (UCFS)
+is to distinguish the files in the system based on their content.
+Distinguishing files by their name is just, so, 20th Century.
+
+The content is distinguished by computing a checksum of that content.
+This version uses the md5sum program to generate a 128 bit checksum
+representative of the file&#39;s contents.
+There is a chance that two files having different content might
+generate the same checksum using md5sum (or any checksum).  Should
+that become a problem, then the use of md5sum can be replace by a
+cyrptographic signature.  But until then...
+
+The md5sum program is documented as outputting three fields (and it
+does), but when read it appears as two fields (array elements).  This
+is caused by the lack of whitespace between the second and third field.
+So this function gropes the md5sum output and returns:
+        [0]     32 character checksum in hexidecimal (UCFS filename)
+        [1]     Single character: &#39; &#39; text file, &#39;*&#39; binary file
+        [2]     Filesystem (20th Century Style) name
+        Note: That name may be the character &#39;-&#39; indicating STDIN read.
+
+DigestFilesDoc
+
+
+
+DigestFile()
+{
+        local if=0              # Default, variable name
+        local -a T1 T2
+
+        case &quot;$#&quot; in
+        3)      case &quot;$1&quot; in
+                -if)    if=1 ; shift ;;
+                 * )    return 1 ;;
+                esac ;;
+        2)      : ;;            # Poor man&#39;s &quot;continue&quot;
+        *)      return 1 ;;
+        esac
+
+        case $if in
+        0) eval T1=\( \&quot;\$\{$1\[@\]\}\&quot; \)
+           T2=( $(echo ${T1[@]} | md5sum -) )
+           ;;
+        1) T2=( $(md5sum $1) )
+           ;;
+        esac
+
+        case ${#T2[@]} in
+        0) return 1 ;;
+        1) return 1 ;;
+        2) case ${T2[1]:0:1} in         # SanScrit-2.0.5
+           \*) T2[${#T2[@]}]=${T2[1]:1}
+               T2[1]=\*
+               ;;
+            *) T2[${#T2[@]}]=${T2[1]}
+               T2[1]=&quot; &quot;
+               ;;
+           esac
+           ;;
+        3) : ;; # Assume it worked
+        *) return 1 ;;
+        esac
+
+        local -i len=${#T2[0]}
+        if [ $len -ne 32 ] ; then return 1 ; fi
+        eval $2=\( \&quot;\$\{T2\[@\]\}\&quot; \)
+}
+
+# # # # # Locate File # # # # #
+#
+#       LocateFile [-l] FileName Location-Array-Name
+# or
+#       LocateFile [-l] -of FileName Location-Array-FileName
+# # # # #
+
+# A file location is Filesystem-id and inode-number
+
+# Here document used as a comment block.
+: &lt;&lt;StatFieldsDoc
+        Based on stat, version 2.2
+        stat -t and stat -lt fields
+        [0]     name
+        [1]     Total size
+                File - number of bytes
+                Symbolic link - string length of pathname
+        [2]     Number of (512 byte) blocks allocated
+        [3]     File type and Access rights (hex)
+        [4]     User ID of owner
+        [5]     Group ID of owner
+        [6]     Device number
+        [7]     Inode number
+        [8]     Number of hard links
+        [9]     Device type (if inode device) Major
+        [10]    Device type (if inode device) Minor
+        [11]    Time of last access
+                May be disabled in &#39;mount&#39; with noatime
+                atime of files changed by exec, read, pipe, utime, mknod (mmap?)
+                atime of directories changed by addition/deletion of files
+        [12]    Time of last modification
+                mtime of files changed by write, truncate, utime, mknod
+                mtime of directories changed by addtition/deletion of files
+        [13]    Time of last change
+                ctime reflects time of changed inode information (owner, group
+                permissions, link count
+-*-*- Per:
+        Return code: 0
+        Size of array: 14
+        Contents of array
+        Element 0: /home/mszick
+        Element 1: 4096
+        Element 2: 8
+        Element 3: 41e8
+        Element 4: 500
+        Element 5: 500
+        Element 6: 303
+        Element 7: 32385
+        Element 8: 22
+        Element 9: 0
+        Element 10: 0
+        Element 11: 1051221030
+        Element 12: 1051214068
+        Element 13: 1051214068
+
+        For a link in the form of linkname -&gt; realname
+        stat -t  linkname returns the linkname (link) information
+        stat -lt linkname returns the realname information
+
+        stat -tf and stat -ltf fields
+        [0]     name
+        [1]     ID-0?           # Maybe someday, but Linux stat structure
+        [2]     ID-0?           # does not have either LABEL nor UUID
+                                # fields, currently information must come
+                                # from file-system specific utilities
+        These will be munged into:
+        [1]     UUID if possible
+        [2]     Volume Label if possible
+        Note: &#39;mount -l&#39; does return the label and could return the UUID
+
+        [3]     Maximum length of filenames
+        [4]     Filesystem type
+        [5]     Total blocks in the filesystem
+        [6]     Free blocks
+        [7]     Free blocks for non-root user(s)
+        [8]     Block size of the filesystem
+        [9]     Total inodes
+        [10]    Free inodes
+
+-*-*- Per:
+        Return code: 0
+        Size of array: 11
+        Contents of array
+        Element 0: /home/mszick
+        Element 1: 0
+        Element 2: 0
+        Element 3: 255
+        Element 4: ef53
+        Element 5: 2581445
+        Element 6: 2277180
+        Element 7: 2146050
+        Element 8: 4096
+        Element 9: 1311552
+        Element 10: 1276425
+
+StatFieldsDoc
+
+
+#       LocateFile [-l] FileName Location-Array-Name
+#       LocateFile [-l] -of FileName Location-Array-FileName
+
+LocateFile()
+{
+        local -a LOC LOC1 LOC2
+        local lk=&quot;&quot; of=0
+
+        case &quot;$#&quot; in
+        0) return 1 ;;
+        1) return 1 ;;
+        2) : ;;
+        *) while (( &quot;$#&quot; &gt; 2 ))
+           do
+              case &quot;$1&quot; in
+               -l) lk=-1 ;;
+              -of) of=1 ;;
+                *) return 1 ;;
+              esac
+           shift
+           done ;;
+        esac
+
+# More Sanscrit-2.0.5
+      # LOC1=( $(stat -t $lk $1) )
+      # LOC2=( $(stat -tf $lk $1) )
+      # Uncomment above two lines if system has &quot;stat&quot; command installed.
+        LOC=( ${LOC1[@]:0:1} ${LOC1[@]:3:11}
+              ${LOC2[@]:1:2} ${LOC2[@]:4:1} )
+
+        case &quot;$of&quot; in
+                0) eval $2=\( \&quot;\$\{LOC\[@\]\}\&quot; \) ;;
+                1) echo &quot;${LOC[@]}&quot; &gt; &quot;$2&quot; ;;
+        esac
+        return 0
+# Which yields (if you are lucky, and have &quot;stat&quot; installed)
+# -*-*- Location Discriptor -*-*-
+#       Return code: 0
+#       Size of array: 15
+#       Contents of array
+#       Element 0: /home/mszick         20th Century name
+#       Element 1: 41e8                 Type and Permissions
+#       Element 2: 500                  User
+#       Element 3: 500                  Group
+#       Element 4: 303                  Device
+#       Element 5: 32385                inode
+#       Element 6: 22                   Link count
+#       Element 7: 0                    Device Major
+#       Element 8: 0                    Device Minor
+#       Element 9: 1051224608           Last Access
+#       Element 10: 1051214068          Last Modify
+#       Element 11: 1051214068          Last Status
+#       Element 12: 0                   UUID (to be)
+#       Element 13: 0                   Volume Label (to be)
+#       Element 14: ef53                Filesystem type
+}
+
+
+
+# And then there was some test code
+
+ListArray() # ListArray Name
+{
+        local -a Ta
+
+        eval Ta=\( \&quot;\$\{$1\[@\]\}\&quot; \)
+        echo
+        echo &quot;-*-*- List of Array -*-*-&quot;
+        echo &quot;Size of array $1: ${#Ta[*]}&quot;
+        echo &quot;Contents of array $1:&quot;
+        for (( i=0 ; i&lt;${#Ta[*]} ; i++ ))
+        do
+            echo -e &quot;\tElement $i: ${Ta[$i]}&quot;
+        done
+        return 0
+}
+
+declare -a CUR_DIR
+# For small arrays
+ListDirectory &quot;${PWD}&quot; CUR_DIR
+ListArray CUR_DIR
+
+declare -a DIR_DIG
+DigestFile CUR_DIR DIR_DIG
+echo &quot;The new \&quot;name\&quot; (checksum) for ${CUR_DIR[9]} is ${DIR_DIG[0]}&quot;
+
+declare -a DIR_ENT
+# BIG_DIR # For really big arrays - use a temporary file in ramdisk
+# BIG-DIR # ListDirectory -of &quot;${CUR_DIR[11]}/*&quot; &quot;/tmpfs/junk2&quot;
+ListDirectory &quot;${CUR_DIR[11]}/*&quot; DIR_ENT
+
+declare -a DIR_IDX
+# BIG-DIR # IndexList -if &quot;/tmpfs/junk2&quot; DIR_IDX
+IndexList DIR_ENT DIR_IDX
+
+declare -a IDX_DIG
+# BIG-DIR # DIR_ENT=( $(cat /tmpfs/junk2) )
+# BIG-DIR # DigestFile -if /tmpfs/junk2 IDX_DIG
+DigestFile DIR_ENT IDX_DIG
+# Small (should) be able to parallize IndexList &amp; DigestFile
+# Large (should) be able to parallize IndexList &amp; DigestFile &amp; the assignment
+echo &quot;The \&quot;name\&quot; (checksum) for the contents of ${PWD} is ${IDX_DIG[0]}&quot;
+
+declare -a FILE_LOC
+LocateFile ${PWD} FILE_LOC
+ListArray FILE_LOC
+
+exit 0
+</pre>
+      </div>
+
+      <p>Stephane Chazelas демонстрирует возможность объектно
+      ориентированного подхода к программированию в Bash-сценариях.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="OBJORIENTED"></a>
+
+        <p><strong>Пример A-22. Объектно ориентированная база
+        данных</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# obj-oriented.sh: Объектно ориентрованный подход к программированию в сценариях.
+# Автор: Stephane Chazelas.
+
+
+person.new()        # Очень похоже на объявление класса в C++.
+{
+  local obj_name=$1 name=$2 firstname=$3 birthdate=$4
+
+  eval &quot;$obj_name.set_name() {
+          eval \&quot;$obj_name.get_name() {
+                   echo \$1
+                 }\&quot;
+        }&quot;
+
+  eval &quot;$obj_name.set_firstname() {
+          eval \&quot;$obj_name.get_firstname() {
+                   echo \$1
+                 }\&quot;
+        }&quot;
+
+  eval &quot;$obj_name.set_birthdate() {
+          eval \&quot;$obj_name.get_birthdate() {
+            echo \$1
+          }\&quot;
+          eval \&quot;$obj_name.show_birthdate() {
+            echo \$(date -d \&quot;1/1/1970 0:0:\$1 GMT\&quot;)
+          }\&quot;
+          eval \&quot;$obj_name.get_age() {
+            echo \$(( (\$(date +%s) - \$1) / 3600 / 24 / 365 ))
+          }\&quot;
+        }&quot;
+
+  $obj_name.set_name $name
+  $obj_name.set_firstname $firstname
+  $obj_name.set_birthdate $birthdate
+}
+
+echo
+
+person.new self Bozeman Bozo 101272413
+# Создается экземпляр класса &quot;person.new&quot; (фактически -- вызов функции с аргументами).
+
+self.get_firstname       #   Bozo
+self.get_name            #   Bozeman
+self.get_age             #   28
+self.get_birthdate       #   101272413
+self.show_birthdate      #   Sat Mar 17 20:13:33 MST 1973
+
+echo
+
+# typeset -f
+# чтобы просмотреть перечень созданных функций.
+
+exit 0
+</pre>
+      </div>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="b14059.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="a14586.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Литература</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"> </td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Маленький учебник по Sed и Awk</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

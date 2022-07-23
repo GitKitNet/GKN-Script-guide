@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Оптимизация</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Разное"
+     href="c13505.html">
+    <link
+     rel="PREVIOUS"
+     title="Цветные сценарии"
+     href="x13621.html">
+    <link
+     rel="NEXT"
+     title="Разные советы"
+     href="x13753.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x13621.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 33. Разное</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x13753.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="OPTIMIZATIONS"></a>33.6. Оптимизация</h1>
+
+      <p>По большей части, сценарии на языке командной оболочки,
+      используются для быстрого решения несложных задач. Поэтому
+      оптимизация сценариев, по скорости исполнения, не является
+      насущной проблемой. Тем не менее, представьте себе ситуацию,
+      когда сценарий, выполняющий довольно важную работу, в принципе
+      справляется со своей задачей, но делает это очень медленно.
+      Написание же аналогичной программы на языке компилирующего типа
+      -- неприемлемо. Самое простое решение -- переписать самые
+      медленные участки кода сценария. Возможно ли применить принципы
+      оптимизации к сценарию на практике?</p>
+
+      <p>Для начала проверьте все циклы в сценарии. Основная масса
+      времени уходит на работу в циклах. Если это возможно, вынесите
+      все ресурсоемкие операции за пределы циклов.</p>
+
+      <p>Старайтесь использовать <a
+       href="c5358.html#BUILTINREF">встроенные</a> команды. Они
+      исполняются значительно быстрее и, как правило, не запускают
+      подоболочку при вызове.</p>
+
+      <p>Избегайте использования избыточных команд, особенно это
+      относится к <a
+       href="c301.html#PIPEREF">конвейерам</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+cat &quot;$file&quot; | grep &quot;$word&quot;
+
+grep &quot;$word&quot; &quot;$file&quot;
+
+#  Эти команды дают один и тот же результат,
+#+ но вторая работает быстрее, поскольку запускает на один подпроцесс меньше.
+</pre>
+      Не следует злоупотреблять командой <a
+       href="c6407.html#CATREF">cat</a>.<br>
+      <br>
+
+      <p>Для профилирования сценариев, можно воспользоваться командами
+      <a
+       href="x6837.html#TIMREF">time</a> и <a
+       href="c5358.html#TIMESREF">times</a>. Не следует пренебрегать
+      возможностью переписать особенно критичные участки кода на языке
+      C или даже на ассемблере.</p>
+
+      <p>Попробуйте минимизировать количество операций с файлами. Bash
+      не &quot;страдает&quot; излишней эффективностью при работе с
+      файлами, попробуйте применить специализированные средства для
+      работы с файлами в сценариях, такие как <a
+       href="x14802.html#AWKREF">awk</a> или <a
+       href="x13541.html#PERLREF">Perl</a>.</p>
+
+      <p>Записывайте сценарии в структурированной форме, это облегчит
+      их последующую реорганизацию и оптимизацию. Помните, что
+      значительная часть методов оптимизации кода, существующих в
+      языках высокого уровня, вполне применима и к сценариям, однако
+      есть и такие, которые не могут применяться. Основной критерий
+      здесь -- это здравый смысл.</p>
+
+      <p>Прекрасный пример того, как оптимизация может сократить время
+      работы сценария, вы найдете в <a
+       href="x9199.html#MONTHLYPMT">Пример 12-32</a>.</p>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x13621.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x13753.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><span
+           class="QUOTE">&quot;Цветные&quot;</span> сценарии</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c13505.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Разные советы</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

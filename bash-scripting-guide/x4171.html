@@ -1,0 +1,770 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Работа со строками</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="К вопросу о переменных"
+     href="c3270.html">
+    <link
+     rel="PREVIOUS"
+     title="К вопросу о переменных"
+     href="c3270.html">
+    <link
+     rel="NEXT"
+     title="Подстановка параметров"
+     href="x4462.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c3270.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 9. К вопросу о переменных</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x4462.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="STRING-MANIPULATION"></a>9.2. Работа со строками</h1>
+
+      <p><a
+       name="STRINGMANIP"></a></p>
+
+      <p>Bash поддерживает на удивление большое количество операций над
+      строками. К сожалению, этот раздел Bash испытывает недостаток
+      унификации. Одни операции являются подмножеством операций <a
+       href="x4462.html#PARAMSUBREF">подстановки параметров</a>, а
+      другие -- совпадают с функциональностью команды UNIX -- <a
+       href="x6646.html#EXPRREF">expr</a>. Это приводит к противоречиям
+      в синтаксисе команд и перекрытию функциональных возможностей, не
+      говоря уже о возникающей путанице.</p>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong>Длина строки</strong></p>
+
+        <dl>
+          <dt>${#string}</dt>
+
+          <dt>expr length $string</dt>
+
+          <dt>expr &quot;$string&quot; : &#39;.*&#39;</dt>
+
+          <dd>
+<pre
+ class="PROGRAMLISTING">
+stringZ=abcABC123ABCabc
+
+echo ${#stringZ}                 # 15
+echo `expr length $stringZ`      # 15
+echo `expr &quot;$stringZ&quot; : &#39;.*&#39;`    # 15
+</pre>
+            <br>
+            <br>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="PARAGRAPHSPACE"></a>
+
+        <p><strong>Пример 9-10. Вставка пустых строк между параграфами
+        в текстовом файле</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# paragraph-space.sh
+
+# Вставка пустых строк между параграфами в текстовом файле.
+# Порядок использования: $0 &lt;FILENAME
+
+MINLEN=45        # Возможно потребуется изменить это значение.
+#  Строки, содержащие количество символов меньшее, чем $MINLEN
+#+ принимаются за последнюю строку параграфа.
+
+while read line  # Построчное чтение файла от начала до конца...
+do
+  echo &quot;$line&quot;   # Вывод строки.
+
+  len=${#line}
+  if [ &quot;$len&quot; -lt &quot;$MINLEN&quot; ]
+    then echo    # Добавление пустой строки после последней строки параграфа.
+  fi  
+done
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong>Длина подстроки в строке (подсчет совпадающих
+        символов ведется с начала строки)</strong></p>
+
+        <dl>
+          <dt>expr match &quot;$string&quot; &#39;$substring&#39;</dt>
+
+          <dd>
+            <p>где <tt
+             class="REPLACEABLE"><em>$substring</em></tt> -- <a
+             href="c11895.html#REGEXREF">регулярное выражение</a>.</p>
+          </dd>
+
+          <dt>expr &quot;$string&quot; : &#39;$substring&#39;</dt>
+
+          <dd>
+            <p>где <tt
+             class="REPLACEABLE"><em>$substring</em></tt> -- регулярное
+            выражение.</p>
+
+            <p></p>
+<pre
+ class="PROGRAMLISTING">
+stringZ=abcABC123ABCabc
+#       |------|
+
+echo `expr match &quot;$stringZ&quot; &#39;abc[A-Z]*.2&#39;`   # 8
+echo `expr &quot;$stringZ&quot; : &#39;abc[A-Z]*.2&#39;`       # 8
+</pre>
+            <br>
+            <br>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong>Index</strong></p>
+
+        <dl>
+          <dt>expr index $string $substring</dt>
+
+          <dd>
+            <p>Номер позиции первого совпадения в $string c первым
+            символом в $substring.</p>
+<pre
+ class="PROGRAMLISTING">
+stringZ=abcABC123ABCabc
+echo `expr index &quot;$stringZ&quot; C12`             # 6
+                                             # позиция символа C.
+
+echo `expr index &quot;$stringZ&quot; 1c`              # 3
+# символ &#39;c&#39; (в #3 позиции) совпал раньше, чем &#39;1&#39;.
+</pre>
+            <br>
+            <br>
+
+            <p>Эта функция довольно близка к функции <span
+             class="emphasis"><em
+             class="EMPHASIS">strchr()</em></span> в языке C.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong>Извлечение подстроки</strong></p>
+
+        <dl>
+          <dt>${string:position}</dt>
+
+          <dd>
+            <p>Извлекает подстроку из <tt
+             class="REPLACEABLE"><em>$string</em></tt>, начиная с
+            позиции <tt
+             class="REPLACEABLE"><em>$position</em></tt>.</p>
+
+            <p>Если строка <tt
+             class="VARNAME">$string</tt> -- <span
+             class="QUOTE">&quot;<span
+             class="TOKEN">*</span>&quot;</span> или <span
+             class="QUOTE">&quot;<span
+             class="TOKEN">@</span>&quot;</span>, то извлекается <a
+             href="c3270.html#POSPARAMREF">позиционный параметр</a>
+            (аргумент), <a
+             name="AEN4257"
+             href="#FTN.AEN4257"><span
+             class="footnote">[1]</span></a> с номером <tt
+             class="VARNAME">$position</tt>.</p>
+          </dd>
+
+          <dt>${string:position:length}</dt>
+
+          <dd>
+            <p>Извлекает <tt
+             class="REPLACEABLE"><em>$length</em></tt> символов из <tt
+             class="REPLACEABLE"><em>$string</em></tt>, начиная с
+            позиции <tt
+             class="REPLACEABLE"><em>$position</em></tt>.</p>
+<pre
+ class="PROGRAMLISTING">
+stringZ=abcABC123ABCabc
+#       0123456789.....
+#       Индексация начинается с 0.
+
+echo ${stringZ:0}                            # abcABC123ABCabc
+echo ${stringZ:1}                            # bcABC123ABCabc
+echo ${stringZ:7}                            # 23ABCabc
+
+echo ${stringZ:7:3}                          # 23A
+                                             # Извлекает 3 символа.
+
+
+
+# Возможна ли индексация с &quot;правой&quot; стороны строки?
+
+echo ${stringZ:-4}                           # abcABC123ABCabc
+# По-умолчанию выводится полная строка.
+# Однако . . .
+
+echo ${stringZ:(-4)}                         # Cabc
+echo ${stringZ: -4}                          # Cabc
+# Теперь выводится правильно.
+# Круглые скобки или дополнительный пробел &quot;экранируют&quot; параметр позиции.
+
+# Спасибо Dan Jacobson, за разъяснения.
+</pre>
+            <br>
+            <br>
+
+            <p>Если <tt
+             class="VARNAME">$string</tt> -- <span
+             class="QUOTE">&quot;<span
+             class="TOKEN">*</span>&quot;</span> или <span
+             class="QUOTE">&quot;<span
+             class="TOKEN">@</span>&quot;</span>, то извлекается до <tt
+             class="VARNAME">$length</tt> позиционных параметров
+            (аргументов), начиная с <tt
+             class="VARNAME">$position</tt>.</p>
+<pre
+ class="PROGRAMLISTING">
+echo ${*:2}          # Вывод 2-го и последующих аргументов.
+echo ${@:2}          # То же самое.
+
+echo ${*:2:3}        # Вывод 3-х аргументов, начиная со 2-го.
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt>expr substr $string $position $length</dt>
+
+          <dd>
+            <p>Извлекает <tt
+             class="REPLACEABLE"><em>$length</em></tt> символов из <tt
+             class="REPLACEABLE"><em>$string</em></tt>, начиная с
+            позиции <tt
+             class="REPLACEABLE"><em>$position</em></tt>.</p>
+<pre
+ class="PROGRAMLISTING">
+stringZ=abcABC123ABCabc
+#       123456789......
+#       Индексация начинается с 1.
+
+echo `expr substr $stringZ 1 2`              # ab
+echo `expr substr $stringZ 4 3`              # ABC
+</pre>
+            <br>
+            <br>
+
+            <p><a
+             name="EXPRPAREN"></a></p>
+          </dd>
+
+          <dt>expr match &quot;$string&quot;
+          &#39;\($substring\)&#39;</dt>
+
+          <dd>
+            <p>Находит и извлекает первое совпадение <tt
+             class="REPLACEABLE"><em>$substring</em></tt> в <tt
+             class="REPLACEABLE"><em>$string</em></tt>, где <tt
+             class="REPLACEABLE"><em>$substring</em></tt> -- это <a
+             href="c11895.html#REGEXREF">регулярное выражение</a>.</p>
+          </dd>
+
+          <dt>expr &quot;$string&quot; : &#39;\($substring\)&#39;</dt>
+
+          <dd>
+            <p>Находит и извлекает первое совпадение <tt
+             class="REPLACEABLE"><em>$substring</em></tt> в <tt
+             class="REPLACEABLE"><em>$string</em></tt>, где <tt
+             class="REPLACEABLE"><em>$substring</em></tt> -- это
+            регулярное выражение.</p>
+<pre
+ class="PROGRAMLISTING">
+stringZ=abcABC123ABCabc
+#       =======
+
+echo `expr match &quot;$stringZ&quot; &#39;\(.[b-c]*[A-Z]..[0-9]\)&#39;`   # abcABC1
+echo `expr &quot;$stringZ&quot; : &#39;\(.[b-c]*[A-Z]..[0-9]\)&#39;`       # abcABC1
+echo `expr &quot;$stringZ&quot; : &#39;\(.......\)&#39;`                   # abcABC1
+# Все вышеприведенные операции дают один и тот же результат.
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt>expr match &quot;$string&quot;
+          &#39;.*\($substring\)&#39;</dt>
+
+          <dd>
+            <p>Находит и извлекает первое совпадение <tt
+             class="REPLACEABLE"><em>$substring</em></tt> в <tt
+             class="REPLACEABLE"><em>$string</em></tt>, где <tt
+             class="REPLACEABLE"><em>$substring</em></tt> -- это
+            регулярное выражение. Поиск начинается с конца <tt
+             class="REPLACEABLE"><em>$string</em></tt>.</p>
+          </dd>
+
+          <dt>expr &quot;$string&quot; :
+          &#39;.*\($substring\)&#39;</dt>
+
+          <dd>
+            <p>Находит и извлекает первое совпадение <tt
+             class="REPLACEABLE"><em>$substring</em></tt> в <tt
+             class="REPLACEABLE"><em>$string</em></tt>, где <tt
+             class="REPLACEABLE"><em>$substring</em></tt> -- это
+            регулярное выражение. Поиск начинается с конца <tt
+             class="REPLACEABLE"><em>$string</em></tt>.</p>
+<pre
+ class="PROGRAMLISTING">
+stringZ=abcABC123ABCabc
+#                ======
+
+echo `expr match &quot;$stringZ&quot; &#39;.*\([A-C][A-C][A-C][a-c]*\)&#39;`    # ABCabc
+echo `expr &quot;$stringZ&quot; : &#39;.*\(......\)&#39;`                       # ABCabc
+</pre>
+            <br>
+            <br>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong>Удаление части строки</strong></p>
+
+        <dl>
+          <dt>${string#substring}</dt>
+
+          <dd>
+            <p>Удаление самой короткой, из найденных, подстроки <tt
+             class="REPLACEABLE"><em>$substring</em></tt> в строке <tt
+             class="REPLACEABLE"><em>$string</em></tt>. Поиск ведется с
+            начала строки</p>
+          </dd>
+
+          <dt>${string##substring}</dt>
+
+          <dd>
+            <p>Удаление самой длинной, из найденных, подстроки <tt
+             class="REPLACEABLE"><em>$substring</em></tt> в строке <tt
+             class="REPLACEABLE"><em>$string</em></tt>. Поиск ведется с
+            начала строки</p>
+<pre
+ class="PROGRAMLISTING">
+stringZ=abcABC123ABCabc
+#       |----|
+#       |----------|
+
+echo ${stringZ#a*C}      # 123ABCabc
+# Удаление самой короткой подстроки.
+
+echo ${stringZ##a*C}     # abc
+# Удаление самой длинной подстроки.
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt>${string%substring}</dt>
+
+          <dd>
+            <p>Удаление самой короткой, из найденных, подстроки <tt
+             class="REPLACEABLE"><em>$substring</em></tt> в строке <tt
+             class="REPLACEABLE"><em>$string</em></tt>. Поиск ведется с
+            конца строки</p>
+          </dd>
+
+          <dt>${string%%substring}</dt>
+
+          <dd>
+            <p>Удаление самой длинной, из найденных, подстроки <tt
+             class="REPLACEABLE"><em>$substring</em></tt> в строке <tt
+             class="REPLACEABLE"><em>$string</em></tt>. Поиск ведется с
+            конца строки</p>
+<pre
+ class="PROGRAMLISTING">
+stringZ=abcABC123ABCabc
+#                    ||
+#        |------------|
+
+echo ${stringZ%b*c}      # abcABC123ABCa
+# Удаляется самое короткое совпадение. Поиск ведется с конца $stringZ.
+
+echo ${stringZ%%b*c}     # a
+# Удаляется самое длинное совпадение. Поиск ведется с конца $stringZ.
+</pre>
+            <br>
+            <br>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="CVT"></a>
+
+              <p><strong>Пример 9-11. Преобразование графических файлов
+              из одного формата в другой, с изменением имени
+              файла</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+#  cvt.sh:
+#  Преобразование всех файлов в заданном  каталоге,
+#+ из графического формата MacPaint, в формат &quot;pbm&quot;.
+
+#  Используется утилита &quot;macptopbm&quot;, входящая в состав пакета &quot;netpbm&quot;,
+#+ который сопровождается Brian Henderson (bryanh@giraffe-data.com).
+#  Netpbm -- стандартный пакет для большинства дистрибутивов Linux.
+
+OPERATION=macptopbm
+SUFFIX=pbm          # Новое расширение файла.
+
+if [ -n &quot;$1&quot; ]
+then
+  directory=$1      # Если каталог задан в командной строке при вызове сценария
+else
+  directory=$PWD    # Иначе просматривается текущий каталог.
+fi
+
+#  Все файлы в каталоге, имеющие расширение &quot;.mac&quot;, считаются файлами
+#+ формата  MacPaint.
+
+for file in $directory/* # Подстановка имен файлов.
+do
+  filename=${file%.*c}   #  Удалить расширение &quot;.mac&quot; из имени файла
+                         #+ ( с шаблоном &#39;.*c&#39; совпадают все подстроки
+                         #+ начинающиеся с &#39;.&#39; и заканчивающиеся &#39;c&#39;,
+  $OPERATION $file &gt; &quot;$filename.$SUFFIX&quot;
+                         # Преобразование с перенаправлением в файл с новым именем
+  rm -f $file            # Удаление оригинального файла после преобразования.
+  echo &quot;$filename.$SUFFIX&quot;  # Вывод на stdout.
+done
+
+exit 0
+
+# Упражнение:
+# --------
+#  Сейчас этот сценарий конвертирует *все* файлы в каталоге
+#  Измените его так, чтобы он конвертировал *только* те файлы,
+#+ которые имеют расширение &quot;.mac&quot;.
+</pre>
+            </div>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong>Замена подстроки</strong></p>
+
+        <dl>
+          <dt>${string/substring/replacement}</dt>
+
+          <dd>
+            <p>Замещает первое вхождение <tt
+             class="REPLACEABLE"><em>$substring</em></tt> строкой <tt
+             class="REPLACEABLE"><em>$replacement</em></tt>.</p>
+          </dd>
+
+          <dt>${string//substring/replacement}</dt>
+
+          <dd>
+            <p>Замещает все вхождения <tt
+             class="REPLACEABLE"><em>$substring</em></tt> строкой <tt
+             class="REPLACEABLE"><em>$replacement</em></tt>.</p>
+<pre
+ class="PROGRAMLISTING">
+stringZ=abcABC123ABCabc
+
+echo ${stringZ/abc/xyz}           # xyzABC123ABCabc
+                                  # Замена первой подстроки &#39;abc&#39; строкой &#39;xyz&#39;.
+
+echo ${stringZ//abc/xyz}          # xyzABC123ABCxyz
+                                  # Замена всех подстрок &#39;abc&#39; строкой &#39;xyz&#39;.
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt>${string/#substring/replacement}</dt>
+
+          <dd>
+            <p>Подстановка строки <tt
+             class="REPLACEABLE"><em>$replacement</em></tt> вместо <tt
+             class="REPLACEABLE"><em>$substring</em></tt>. Поиск
+            ведется с начала строки <tt
+             class="REPLACEABLE"><em>$string</em></tt>.</p>
+          </dd>
+
+          <dt>${string/%substring/replacement}</dt>
+
+          <dd>
+            <p>Подстановка строки <tt
+             class="REPLACEABLE"><em>$replacement</em></tt> вместо <tt
+             class="REPLACEABLE"><em>$substring</em></tt>. Поиск
+            ведется с конца строки <tt
+             class="REPLACEABLE"><em>$string</em></tt>.</p>
+<pre
+ class="PROGRAMLISTING">
+stringZ=abcABC123ABCabc
+
+echo ${stringZ/#abc/XYZ}          # XYZABC123ABCabc
+                                  # Поиск ведется с начала строки
+
+echo ${stringZ/%abc/XYZ}          # abcABC123ABCXYZ
+                                  # Поиск ведется с конца строки
+</pre>
+            <br>
+            <br>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="SECT2">
+        <h2
+         class="SECT2"><a
+         name="AWKSTRINGMANIP"></a>9.2.1. Использование awk при работе
+        со строками</h2>
+
+        <p>В качестве альтернативы, Bash-скрипты могут использовать
+        средства <a
+         href="x14802.html#AWKREF">awk</a> при работе со строками.</p>
+
+        <div
+         class="EXAMPLE">
+          <a
+           name="SUBSTRINGEX"></a>
+
+          <p><strong>Пример 9-12. Альтернативный способ извлечения
+          подстрок</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# substring-extraction.sh
+
+String=23skidoo1
+#      012345678    Bash
+#      123456789    awk
+# Обратите внимание на различия в индексации:
+# Bash начинает индексацию с &#39;0&#39;.
+# Awk  начинает индексацию с &#39;1&#39;.
+
+echo ${String:2:4} # с 3 позиции (0-1-2), 4 символа
+                   # skid
+
+# В эквивалент в awk: substr(string,pos,length).
+echo | awk &#39;
+{ print substr(&quot;&#39;&quot;${String}&quot;&#39;&quot;,3,4)      # skid
+}
+&#39;
+#  Передача пустого &quot;echo&quot; по каналу в awk, означает фиктивный ввод,
+#+ делая, тем самым, ненужным предоставление имени файла.
+
+exit 0
+</pre>
+        </div>
+      </div>
+
+      <div
+       class="SECT2">
+        <h2
+         class="SECT2"><a
+         name="STRFDISC"></a>9.2.2. Дальнейшее обсуждение</h2>
+
+        <p>Дополнительную информацию, по работе со строками, вы найдете
+        в разделе <a
+         href="x4462.html">Section 9.3</a> и в <a
+         href="x6646.html#EXPEXTRSUB">секции</a>, посвященной команде
+        <a
+         href="x6646.html#EXPRREF">expr</a>. Примеры сценариев:</p>
+
+        <ol
+         type="1">
+          <li>
+            <p><a
+             href="x6646.html#EX45">Пример 12-6</a></p>
+          </li>
+
+          <li>
+            <p><a
+             href="x4462.html#LENGTH">Пример 9-15</a></p>
+          </li>
+
+          <li>
+            <p><a
+             href="x4462.html#PATTMATCHING">Пример 9-16</a></p>
+          </li>
+
+          <li>
+            <p><a
+             href="x4462.html#RFE">Пример 9-17</a></p>
+          </li>
+
+          <li>
+            <p><a
+             href="x4462.html#VARMATCH">Пример 9-19</a></p>
+          </li>
+        </ol>
+        <br>
+        <br>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN4257"
+         href="x4171.html#AEN4257"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Применяется к аргументам командной строки или входным
+          параметрам <a
+           href="c12483.html#FUNCTIONREF">функций</a>.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c3270.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x4462.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">К вопросу о переменных</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c3270.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Подстановка параметров</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

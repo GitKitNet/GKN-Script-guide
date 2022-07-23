@@ -1,0 +1,420 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Сценарии-обертки</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Разное"
+     href="c13505.html">
+    <link
+     rel="PREVIOUS"
+     title="Разное"
+     href="c13505.html">
+    <link
+     rel="NEXT"
+     title="Операции сравнения: Альтернативные решения"
+     href="x13602.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c13505.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 33. Разное</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x13602.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="WRAPPER"></a>33.2. Сценарии-обертки</h1>
+
+      <p><a
+       name="SHWRAPPER"></a></p>
+
+      <p><span
+       class="QUOTE">&quot;Обертки&quot;</span> -- это сценарии,
+      которые содержат один или несколько вызовов системных команд или
+      утилит, с длинным списком параметров. Такой прием освобождает
+      пользователя от необходимости вводить вручную сложные и длинные
+      команды из командной строки. Он особенно полезен при работе с <a
+       href="a14586.html#SEDREF">sed</a> и <a
+       href="x14802.html#AWKREF">awk</a>.</p>
+
+      <p>Сценарии <strong
+       class="COMMAND">sed</strong> или <strong
+       class="COMMAND">awk</strong>, как правило вызываются в форме:
+      <tt
+       class="USERINPUT"><strong>sed -e <tt
+       class=
+      "REPLACEABLE"><em>&#39;commands&#39;</em></tt></strong></tt> или
+      <tt
+       class="USERINPUT"><strong>awk <tt
+       class=
+      "REPLACEABLE"><em>&#39;commands&#39;</em></tt></strong></tt>.
+      &quot;Заворачивая&quot; такие вызовы в сценарий на языке
+      командной оболочки, мы делаем их использование более простым для
+      конечного пользователя. Кроме того, этот прием позволяет
+      комбинировать вызовы <strong
+       class="COMMAND">sed</strong> и <strong
+       class="COMMAND">awk</strong>, например в <a
+       href="c301.html#PIPEREF">конвейере</a>, позволяя передавать
+      данные с выхода одной утилиты на вход другой.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX3"></a>
+
+        <p><strong>Пример 33-1. сценарий-обертка</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Этот простой сценарий удаляет пустые строки из текстового файла.
+# Проверка входных аргументов не производится.
+#
+# Однако вы можете дополнить сценарий такой проверкой,
+# добавив нечто подобное:
+# if [ -z &quot;$1&quot; ]
+# then
+#  echo &quot;Порядок использования: `basename $0` текстовый_файл&quot;
+#  exit 65
+# fi
+
+# Для выполнения этих же действий,
+# из командной строки можно набрать
+#    sed -e &#39;/^$/d&#39; filename
+
+
+sed -e /^$/d &quot;$1&quot;
+#  &#39;-e&#39; -- означает команду &quot;editing&quot; (правка), за которой следуют необязательные параметры.
+#  &#39;^&#39; -- с начала строки, &#39;$&#39; -- до ее конца.
+#  Что соответствует строкам, которые не содержат символов между началом и концом строки,
+#+ т.е. -- пустым строкам.
+#  &#39;d&#39; -- команда &quot;delete&quot; (удалить).
+
+#  Использование кавычек дает возможность
+#+ обрабатывать файлы, чьи имена содержат пробелы.
+
+exit 0
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX4"></a>
+
+        <p><strong>Пример 33-2. Более сложный пример
+        сценария-обертки</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# &quot;subst&quot;, Сценарий замены по шаблону
+# т.е., &quot;subst Smith Jones letter.txt&quot;.
+
+ARGS=3
+E_BADARGS=65   # Неверное число аргументов.
+
+if [ $# -ne &quot;$ARGS&quot; ]
+# Проверка числа аргументов.
+then
+  echo &quot;Проядок использования: `basename $0` old-pattern new-pattern filename&quot;
+  exit $E_BADARGS
+fi
+
+old_pattern=$1
+new_pattern=$2
+
+if [ -f &quot;$3&quot; ]
+then
+    file_name=$3
+else
+    echo &quot;Файл \&quot;$3\&quot; не найден.&quot;
+    exit $E_BADARGS
+fi
+
+# Здесь, собственно, выполняется сама работа по поиску и замене.
+sed -e &quot;s/$old_pattern/$new_pattern/g&quot; $file_name
+# &#39;s&#39; -- команда &quot;substitute&quot; (замены),
+# а /pattern/ -- задает шаблон искомого текста.
+# &quot;g&quot; -- флаг &quot;global&quot; (всеобщий), означает &quot;выполнить подстановку для *каждого*
+# обнаруженного $old_pattern во всех строках, а не только в первой строке.
+
+exit 0    # При успешном завершении сценария -- вернуть 0.
+</pre>
+      </div>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="COLTOTALER"></a>
+
+        <p><strong>Пример 33-3. Сценарий-обертка вокруг сценария
+        awk</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Суммирует числа в заданном столбце из заданного файла.
+
+ARGS=2
+E_WRONGARGS=65
+
+if [ $# -ne &quot;$ARGS&quot; ] # Проверка числа аргументов.
+then
+   echo &quot;Порядок использования: `basename $0` имя_файла номер_столбца&quot;
+   exit $E_WRONGARGS
+fi
+
+filename=$1
+column_number=$2
+
+# Здесь используется прием передачи переменных
+# из командной оболочки в сценарий awk .
+
+# Многострочный сценарий awk должен записываться в виде:   awk &#39; ..... &#39;
+
+
+# Начало awk-сценария.
+# -----------------------------
+awk &#39;
+
+{ total += $&#39;&quot;${column_number}&quot;&#39;
+}
+END {
+     print total
+}
+
+&#39; &quot;$filename&quot;
+# -----------------------------
+# Конец awk-сценария.
+
+
+#   С точки зрения безопасности, передача shell-переменных
+#   во встроенный awk-скрипт, потенциально опасна,
+#   поэтому, Stephane Chazelas предлагает следующую альтернативу:
+#   ---------------------------------------
+#   awk -v column_number=&quot;$column_number&quot; &#39;
+#   { total += $column_number
+#   }
+#   END {
+#       print total
+#   }&#39; &quot;$filename&quot;
+#   ---------------------------------------
+
+
+exit 0
+</pre>
+      </div>
+
+      <p><a
+       name="PERLREF"></a>Для сценариев, которые должны строиться по
+      принципу швейцарского армейского ножа -- &quot;все в одном&quot;,
+      можно порекомендовать Perl. Perl совмещает в себе мощь и гибкость
+      <strong
+       class="COMMAND">sed</strong>, <strong
+       class="COMMAND">awk</strong> и языка программирования <strong
+       class="COMMAND">C</strong>. Он поддерживает модульность и
+      объектно-ориентированный стиль программирования. Короткие
+      сценарии Perl могут легко встраиваться в сценарии командной
+      оболочки, и даже полностью заменить из (хотя автор весьма
+      скептически относится к последнему утверждению).</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX56"></a>
+
+        <p><strong>Пример 33-4. Сценарий на языке Perl, встроенный в
+        Bash-скрипт</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Это команды shell, предшествующий сценарию на Perl.
+echo &quot;Эта строка выводится средствами Bash, перед выполнением встроенного Perl-скрипта, в \&quot;$0\&quot;.&quot;
+echo &quot;==============================================================================================&quot;
+
+perl -e &#39;print &quot;Эта строка выводится средствами Perl.\n&quot;;&#39;
+# Подобно sed, Perl тоже использует ключ &quot;-e&quot;.
+
+echo &quot;=====================================&quot;
+
+exit 0
+</pre>
+      </div>
+
+      <p>Допускается даже комбинирование сценариев на Bash и на Perl, в
+      пределах одного файла. В зависимости от того, какая часть
+      сценария должна исполняться, сценарий вызывается с указанием
+      требуемого интерпретатора.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="BASHANDPERL"></a>
+
+        <p><strong>Пример 33-5. Комбинирование сценария Bash и Perl в
+        одном файле</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# bashandperl.sh
+
+echo &quot;Вас приветствует часть сценария, написанная на Bash.&quot;
+# Далее могут следовать другие команды Bash.
+
+exit 0
+# Конец сценария на Bash.
+
+# =======================================================
+
+#!/usr/bin/perl
+# Эта часть сценария должна вызываться с ключом -x.
+
+print &quot;Вас приветствует часть сценария, написанная на Perl.\n&quot;;
+# Далее могут следовать другие команды Perl.
+
+# Конец сценария на Perl.
+</pre>
+      </div>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>bash bashandperl.sh</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">Вас приветствует часть сценария, написанная на Bash.</tt>
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>perl -x bashandperl.sh</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">Вас приветствует часть сценария, написанная на Perl.</tt>
+             
+</pre>
+      <br>
+      <br>
+    </div>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c13505.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x13602.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Разное</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c13505.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Операции сравнения: Альтернативные решения</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

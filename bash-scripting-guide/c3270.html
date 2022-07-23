@@ -1,0 +1,2041 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>К вопросу о переменных</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Углубленный материал"
+     href="p3268.html">
+    <link
+     rel="PREVIOUS"
+     title="Углубленный материал"
+     href="p3268.html">
+    <link
+     rel="NEXT"
+     title="Работа со строками"
+     href="x4171.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="p3268.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x4171.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="VARIABLES2"></a>Глава 9. К вопросу о переменных</h1>
+
+      <p>Правильное использование переменных может придать сценариям
+      дополнительную мощь и гибкость, а для этого необходимо изучить
+      все тонкости и нюансы.</p>
+
+      <div
+       class="SECT1">
+        <h1
+         class="SECT1"><a
+         name="INTERNALVARIABLES"></a>9.1. Внутренние переменные</h1>
+
+        <div
+         class="VARIABLELIST">
+          <dl>
+            <dt><tt
+             class="REPLACEABLE"><em><a
+             href="c5358.html#BUILTINREF">Встроенные</a>
+            переменные</em></tt></dt>
+
+            <dt><tt
+             class="VARNAME">$BASH</tt></dt>
+
+            <dd>
+              <p>путь к исполняемому файлу <span
+               class="emphasis"><em
+               class="EMPHASIS">Bash</em></span></p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $BASH</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">/bin/bash</tt>
+</pre>
+              <br>
+              <br>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$BASH_VERSINFO[n]</tt></dt>
+
+            <dd>
+              <p>это <a
+               href="c12790.html#ARRAYREF">массив</a>, состоящий из 6
+              элементов, и содержащий информацию о версии Bash. Очень
+              похожа на переменную <tt
+               class="VARNAME">$BASH_VERSION</tt>, описываемую
+              ниже.</p>
+<pre
+ class="PROGRAMLISTING">
+# Информация о версии Bash:
+
+for n in 0 1 2 3 4 5
+do
+  echo &quot;BASH_VERSINFO[$n] = ${BASH_VERSINFO[$n]}&quot;
+done
+
+# BASH_VERSINFO[0] = 2                      # Major version no.
+# BASH_VERSINFO[1] = 05                     # Minor version no.
+# BASH_VERSINFO[2] = 8                      # Patch level.
+# BASH_VERSINFO[3] = 1                      # Build version.
+# BASH_VERSINFO[4] = release                # Release status.
+# BASH_VERSINFO[5] = i386-redhat-linux-gnu  # Architecture
+                                            # (same as $MACHTYPE).
+</pre>
+              <br>
+              <br>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$BASH_VERSION</tt></dt>
+
+            <dd>
+              <p>версия Bash, установленного в системе</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $BASH_VERSION</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">2.04.12(1)-release</tt>
+             
+</pre>
+              <br>
+              <br>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">tcsh%</tt> <tt
+ class="USERINPUT"><strong>echo $BASH_VERSION</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">BASH_VERSION: Undefined variable.</tt>
+             
+</pre>
+              <br>
+              <br>
+
+              <p>Проверка переменной $BASH_VERSION -- неплохой метод
+              проверки типа командной оболочки, под которой исполняется
+              скрипт. Переменная <a
+               href="c3270.html#SHELLVARREF">$SHELL</a> не всегда дает
+              правильный ответ.</p>
+            </dd>
+
+            <dt><a
+             name="DIRSTACKREF"></a><tt
+             class="VARNAME">$DIRSTACK</tt></dt>
+
+            <dd>
+              <p>содержимое вершины стека каталогов (который
+              управляется командами <a
+               href="c5358.html#PUSHDREF">pushd</a> и <a
+               href="c5358.html#POPDREF">popd</a>)</p>
+
+              <p>Эта переменная соответствует команде <a
+               href="c5358.html#DIRSD">dirs</a>, за исключением того,
+              что <strong
+               class="COMMAND">dirs</strong> показывает полное
+              содержимое всего стека каталогов.</p>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$EDITOR</tt></dt>
+
+            <dd>
+              <p>заданный по-умолчанию редактор, вызываемый скриптом,
+              обычно <strong
+               class="COMMAND">vi</strong> или <strong
+               class="COMMAND">emacs</strong>.</p>
+            </dd>
+
+            <dt><a
+             name="EUIDREF"></a><tt
+             class="VARNAME">$EUID</tt></dt>
+
+            <dd>
+              <p><span
+               class="QUOTE">&quot;эффективный&quot;</span>
+              идентификационный номер пользователя (Effective User
+              ID)</p>
+
+              <p>Идентификационный номер пользователя, права которого
+              были получены, возможно с помощью команды <a
+               href="c9708.html#SUREF">su</a>.</p>
+
+              <div
+               class="CAUTION">
+                <table
+                 class="CAUTION"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/caution.gif"
+                     hspace="5"
+                     alt="Caution"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>Значение переменной <tt
+                       class="VARNAME">$EUID</tt> необязательно должно
+                      совпадать с содержимым переменной <a
+                       href="c3270.html#UIDREF">$UID</a>.</p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$FUNCNAME</tt></dt>
+
+            <dd>
+              <p>имя текущей функции</p>
+<pre
+ class="PROGRAMLISTING">
+xyz23 ()
+{
+  echo &quot;Исполняется функция $FUNCNAME.&quot;  # Исполняется функция xyz23.
+}
+
+xyz23
+
+echo &quot;FUNCNAME = $FUNCNAME&quot;        # FUNCNAME =
+                                   # Пустое (Null) значение за пределеми функций.
+</pre>
+              <br>
+              <br>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$GLOBIGNORE</tt></dt>
+
+            <dd>
+              <p>Перечень шаблонных символов, которые будут
+              проигнорированы при выполнении <a
+               href="x12282.html">подстановки имен файлов
+              (globbing)</a> .</p>
+            </dd>
+
+            <dt><a
+             name="GROUPSREF"></a><tt
+             class="VARNAME">$GROUPS</tt></dt>
+
+            <dd>
+              <p>группы, к которым принадлежит текущий пользователь</p>
+
+              <p>Это список групп (массив) идентификационных номеров
+              групп для текущего пользователя, как эо записано в <tt
+               class="FILENAME">/etc/passwd</tt>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">root#</tt> <tt
+ class="USERINPUT"><strong>echo $GROUPS</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">0</tt>
+
+
+<tt
+ class="PROMPT">root#</tt> <tt
+ class="USERINPUT"><strong>echo ${GROUPS[1]}</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">1</tt>
+
+
+<tt
+ class="PROMPT">root#</tt> <tt
+ class="USERINPUT"><strong>echo ${GROUPS[5]}</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">6</tt>
+             
+</pre>
+              <br>
+              <br>
+            </dd>
+
+            <dt><a
+             name="HOMEDIRREF"></a><tt
+             class="VARNAME">$HOME</tt></dt>
+
+            <dd>
+              <p>домашний каталог пользователя, как правило это <tt
+               class="FILENAME">/home/username</tt> (см. <a
+               href="x4462.html#EX6">Пример 9-13</a>)</p>
+            </dd>
+
+            <dt><a
+             name="HOSTNAMEREF"></a><tt
+             class="VARNAME">$HOSTNAME</tt></dt>
+
+            <dd>
+              <p>Сетевое имя хоста устанавливается командой <a
+               href="c9708.html#HNAMEREF">hostname</a> во время
+              исполнения инициализирующих сценариев на загрузке
+              системы. Внутренняя переменная <tt
+               class="VARNAME">$HOSTNAME</tt> Bash получает свое
+              значение посредством вызова функции <tt
+               class="FUNCTION">gethostname()</tt>. См. так же <a
+               href="x4462.html#EX6">Пример 9-13</a>.</p>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$HOSTTYPE</tt></dt>
+
+            <dd>
+              <p>тип машины</p>
+
+              <p>Подобно <a
+               href="c3270.html#MACHTYPEREF">$MACHTYPE</a>,
+              идентифицирует аппаратную архитектуру.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $HOSTTYPE</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">i686</tt>
+</pre>
+            </dd>
+
+            <dt><a
+             name="IFSREF"></a><tt
+             class="VARNAME">$IFS</tt></dt>
+
+            <dd>
+              <p>разделитель полей во вводимой строке (IFS -- Input
+              Field Separator)</p>
+
+              <p>По-умолчанию -- <a
+               href="c301.html#WHITESPACEREF">пробельный символ</a>
+              (пробел, табуляция и перевод строки), но может быть
+              изменен, например, для разбора строк, в которых отдельные
+              поля разделены запятыми. Обратите внимание: при
+              составлении содержимого переменной <a
+               href="c3270.html#APPREF">$*</a>, Bash использует первый
+              символ из <tt
+               class="VARNAME">$IFS</tt> для разделения аргументов. См.
+              <a
+               href="c1833.html#WEIRDVARS">Пример 5-1</a>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $IFS | cat -vte</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">$</tt>
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class=
+"USERINPUT"><strong>bash -c &#39;set w x y z; IFS=&quot;:-;&quot;; echo &quot;$*&quot;&#39;</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">w:x:y:z</tt>
+             
+</pre>
+              <br>
+              <br>
+
+              <div
+               class="CAUTION">
+                <table
+                 class="CAUTION"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/caution.gif"
+                     hspace="5"
+                     alt="Caution"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>При всем при том следует помнить, что при
+                      использовании <tt
+                       class="VARNAME">$IFS</tt> пробельные символы
+                      обрабатываются несколько иначе, чем все
+                      остальные.</p>
+
+                      <div
+                       class="EXAMPLE">
+                        <a
+                         name="IFSH"></a>
+
+                        <p><strong>Пример 9-1. $IFS и пробельные
+                        символы</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# При использовании $IFS, пробельные символы обрабатываются иначе, чем все остальные.
+
+output_args_one_per_line()
+{
+  for arg
+  do echo &quot;[$arg]&quot;
+  done
+}
+
+echo; echo &quot;IFS=\&quot; \&quot;&quot;
+echo &quot;-------&quot;
+
+IFS=&quot; &quot;
+var=&quot; a  b c   &quot;
+output_args_one_per_line $var  # output_args_one_per_line `echo &quot; a  b c   &quot;`
+#
+# [a]
+# [b]
+# [c]
+
+
+echo; echo &quot;IFS=:&quot;
+echo &quot;-----&quot;
+
+IFS=:
+var=&quot;:a::b:c:::&quot;               # То же самое, только пробелы зменены символом &quot;:&quot;.
+output_args_one_per_line $var
+#
+# []
+# [a]
+# []
+# [b]
+# [c]
+# []
+# []
+# []
+
+# То же самое происходит и с разделителем полей &quot;FS&quot; в awk.
+
+# Спасибо Stephane Chazelas.
+
+echo
+
+exit 0
+</pre>
+                      </div>
+                      <br>
+                      <br>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+
+              <p>(Спасибо S. C., за разъяснения и примеры.)</p>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$LC_COLLATE</tt></dt>
+
+            <dd>
+              <p>Чаще всего устанавливается в <tt
+               class="FILENAME">.bashrc</tt> или <tt
+               class="FILENAME">/etc/profile</tt>, эта переменная
+              задает порядок сортировки символов, в операциях
+              подстановки имен файлов и в поиске по шаблону. При
+              неверной настройке переменной <tt
+               class="VARNAME">LC_COLLATE</tt> можно получить весьма
+              неожиданные результаты.</p>
+
+              <div
+               class="NOTE">
+                <table
+                 class="NOTE"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/note.gif"
+                     hspace="5"
+                     alt="Note"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>Начиная с версии 2.05, Bash, в операциях
+                      подстановки имен файлов, не делает различий между
+                      символами верхнего и нижнего регистров, в
+                      диапазонах символов в квадратных скобках.
+                      Например,, <strong
+                       class="COMMAND">ls [A-M]*</strong> выведет как
+                      <tt
+                       class="FILENAME">File1.txt</tt>, так и <tt
+                       class="FILENAME">file1.txt</tt>. Возврат к
+                      общепринятому стандарту поведения шаблонов в
+                      квадратных скобках выполняется установкой
+                      переменной <tt
+                       class="VARNAME">LC_COLLATE</tt> в значение <tt
+                       class="OPTION">C</tt> командой <tt
+                       class="USERINPUT"><strong>export
+                      LC_COLLATE=C</strong></tt> в файле <tt
+                       class="FILENAME">/etc/profile</tt> и/или <tt
+                       class="FILENAME">~/.bashrc</tt>.</p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$LC_CTYPE</tt></dt>
+
+            <dd>
+              <p>Эта внутренняя переменная определяет кодировку
+              символов. Используется в операциях <a
+               href="x12282.html">подстановки</a> и поиске по
+              шаблону.</p>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$LINENO</tt></dt>
+
+            <dd>
+              <p>Номер строки исполняемого сценария. Эта переменная
+              имеет смысл только внутри исполняемого сценария и чаще
+              всего применяется в отладочных целях.</p>
+<pre
+ class="PROGRAMLISTING">
+# *** BEGIN DEBUG BLOCK ***
+last_cmd_arg=$_  # Запомнить.
+
+echo &quot;Строка $LINENO: переменная \&quot;v1\&quot; = $v1&quot;
+echo &quot;Последний аргумент командной строки = $last_cmd_arg&quot;
+# *** END DEBUG BLOCK ***
+</pre>
+              <br>
+              <br>
+            </dd>
+
+            <dt><a
+             name="MACHTYPEREF"></a><tt
+             class="VARNAME">$MACHTYPE</tt></dt>
+
+            <dd>
+              <p>аппаратная архитектура</p>
+
+              <p>Идентификатор аппаратной архитектуры.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $MACHTYPE</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">i686</tt>
+</pre>
+            </dd>
+
+            <dt><a
+             name="OLDPWD"></a><tt
+             class="VARNAME">$OLDPWD</tt></dt>
+
+            <dd>
+              <p>прежний рабочий каталог (<span
+               class=
+              "QUOTE">&quot;OLD-Print-Working-Directory&quot;</span>)</p>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$OSTYPE</tt></dt>
+
+            <dd>
+              <p>тип операционной системы</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $OSTYPE</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">linux</tt>
+</pre>
+            </dd>
+
+            <dt><a
+             name="PATHREF"></a><tt
+             class="VARNAME">$PATH</tt></dt>
+
+            <dd>
+              <p>путь поиска, как правило включает в себя каталоги <tt
+               class="FILENAME">/usr/bin/</tt>, <tt
+               class="FILENAME">/usr/X11R6/bin/</tt>, <tt
+               class="FILENAME">/usr/local/bin</tt>, и т.д.</p>
+
+              <p>Когда командный интерпретатор получает команду, то он
+              автоматически пытается отыскать соответствующий
+              исполняемый файл в указанном списке каталогов (в
+              переменной $PATH). Каталоги, в указанном списке, должны
+              отделяться друг от друга двоеточиями. Обычно, переменная
+              <tt
+               class="VARNAME">$PATH</tt> инициализируется в <tt
+               class="FILENAME">/etc/profile</tt> и/или в <tt
+               class="FILENAME">~/.bashrc</tt> (см. <a
+               href="c12891.html">Глава 26</a>).</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <strong
+ class="COMMAND">echo $PATH</strong>
+<tt
+ class=
+"COMPUTEROUTPUT">/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin:/sbin:/usr/sbin</tt>
+</pre>
+              <br>
+              <br>
+
+              <p>Инструкция <tt
+               class=
+              "USERINPUT"><strong>PATH=${PATH}:/opt/bin</strong></tt>
+              добавляет каталог <tt
+               class="FILENAME">/opt/bin</tt> в конец текущего пути
+              поиска. Иногда может оказаться целесообразным, внутри
+              сценария, временно добавить какой-либо каталог к пути
+              поиска. По завершении работы скрипта, эти изменения будут
+              утеряны (вспомните о том, что невозможно изменить
+              переменные окружения вызывающего процесса).</p>
+
+              <div
+               class="NOTE">
+                <table
+                 class="NOTE"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/note.gif"
+                     hspace="5"
+                     alt="Note"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>Текущий <span
+                       class="QUOTE">&quot;рабочий
+                      каталог&quot;</span>, <tt
+                       class="FILENAME">./</tt>, обычно не включается в
+                      <tt
+                       class="VARNAME">$PATH</tt> из соображений
+                      безопасности.</p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$PIPESTATUS</tt></dt>
+
+            <dd>
+              <p>Код возврата <a
+               href="c301.html#PIPEREF">канала (конвейера)</a>.
+              Интересно, что это не то же самое, что <a
+               href="c2105.html#EXITSTATUSREF">код возврата</a>
+              последней исполненной команды.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $PIPESTATUS</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">0</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ls -al | bogus_command</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">bash: bogus_command: command not found</tt>
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $PIPESTATUS</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">141</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ls -al | bogus_command</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">bash: bogus_command: command not found</tt>
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $?</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">127</tt>
+             
+</pre>
+              <br>
+              <br>
+
+              <div
+               class="CAUTION">
+                <table
+                 class="CAUTION"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/caution.gif"
+                     hspace="5"
+                     alt="Caution"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>Переменная <tt
+                       class="VARNAME">$PIPESTATUS</tt> может давать
+                      неверные значения при вызове из командной
+                      строки.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">tcsh%</tt> <tt
+ class="USERINPUT"><strong>bash</strong></tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>who | grep nobody | sort</strong></tt>
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo ${PIPESTATUS[*]}</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">0</tt>
+             
+</pre>
+                      <br>
+                      <br>
+
+                      <p>Если поместить эти строки в сценарий и
+                      исполнить его, то будут выведены верные значения
+                      <tt
+                       class="COMPUTEROUTPUT">0 1 0</tt>.</p>
+
+                      <p>Спасибо Wayne Pollock за замечания и
+                      предоставленный пример.</p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </dd>
+
+            <dt><a
+             name="PPIDREF"></a><tt
+             class="VARNAME">$PPID</tt></dt>
+
+            <dd>
+              <p>Переменная <tt
+               class="VARNAME">$PPID</tt> хранит PID (идентификатор)
+              родительского процесса. <a
+               name="AEN3728"
+               href="#FTN.AEN3728"><span
+               class="footnote">[1]</span></a></p>
+
+              <p>Сравните с командой <a
+               href="c9708.html#PIDOFREF">pidof</a>.</p>
+            </dd>
+
+            <dt><a
+             name="PS1REF"></a><tt
+             class="VARNAME">$PS1</tt></dt>
+
+            <dd>
+              <p>prompt, приглашение командной строки.</p>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$PS2</tt></dt>
+
+            <dd>
+              <p>Вторичное приглашение командной строки, выводится
+              тогда, когда от пользователя ожидается дополнительный
+              ввод. Отображается как <span
+               class="QUOTE">&quot;&gt;&quot;</span>.</p>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$PS3</tt></dt>
+
+            <dd>
+              <p>Третичное приглашение (prompt), выводится тогда, когда
+              пользователь должен сделать выбор в операторе <a
+               href="x5210.html#SELECTREF">select</a> (см. <a
+               href="x5210.html#EX31">Пример 10-29</a>).</p>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$PS4</tt></dt>
+
+            <dd>
+              <p>Приглашение (prompt) четвертого уровня, выводится в
+              начале каждой строки вывода тогда, когда сценарий
+              вызывается с <a
+               href="c13228.html#OPTIONSREF">ключом</a> <span
+               class="TOKEN">-x</span>. Отображается как <span
+               class="QUOTE">&quot;+&quot;</span>.</p>
+            </dd>
+
+            <dt><a
+             name="PWDREF"></a><tt
+             class="VARNAME">$PWD</tt></dt>
+
+            <dd>
+              <p>рабочий (текущий) каталог</p>
+
+              <p>Аналог встроенной команды <a
+               href="c5358.html#PWD2REF">pwd</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+E_WRONG_DIRECTORY=73
+
+clear # Очистка экрана.
+
+TargetDirectory=/home/bozo/projects/GreatAmericanNovel
+
+cd $TargetDirectory
+echo &quot;Удаление файлов в каталоге $TargetDirectory.&quot;
+
+if [ &quot;$PWD&quot; != &quot;$TargetDirectory&quot; ]
+then    # Защита от случайного удаления файлов не в том каталоге.
+  echo &quot;Неверный каталог!&quot;
+  echo &quot;Переменная $PWD указывает на другой каталог!&quot;
+  exit $E_WRONG_DIRECTORY
+fi
+
+rm -rf *
+rm .[A-Za-z0-9]*    # удалить &quot;скрытые&quot; файлы (начинающиеся с &quot;.&quot;)
+# rm -f .[^.]* ..?*   удалить файлы, чьи имена начинаются с нескольких точек.
+# (shopt -s dotglob; rm -f *)   тоже работает верно.
+# Спасибо S.C. за замечание.
+
+# Имена файлов могут содержать любые символы из диапазона 0-255, за исключением &quot;/&quot;.
+# Оставляю вопрос удаления файлов с &quot;необычными&quot; символами для самостоятельного изучения.
+
+# Здесь можно вставить дополнительные действия, по мере необходимости.
+
+echo
+echo &quot;Конец.&quot;
+echo &quot;Файлы, из каталога $TargetDirectory, удалены.&quot;
+echo
+
+
+exit 0
+</pre>
+              <br>
+              <br>
+            </dd>
+
+            <dt><a
+             name="REPLYREF"></a><tt
+             class="VARNAME">$REPLY</tt></dt>
+
+            <dd>
+              <p>переменная по-умолчанию, куда записывается ввод
+              пользователя, выполненный с помощью команды <a
+               href="c5358.html#READREF">read</a> если явно не задана
+              другая переменная. Так же может использоваться в
+              операторе <a
+               href="x5210.html#SELECTREF">select</a>, для построения
+              меню выбора.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+echo
+echo -n &quot;Ваше любимое растение? &quot;
+read
+
+echo &quot;Ваше любимое растение: $REPLY.&quot;
+# REPLY хранит последнее значение, прочитанное командой &quot;read&quot; тогда, и только тогда
+#+ когда команде &quot;read&quot; не передается имя переменной.
+
+echo
+echo -n &quot;Ваш любимый фрукт? &quot;
+read fruit
+echo &quot;Ваш любимый фрукт $fruit.&quot;
+echo &quot;но...&quot;
+echo &quot;Значение переменной \$REPLY осталось равным $REPLY.&quot;
+# Переменная $REPLY не была перезаписана потому, что
+# следующей команде &quot;read&quot;, в качестве аргумента была передана переменная $fruit
+
+echo
+
+exit 0
+</pre>
+              <br>
+              <br>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$SECONDS</tt></dt>
+
+            <dd>
+              <p>Время паботы сценария в секундах.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Автор: Mendel Cooper
+# Дополнен переводчиком.
+#
+
+TIME_LIMIT=10
+INTERVAL=1
+
+echo
+echo &quot;Для прерывания работы сценария, ранее чем через $TIME_LIMIT секунд, нажмите Control-C.&quot;
+echo
+
+while [ &quot;$SECONDS&quot; -le &quot;$TIME_LIMIT&quot; ]
+do
+# Оригинальный вариант сценария содержал следующие строки
+#  if [ &quot;$SECONDS&quot; -eq 1 ]
+#  then
+#    units=second
+#  else
+#    units=seconds
+#  fi
+#
+# Однако, из-за того, что в русском языке для описания множественного числа
+# существует большее число вариантов, чем в английском,
+# переводчик позволил себе смелость несколько подправить сценарий
+# (прошу ногами не бить! ;-) )
+# === НАЧАЛО БЛОКА ИЗМЕНЕНИЙ, ВНЕСЕННЫХ ПЕРЕВОДЧИКОМ ===
+
+  let &quot;last_two_sym = $SECONDS - $SECONDS / 100 * 100&quot; # десятки и единицы
+  if [ &quot;$last_two_sym&quot; -ge 11 -a &quot;$last_two_sym&quot; -le 19 ]
+  then
+    units=&quot;секунд&quot;               # для чисел, которые заканчиваются на &quot;...надцать&quot;
+  else
+    let &quot;last_sym = $last_two_sym - $last_two_sym / 10 * 10&quot;  # единицы
+    case &quot;$last_sym&quot; in
+      &quot;1&quot; )
+        units=&quot;секунду&quot;         # для чисел, заканчивающихся на 1
+      ;;
+      &quot;2&quot; | &quot;3&quot; | &quot;4&quot; )
+        units=&quot;секунды&quot;         # для чисел, заканчивающихся на 2, 3 и 4
+      ;;
+      * )
+        units=&quot;секунд&quot;          # для всех остальных (0, 5, 6, 7, 8, 9)
+      ;;
+    esac
+  fi
+# === КОНЕЦ БЛОКА ИЗМЕНЕНИЙ, ВНЕСЕННЫХ ПЕРЕВОДЧИКОМ ===
+
+  echo &quot;Сценарий отработал $SECONDS $units.&quot;
+  #  В случае перегруженности системы, скрипт может перескакивать через отдельные
+  #+  значения счетчика
+  sleep $INTERVAL
+done
+
+echo -e &quot;\a&quot;  # Сигнал!
+
+exit 0
+</pre>
+              <br>
+              <br>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$SHELLOPTS</tt></dt>
+
+            <dd>
+              <p>список допустимых <a
+               href="c13228.html#OPTIONSREF">опций</a> интерпретатора
+              shell. Переменная доступна только для чтения.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $SHELLOPTS</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">braceexpand:hashall:histexpand:monitor:history:interactive-comments:emacs</tt>
+             
+</pre>
+              <br>
+              <br>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$SHLVL</tt></dt>
+
+            <dd>
+              <p>Уровень вложенности shell. Если в командной строке</p>
+<pre
+ class="SCREEN">
+echo $SHLVL
+</pre>
+              дает 1, то в сценарии значение этой переменной будет
+              больше на 1, т.е. 2.<br>
+              <br>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$TMOUT</tt></dt>
+
+            <dd>
+              <p>Если переменная окружения <tt
+               class="REPLACEABLE"><em>$TMOUT</em></tt> содержит
+              ненулевое значение, то интерпретатор будет ожидать ввод
+              не более чем заданное число секунд, что, в первичном
+              приглашении (см. описание PS1 выше), может привести к
+              автоматическому завершению сеанса работы.</p>
+
+              <div
+               class="NOTE">
+                <table
+                 class="NOTE"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/note.gif"
+                     hspace="5"
+                     alt="Note"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>К сожалению это возможно только во время
+                      ожидания ввода с консоли или в окне терминала. А
+                      как было бы здорово, если бы можно было
+                      использовать эту внутреннюю переменную, скажем в
+                      комбинации с командой <a
+                       href="c5358.html#READREF">read</a>! Но в данном
+                      контексте эта переменная абсолютно не применима и
+                      потому фактически бесполезна в сценариях. (Есть
+                      сведения о том, что в <span
+                       class="emphasis"><em
+                       class="EMPHASIS">ksh</em></span> время ожидания
+                      ввода командой <strong
+                       class="COMMAND">read</strong> можно
+                      ограничить.)</p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+
+              <p>Организация ограничения времени ожидания ввода от
+              пользователя в сценариях возможна, но это требут довольно
+              сложных махинаций. Как один из вариантов, можно
+              предложить организовать прерывание цикла ожидания по
+              сигналу. Но это потребует написание функции обработки
+              сигналов командой trap (см. <a
+               href="c13099.html#EX76">Пример 29-5</a>).</p>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="TMDIN"></a>
+
+                <p><strong>Пример 9-2. Ограничения времени ожидания
+                ввода</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# timed-input.sh
+
+# TMOUT=3            бесполезно в сценариях
+
+TIMELIMIT=3  # Три секунды в данном случае, но может быть установлено и другое значение
+
+PrintAnswer()
+{
+  if [ &quot;$answer&quot; = TIMEOUT ]
+  then
+    echo $answer
+  else       # Чтобы не спутать разные варианты вывода.
+    echo &quot;Ваше любимое растение $answer&quot;
+    kill $!  # &quot;Прибить&quot; ненужную больше функцию TimerOn, запущенную в фоновом процессе.
+             # $! -- PID последнего процесса, запущенного в фоне.
+  fi
+
+}
+
+
+
+TimerOn()
+{
+  sleep $TIMELIMIT &amp;&amp; kill -s 14 $$ &amp;
+  # Ждать 3 секунды, после чего выдать sigalarm сценарию.
+}
+
+Int14Vector()
+{
+  answer=&quot;TIMEOUT&quot;
+  PrintAnswer
+  exit 14
+}
+
+trap Int14Vector 14   # переназначить процедуру обработки прерывания от таймера (14)
+
+echo &quot;Ваше любимое растение? &quot;
+TimerOn
+read answer
+PrintAnswer
+
+
+#  По общему признанию, это не очень хороший способ ограничения времени ожидания,
+#+ однако опция &quot;-t&quot;команды &quot;read&quot; упрощает задачу.
+#  См. &quot;t-out.sh&quot;, ниже.
+
+#  Если вам нужно что-то более элегантное...
+#+ подумайте о написании программы на C или C++,
+#+ с использованием соответствующих библиотечных функций, таких как &#39;alarm&#39; и &#39;setitimer&#39;.
+
+exit 0
+</pre>
+              </div>
+
+              <p>В качестве альтернативы можно использовать <a
+               href="c9708.html#STTYREF">stty</a>.</p>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="TIMEOUT"></a>
+
+                <p><strong>Пример 9-3. Еще один пример ограничения
+                времени ожидания ввода от пользователя</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# timeout.sh
+
+# Автор: Stephane Chazelas,
+# дополнен автором документа.
+
+INTERVAL=5                # предел времени ожидания
+
+timedout_read() {
+  timeout=$1
+  varname=$2
+  old_tty_settings=`stty -g`
+  stty -icanon min 0 time ${timeout}0
+  eval read $varname      # или просто    read $varname
+  stty &quot;$old_tty_settings&quot;
+  # См. man stty.
+}
+
+echo; echo -n &quot;Как Вас зовут? Отвечайте быстрее! &quot;
+timedout_read $INTERVAL your_name
+
+# Такой прием может не работать на некоторых типах терминалов.
+# Максимальное время ожидания зависит от терминала.
+# (чаще всего это 25.5 секунд).
+
+echo
+
+if [ ! -z &quot;$your_name&quot; ]  # Если имя было введено...
+then
+  echo &quot;Вас зовут $your_name.&quot;
+else
+  echo &quot;Вы не успели ответить.&quot;
+fi
+
+echo
+
+# Алгоритм работы этого сценария отличается от &quot;timed-input.sh&quot;.
+# Каждое нажатие на клавишу вызывает сброс счетчика в начальное состояние.
+
+exit 0
+</pre>
+              </div>
+
+              <p>Возможно самый простой способ -- использовать опцию
+              <tt
+               class="OPTION">-t</tt> команды <a
+               href="c5358.html#READREF">read</a>.</p>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="TOUT"></a>
+
+                <p><strong>Пример 9-4. Ограничение времени ожидания
+                команды read</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# t-out.sh 
+
+TIMELIMIT=4        # 4 секунды
+
+read -t $TIMELIMIT variable &lt;&amp;1
+
+echo
+
+if [ -z &quot;$variable&quot; ]
+then
+  echo &quot;Время ожидания истекло.&quot;
+else
+  echo &quot;variable = $variable&quot;
+fi  
+
+exit 0
+</pre>
+              </div>
+            </dd>
+
+            <dt><a
+             name="UIDREF"></a><tt
+             class="VARNAME">$UID</tt></dt>
+
+            <dd>
+              <p>user id number</p>
+
+              <p>UID (идентификатор) текущего пользователя, в
+              соответствии с <tt
+               class="FILENAME">/etc/passwd</tt></p>
+
+              <p>Это реальный UID текущего пользователя, даже если он
+              временно приобрел права другого пользователя с помощью <a
+               href="c9708.html#SUREF">su</a>. Переменная <tt
+               class="VARNAME">$UID</tt> доступна только для
+              чтения.</p>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="AMIROOT"></a>
+
+                <p><strong>Пример 9-5. Я -- root?</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# am-i-root.sh:   Root я, или не root?
+
+ROOT_UID=0   # $UID root-а всегда равен 0.
+
+if [ &quot;$UID&quot; -eq &quot;$ROOT_UID&quot; ]  # Настоящий &quot;root&quot;?
+then
+  echo &quot;- root!&quot;
+else
+  echo &quot;простой пользователь (но мамочка вас тоже любит)!&quot;
+fi
+
+exit 0
+
+
+# ============================================================= #
+#  Код, приведенный ниже, никогда не отработает,
+#+ поскольку работа сценария уже завершилась выше
+
+# Еще один способ отличить root-а от не root-а:
+
+ROOTUSER_NAME=root
+
+username=`id -nu`              # Или...   username=`whoami`
+if [ &quot;$username&quot; = &quot;$ROOTUSER_NAME&quot; ]
+then
+  echo &quot;Рутти-тутти. - root!&quot;
+else
+  echo &quot;Вы - лишь обычный юзер.&quot;
+fi
+</pre>
+              </div>
+
+              <p>См. также <a
+               href="c178.html#EX2">Пример 2-2</a>.</p>
+
+              <div
+               class="NOTE">
+                <table
+                 class="NOTE"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/note.gif"
+                     hspace="5"
+                     alt="Note"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>Переменные <tt
+                       class="VARNAME">$ENV</tt>, <tt
+                       class="VARNAME">$LOGNAME</tt>, <tt
+                       class="VARNAME">$MAIL</tt>, <tt
+                       class="VARNAME">$TERM</tt>, <tt
+                       class="VARNAME">$USER</tt> и <tt
+                       class="VARNAME">$USERNAME</tt>, не являются <a
+                       href="c5358.html#BUILTINREF">встроенными</a>
+                      переменными Bash. Тем не менее, они часто
+                      инициализируются как <a
+                       href="x1716.html#ENVREF">переменные
+                      окружения</a> в одном из <a
+                       href="c12891.html#FILESREF1">стартовых
+                      файлов</a> Bash. <a
+                       name="SHELLVARREF"></a>Переменная <tt
+                       class="VARNAME">$SHELL</tt>, командная оболочка
+                      пользователя, может задаваться в <tt
+                       class="FILENAME">/etc/passwd</tt> или в сценарии
+                      <span
+                       class="QUOTE">&quot;init&quot;</span> и она тоже
+                      не является встроенной переменной Bash.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">tcsh%</tt> <tt
+ class="USERINPUT"><strong>echo $LOGNAME</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">bozo</tt>
+<tt
+ class="PROMPT">tcsh%</tt> <tt
+ class="USERINPUT"><strong>echo $SHELL</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">/bin/tcsh</tt>
+<tt
+ class="PROMPT">tcsh%</tt> <tt
+ class="USERINPUT"><strong>echo $TERM</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">rxvt</tt>
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $LOGNAME</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">bozo</tt>
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $SHELL</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">/bin/tcsh</tt>
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>echo $TERM</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">rxvt</tt>
+             
+</pre>
+                      <br>
+                      <br>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </dd>
+          </dl>
+        </div>
+
+        <div
+         class="VARIABLELIST">
+          <p><strong>Позиционные параметры (аргументы)</strong></p>
+
+          <dl>
+            <dt><a
+             name="POSPARAMREF"></a><tt
+             class="VARNAME">$0</tt>, <tt
+             class="VARNAME">$1</tt>, <tt
+             class="VARNAME">$2</tt> и т.д.</dt>
+
+            <dd>
+              <p>аргументы передаются... из командной строки в
+              сценарий, функциям или команде <a
+               href="c5358.html#SETREF">set</a> (см. <a
+               href="x1716.html#EX17">Пример 4-5</a> и <a
+               href="c5358.html#EX34">Пример 11-13</a>)</p>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$#</tt></dt>
+
+            <dd>
+              <p>количество аргументов командной строки <a
+               name="AEN4011"
+               href="#FTN.AEN4011"><span
+               class="footnote">[2]</span></a>, или позиционных
+              параметров (см. <a
+               href="x13541.html#EX4">Пример 33-2</a>)</p>
+            </dd>
+
+            <dt><a
+             name="APPREF"></a><tt
+             class="VARNAME">$*</tt></dt>
+
+            <dd>
+              <p>Все аргументы в виде одной строки (слова)</p>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$@</tt></dt>
+
+            <dd>
+              <p>То же самое, что и <span
+               class="TOKEN">$*</span>, но при этом каждый параметр
+              представлен как отдельная строка (слово), т.е. параметры
+              не подвергаются какой либо интерпретации.</p>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="ARGLIST"></a>
+
+                <p><strong>Пример 9-6. arglist: Вывод списка аргументов
+                с помощью переменных $* и $@</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Вызовите сценарий с несколькими аргументами, например: &quot;один два три&quot;.
+
+E_BADARGS=65
+
+if [ ! -n &quot;$1&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` argument1 argument2 и т.д.&quot;
+  exit $E_BADARGS
+fi
+
+echo
+
+index=1
+
+echo &quot;Список аргументов в переменной \&quot;\$*\&quot;:&quot;
+for arg in &quot;$*&quot;  # Работает некорректно, если &quot;$*&quot; не ограничена кавычками.
+do
+  echo &quot;Аргумент #$index = $arg&quot;
+  let &quot;index+=1&quot;
+done             # $* воспринимает все аргументы как одну строку.
+echo &quot;Полный список аргументов выглядит как одна строка.&quot;
+
+echo
+
+index=1
+
+echo &quot;Список аргументов в переменной \&quot;\$@\&quot;:&quot;
+for arg in &quot;$@&quot;
+do
+  echo &quot;Аргумент #$index = $arg&quot;
+  let &quot;index+=1&quot;
+done             # $@ воспринимает аргументы как отдельные строки (слова).
+echo &quot;Список аргументов выглядит как набор различных строк (слов).&quot;
+
+echo
+
+exit 0
+</pre>
+              </div>
+
+              <p>После команды <strong
+               class="COMMAND">shift</strong> (сдвиг), первый аргумент,
+              в переменной <tt
+               class="VARNAME">$@</tt>, теряется, а остальные
+              сдвигаются на одну позицию &quot;вниз&quot; (или
+              &quot;влево&quot;, если хотите).</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Вызовите сценарий в таком виде: ./scriptname 1 2 3 4 5
+
+echo &quot;$@&quot;    # 1 2 3 4 5
+shift
+echo &quot;$@&quot;    # 2 3 4 5
+shift
+echo &quot;$@&quot;    # 3 4 5
+
+# Каждая из команд &quot;shift&quot; приводит к потере аргумента $1,
+# но остальные аргументы остаются в &quot;$@&quot;.
+</pre>
+              <br>
+              <br>
+
+              <p>Специальная переменная <tt
+               class="VARNAME">$@</tt> может быть использована для
+              выбора типа ввода в сценария. Команда <strong
+               class="COMMAND">cat &quot;$@&quot;</strong> позволяет
+              выполнять ввод как со стандартного устройства ввода <tt
+               class="FILENAME">stdin</tt>, так и из файла, имя
+              которого передается сценарию из командной строки. См. <a
+               href="x7050.html#ROT13">Пример 12-17</a> и <a
+               href="x7050.html#CRYPTOQUOTE">Пример 12-18</a>.</p>
+
+              <div
+               class="CAUTION">
+                <table
+                 class="CAUTION"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/caution.gif"
+                     hspace="5"
+                     alt="Caution"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>Переменные <tt
+                       class="VARNAME">$*</tt> и <tt
+                       class="VARNAME">$@</tt>, в отдельных случаях,
+                      могут содержать противоречивую информацию! Это
+                      зависит от содержимого переменной <a
+                       href="c3270.html#IFSREF">$IFS</a>.</p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="INCOMPAT"></a>
+
+                <p><strong>Пример 9-7. Противоречия в переменных <tt
+                 class="VARNAME">$*</tt> и <tt
+                 class="VARNAME">$@</tt></strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+#  Демонстрация противоречивости содержимого внутренних переменных &quot;$*&quot; и &quot;$@&quot;,
+#+ которая проявляется при изменении порядка заключения параметров в кавычки.
+#  Демонстрация противоречивости, проявляющейся при изменении
+#+ содержимого переменной IFS.
+
+
+set -- &quot;Первый один&quot; &quot;второй&quot; &quot;третий:один&quot; &quot;&quot; &quot;Пятый: :один&quot;
+# Установка аргументов $1, $2, и т.д.
+
+echo
+
+echo &#39;IFS по-умолчанию, переменная &quot;$*&quot;&#39;
+c=0
+for i in &quot;$*&quot;               # в кавычках
+do echo &quot;$((c+=1)): [$i]&quot;   # Эта строка остается без изменений во всех циклах.
+                            # Вывод аргументов.
+done
+echo ---
+
+echo &#39;IFS по-умолчанию, переменная $*&#39;
+c=0
+for i in $*                 # без кавычек
+do echo &quot;$((c+=1)): [$i]&quot;
+done
+echo ---
+
+echo &#39;IFS по-умолчанию, переменная &quot;$@&quot;&#39;
+c=0
+for i in &quot;$@&quot;
+do echo &quot;$((c+=1)): [$i]&quot;
+done
+echo ---
+
+echo &#39;IFS по-умолчанию, переменная $@&#39;
+c=0
+for i in $@
+do echo &quot;$((c+=1)): [$i]&quot;
+done
+echo ---
+
+IFS=:
+echo &#39;IFS=&quot;:&quot;, переменная &quot;$*&quot;&#39;
+c=0
+for i in &quot;$*&quot;
+do echo &quot;$((c+=1)): [$i]&quot;
+done
+echo ---
+
+echo &#39;IFS=&quot;:&quot;, переменная $*&#39;
+c=0
+for i in $*
+do echo &quot;$((c+=1)): [$i]&quot;
+done
+echo ---
+
+var=$*
+echo &#39;IFS=&quot;:&quot;, переменная &quot;$var&quot; (var=$*)&#39;
+c=0
+for i in &quot;$var&quot;
+do echo &quot;$((c+=1)): [$i]&quot;
+done
+echo ---
+
+echo &#39;IFS=&quot;:&quot;, переменная $var (var=$*)&#39;
+c=0
+for i in $var
+do echo &quot;$((c+=1)): [$i]&quot;
+done
+echo ---
+
+var=&quot;$*&quot;
+echo &#39;IFS=&quot;:&quot;, переменная $var (var=&quot;$*&quot;)&#39;
+c=0
+for i in $var
+do echo &quot;$((c+=1)): [$i]&quot;
+done
+echo ---
+
+echo &#39;IFS=&quot;:&quot;, переменная &quot;$var&quot; (var=&quot;$*&quot;)&#39;
+c=0
+for i in &quot;$var&quot;
+do echo &quot;$((c+=1)): [$i]&quot;
+done
+echo ---
+
+echo &#39;IFS=&quot;:&quot;, переменная &quot;$@&quot;&#39;
+c=0
+for i in &quot;$@&quot;
+do echo &quot;$((c+=1)): [$i]&quot;
+done
+echo ---
+
+echo &#39;IFS=&quot;:&quot;, переменная $@&#39;
+c=0
+for i in $@
+do echo &quot;$((c+=1)): [$i]&quot;
+done
+echo ---
+
+var=$@
+echo &#39;IFS=&quot;:&quot;, переменная $var (var=$@)&#39;
+c=0
+for i in $var
+do echo &quot;$((c+=1)): [$i]&quot;
+done
+echo ---
+
+echo &#39;IFS=&quot;:&quot;, переменная &quot;$var&quot; (var=$@)&#39;
+c=0
+for i in &quot;$var&quot;
+do echo &quot;$((c+=1)): [$i]&quot;
+done
+echo ---
+
+var=&quot;$@&quot;
+echo &#39;IFS=&quot;:&quot;, переменная &quot;$var&quot; (var=&quot;$@&quot;)&#39;
+c=0
+for i in &quot;$var&quot;
+do echo &quot;$((c+=1)): [$i]&quot;
+done
+echo ---
+
+echo &#39;IFS=&quot;:&quot;, переменная $var (var=&quot;$@&quot;)&#39;
+c=0
+for i in $var
+do echo &quot;$((c+=1)): [$i]&quot;
+done
+
+echo
+
+# Попробуйте запустить этот сценарий под ksh или zsh -y.
+
+exit 0
+
+# Это сценарий написан Stephane Chazelas,
+# Незначительные изменения внесены автором документа.
+</pre>
+              </div>
+
+              <div
+               class="NOTE">
+                <table
+                 class="NOTE"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/note.gif"
+                     hspace="5"
+                     alt="Note"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>Различия между <strong
+                       class="COMMAND">$@</strong> и <strong
+                       class="COMMAND">$*</strong> наблюдаются только
+                      тогда, когда они помещаются в двойные
+                      кавычки.</p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="IFSEMPTY"></a>
+
+                <p><strong>Пример 9-8. Содержимое <tt
+                 class="VARNAME">$*</tt> и <tt
+                 class="VARNAME">$@</tt>, когда переменная <tt
+                 class="VARNAME">$IFS</tt> -- пуста</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Если переменная $IFS инициализирована &quot;пустым&quot; значением,
+# то &quot;$*&quot; и &quot;$@&quot; содержат аргументы не в том виде, в каком ожидается.
+
+mecho ()       # Вывод аргументов.
+{
+echo &quot;$1,$2,$3&quot;;
+}
+
+
+IFS=&quot;&quot;         # Инициализация &quot;пустым&quot; значением.
+set a b c      # Установка аргументов.
+
+mecho &quot;$*&quot;     # abc,,
+mecho $*       # a,b,c
+
+mecho $@       # a,b,c
+mecho &quot;$@&quot;     # a,b,c
+
+# Поведение переменных $* и $@, при &quot;пустой&quot; $IFS, зависит
+# от версии командной оболочки, Bash или sh.
+# Поэтому, было бы неразумным пользоваться этой &quot;фичей&quot; в своих сценариях.
+
+
+# Спасибо S.C.
+
+exit 0
+</pre>
+              </div>
+            </dd>
+          </dl>
+        </div>
+
+        <div
+         class="VARIABLELIST">
+          <p><strong>Прочие специальные переменные</strong></p>
+
+          <dl>
+            <dt><a
+             name="FLPREF"></a><tt
+             class="VARNAME">$-</tt></dt>
+
+            <dd>
+              <p>Список флагов, переданных сценарию (командой <a
+               href="c5358.html#SETREF">set</a>). См. <a
+               href="c5358.html#EX34">Пример 11-13</a>.</p>
+
+              <div
+               class="CAUTION">
+                <table
+                 class="CAUTION"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/caution.gif"
+                     hspace="5"
+                     alt="Caution"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>Эта конструкция изначально была введена в
+                      <span
+                       class="emphasis"><em
+                       class="EMPHASIS">ksh</em></span>, откуда
+                      перекочевала в Bash и, похоже, работает в Bash не
+                      совсем надежно. Единственное возможное применение
+                      -- <a
+                       href="c13505.html#IITEST">проверка - запущен ли
+                      сценарий в интерактивном режиме</a>.</p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </dd>
+
+            <dt><tt
+             class="VARNAME">$!</tt></dt>
+
+            <dd>
+              <p>PID последнего, запущенного в фоне, процесса</p>
+<pre
+ class="PROGRAMLISTING">
+LOG=$0.log
+
+COMMAND1=&quot;sleep 100&quot;
+
+echo &quot;Запись в лог всех PID фоновых процессов, запущенных из сценария: $0&quot; &gt;&gt; &quot;$LOG&quot;
+# Таким образом возможен мониторинг и удаление процессов по мере необходимости.
+echo &gt;&gt; &quot;$LOG&quot;
+
+# Команды записи в лог.
+
+echo -n &quot;PID of \&quot;$COMMAND1\&quot;:  &quot; &gt;&gt; &quot;$LOG&quot;
+${COMMAND1} &amp;
+echo $! &gt;&gt; &quot;$LOG&quot;
+# PID процесса &quot;sleep 100&quot;:  1506
+
+# Спасибо Jacques Lederer за предложенный пример.
+</pre>
+              <br>
+              <br>
+            </dd>
+
+            <dt><a
+             name="UNDERSCOREREF"></a><tt
+             class="VARNAME">$_</tt></dt>
+
+            <dd>
+              <p>Специальная переменная, содержит последний аргумент
+              предыдущей команды.</p>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="USCREF"></a>
+
+                <p><strong>Пример 9-9. Переменная
+                &quot;подчеркивание&quot;</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+echo $_              # /bin/bash
+                     # Для запуска сценария был вызван /bin/bash.
+
+du &gt;/dev/null        # Подавление вывода.
+echo $_              # du
+
+ls -al &gt;/dev/null    # Подавление вывода.
+echo $_              # -al  (последний аргумент)
+
+:
+echo $_              # :
+</pre>
+              </div>
+            </dd>
+
+            <dt><a
+             name="XSTATVARREF"></a><tt
+             class="VARNAME">$?</tt></dt>
+
+            <dd>
+              <p><a
+               href="c2105.html#EXITSTATUSREF">Код возврата</a>
+              команды, <a
+               href="c12483.html#FUNCTIONREF">функции</a> или скрипта
+              (см. <a
+               href="c12483.html#MAX">Пример 22-3</a>)</p>
+            </dd>
+
+            <dt><a
+             name="PROCCID"></a><tt
+             class="VARNAME">$$</tt></dt>
+
+            <dd>
+              <p>PID самого процесса-сценария. Переменная <tt
+               class="VARNAME">$$</tt> часто используется при генерации
+              &quot;уникальных&quot; имен для временных файлов (см. <a
+               href="a14477.html#FTPGET">Пример A-14</a>, <a
+               href="c13099.html#ONLINE">Пример 29-6</a>, <a
+               href="x7794.html#DERPM">Пример 12-23</a> и <a
+               href="c5358.html#SELFDESTRUCT">Пример 11-23</a>). Обычно
+              это проще чем вызов <a
+               href="x7794.html#MKTEMPREF">mktemp</a>.</p>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN3728"
+         href="c3270.html#AEN3728"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>PID текущего процесса хранится в переменной <tt
+           class="VARNAME">$$</tt>.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN4011"
+         href="c3270.html#AEN4011"><span
+         class="footnote">[2]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Слова <span
+           class="QUOTE">&quot;аргумент&quot;</span> и <span
+           class="QUOTE">&quot;параметр&quot;</span> очень часто
+          используются как синонимы. В тексте данного документа, они
+          применяются для обозначения одного и того же понятия, будь то
+          аргумент, передаваемый скрипту из командной строки или
+          входной параметр функции.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="p3268.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x4171.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Углубленный материал</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p3268.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Работа со строками</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

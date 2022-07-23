@@ -1,0 +1,649 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Перенаправление ввода/вывода</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Углубленный материал"
+     href="p3268.html">
+    <link
+     rel="PREVIOUS"
+     title="Арифметические подстановки"
+     href="c11565.html">
+    <link
+     rel="NEXT"
+     title="Перенаправление для блоков кода"
+     href="x11731.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c11565.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x11731.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="IO-REDIRECTION"></a>Глава 16. Перенаправление
+      ввода/вывода</h1>
+
+      <p><a
+       name="IOREDIRREF"></a></p>
+
+      <p>В системе по-умолчанию всегда открыты три <span
+       class="QUOTE">&quot;файла&quot;</span> -- <tt
+       class="FILENAME">stdin</tt> (клавиатура), <tt
+       class="FILENAME">stdout</tt> (экран) и <tt
+       class="FILENAME">stderr</tt> (вывод сообщений об ошибках на
+      экран). Эти, и любые другие открытые файлы, могут быть
+      перенапрвлены. В данном случае, термин
+      &quot;перенаправление&quot; означает получить вывод из файла,
+      команды, программы, сценария или даже отдельного блока в сценарии
+      (см. <a
+       href="c301.html#EX8">Пример 3-1</a> и <a
+       href="c301.html#RPMCHECK">Пример 3-2</a>) и передать его на вход
+      в другой файл, команду, программу или сценарий.</p>
+
+      <p><a
+       name="FDREF"></a>С каждым открытым файлом связан дескриптор
+      файла. <a
+       name="AEN11633"
+       href="#FTN.AEN11633"><span
+       class="footnote">[1]</span></a> Дескрипторы файлов <tt
+       class="FILENAME">stdin</tt>, <tt
+       class="FILENAME">stdout</tt> и <tt
+       class="FILENAME">stderr</tt> -- 0, 1 и 2, соответственно. При
+      открытии дополнительных файлов, дескрипторы с 3 по 9 остаются
+      незанятыми. Иногда дополнительные дескрипторы могут сослужить
+      неплохую службу, временно сохраняя в себе ссылку на <tt
+       class="FILENAME">stdin</tt>, <tt
+       class="FILENAME">stdout</tt> или <tt
+       class="FILENAME">stderr</tt>. <a
+       name="AEN11642"
+       href="#FTN.AEN11642"><span
+       class="footnote">[2]</span></a> Это упрощает возврат
+      дескрипторов в нормальное состояние после сложных манипуляций с
+      перенаправлением и перестановками (см. <a
+       href="c11620.html#REDIR1">Пример 16-1</a>).</p>
+
+      <p><a
+       name="IOREDIRECTIONREF"></a></p>
+<pre
+ class="PROGRAMLISTING">
+   COMMAND_OUTPUT &gt;
+      # Перенаправление stdout (вывода) в файл.
+      # Если файл отсутствовал, то он создется, иначе -- перезаписывается.
+
+      ls -lR &gt; dir-tree.list
+      # Создает файл, содержащий список дерева каталогов.
+
+   : &gt; filename
+      # Операция &gt; усекает файл &quot;filename&quot; до нулевой длины.
+      # Если до выполнения операции файла не существовало,
+      # то создается новый файл с нулевой длиной (тот же эффект дает команда &#39;touch&#39;).
+      # Символ : выступает здесь в роли местозаполнителя, не выводя ничего.
+
+   &gt; filename
+      # Операция &gt; усекает файл &quot;filename&quot; до нулевой длины.
+      # Если до выполнения операции файла не существовало,
+      # то создается новый файл с нулевой длиной (тот же эффект дает команда &#39;touch&#39;).
+      # (тот же результат, что и выше -- &quot;: &gt;&quot;, но этот вариант неработоспособен
+      # в некоторых командных оболочках.)
+
+   COMMAND_OUTPUT &gt;&gt;
+      # Перенаправление stdout (вывода) в файл.
+      # Создает новый файл, если он отсутствовал, иначе -- дописывает в конец файла.
+
+
+      # Однострочные команды перенаправления
+      # (затрагивают только ту строку, в которой они встречаются):
+      # --------------------------------------------------------------------
+
+   1&gt;filename
+      # Перенаправление вывода (stdout) в файл &quot;filename&quot;.
+   1&gt;&gt;filename
+      # Перенаправление вывода (stdout) в файл &quot;filename&quot;, файл открывается в режиме добавления.
+   2&gt;filename
+      # Перенаправление stderr в файл &quot;filename&quot;.
+   2&gt;&gt;filename
+      # Перенаправление stderr в файл &quot;filename&quot;, файл открывается в режиме добавления.
+   &amp;&gt;filename
+      # Перенаправление stdout и stderr в файл &quot;filename&quot;.
+
+      #==============================================================================
+      # Перенаправление stdout, только для одной строки.
+      LOGFILE=script.log
+
+      echo &quot;Эта строка будет записана в файл \&quot;$LOGFILE\&quot;.&quot; 1&gt;$LOGFILE
+      echo &quot;Эта строка будет добавлена в конец файла \&quot;$LOGFILE\&quot;.&quot; 1&gt;&gt;$LOGFILE
+      echo &quot;Эта строка тоже будет добавлена в конец файла \&quot;$LOGFILE\&quot;.&quot; 1&gt;&gt;$LOGFILE
+      echo &quot;Эта строка будет выведена на экран и не попадет в файл \&quot;$LOGFILE\&quot;.&quot;
+      # После каждой строки, сделанное перенаправление автоматически &quot;сбрасывается&quot;.
+
+
+
+      # Перенаправление stderr, только для одной строки.
+      ERRORFILE=script.errors
+
+      bad_command1 2&gt;$ERRORFILE       #  Сообщение об ошибке запишется в $ERRORFILE.
+      bad_command2 2&gt;&gt;$ERRORFILE      #  Сообщение об ошибке добавится в конец $ERRORFILE.
+      bad_command3                    #  Сообщение об ошибке будет выведено на stderr,
+                                      #+ и не попадет в $ERRORFILE.
+      # После каждой строки, сделанное перенаправление также автоматически &quot;сбрасывается&quot;.
+      #==============================================================================
+
+
+
+   2&gt;&amp;1
+      # Перенаправляется stderr на stdout.
+      # Сообщения об ошибках передаются туда же, куда и стандартный вывод.
+
+   i&gt;&amp;j
+      # Перенаправляется файл с дескриптором <span
+ class="emphasis"><em
+ class="EMPHASIS">i</em></span> в <span
+ class="emphasis"><em
+ class="EMPHASIS">j</em></span>.
+      # Вывод в файл с дескриптором <span
+ class="emphasis"><em
+ class="EMPHASIS">i</em></span> передается в файл с дескриптором <span
+ class="emphasis"><em
+ class="EMPHASIS">j</em></span>.
+
+   &gt;&amp;j
+      # Перенаправляется  файл с дескриптором <span
+ class="emphasis"><em
+ class="EMPHASIS">1</em></span> (stdout) в файл с дескриптором <span
+ class="emphasis"><em
+ class="EMPHASIS">j</em></span>.
+      # Вывод на stdout передается в файл с дескриптором <span
+ class="emphasis"><em
+ class="EMPHASIS">j</em></span>.
+
+   0&lt; FILENAME
+    &lt; FILENAME
+      # Ввод из файла.
+      # Парная команде <span
+ class=
+"QUOTE">&quot;&gt;&quot;</span>, часто встречается в комбинации с ней.
+      #
+      # grep search-word &lt;filename
+
+
+   [j]&lt;&gt;filename
+      # Файл &quot;filename&quot; открывается на чтение и запись, и связывается с дескриптором &quot;j&quot;.
+      # Если &quot;filename&quot; отсутствует, то он создается.
+      # Если дескриптор &quot;j&quot; не указан, то, по-умолчанию, бередся дескриптор 0, stdin.
+      #
+      # Как одно из применений этого -- запись в конкретную позицию в файле.
+      echo 1234567890 &gt; File    # Записать строку в файл &quot;File&quot;.
+      exec 3&lt;&gt; File       # Открыть &quot;File&quot; и связать с дескриптором 3.
+      read -n 4 &lt;&amp;3             # Прочитать 4 символа.
+      echo -n . &gt;&amp;3             # Записать символ точки.
+      exec 3&gt;&amp;-                 # Закрыть дескриптор 3.
+      cat File                  # ==&gt; 1234.67890
+      # Произвольный доступ, да и только!
+
+
+
+   |
+      # Конвейер (канал).
+      # Универсальное средство для объединения команд в одну цепочку.
+      # Похоже на <span
+ class=
+"QUOTE">&quot;&gt;&quot;</span>, но на самом деле -- более обширная.
+      # Используется для объединения команд, сценариев, файлов и программ в одну цепочку (конвейер).
+      cat *.txt | sort | uniq &gt; result-file
+      # Содержимое всех файлов .txt сортируется, удаляются повторяющиеся строки,
+      # результат сохраняется в файле <span
+ class="QUOTE">&quot;result-file&quot;</span>.
+</pre>
+
+      <p>Операции перенаправления и/или конвейеры могут комбинироваться
+      в одной командной строке.</p>
+<pre
+ class="PROGRAMLISTING">
+command &lt; input-file &gt; output-file
+
+command1 | command2 | command3 &gt; output-file
+</pre>
+      См. <a
+       href="x7794.html#DERPM">Пример 12-23</a> и <a
+       href="a14477.html#FIFO">Пример A-17</a>.<br>
+      <br>
+
+      <p>Допускается перенаправление нескольких потоков в один
+      файл.</p>
+<pre
+ class="PROGRAMLISTING">
+ls -yz &gt;&gt; command.log 2&gt;&amp;1
+# Сообщение о неверной опции &quot;yz&quot; в команде &quot;ls&quot; будет записано в файл &quot;command.log&quot;.
+# Поскольку stderr перенаправлен в файл.
+</pre>
+      <br>
+      <br>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="CFD"></a>Закрытие дескрипторов файлов</strong></p>
+
+        <dl>
+          <dt><span
+           class="TOKEN">n&lt;&amp;-</span></dt>
+
+          <dd>
+            <p>Закрыть дескриптор входного файла <tt
+             class="REPLACEABLE"><em>n</em></tt>.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">0&lt;&amp;-</span>, <span
+           class="TOKEN">&lt;&amp;-</span></dt>
+
+          <dd>
+            <p>Закрыть <tt
+             class="FILENAME">stdin</tt>.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">n&gt;&amp;-</span></dt>
+
+          <dd>
+            <p>Закрыть дескриптор выходного файла <tt
+             class="REPLACEABLE"><em>n</em></tt>.</p>
+          </dd>
+
+          <dt><span
+           class="TOKEN">1&gt;&amp;-</span>, <span
+           class="TOKEN">&gt;&amp;-</span></dt>
+
+          <dd>
+            <p>Закрыть <tt
+             class="FILENAME">stdout</tt>.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <p>Дочерние процессы наследуют дескрипторы открытых файлов. По
+      этой причине и работают конвейеры. Чтобы предотвратить
+      наследование дескрипторов -- закройте их перед запуском дочернего
+      процесса.</p>
+<pre
+ class="PROGRAMLISTING">
+# В конвейер передается только stderr.
+
+exec 3&gt;&amp;1                              # Сохранить текущее &quot;состояние&quot; stdout.
+ls -l 2&gt;&amp;1 &gt;&amp;3 3&gt;&amp;- | grep bad 3&gt;&amp;-    # Закрыть дескр. 3 для &#39;grep&#39; (но не для &#39;ls&#39;).
+#              ^^^^   ^^^^
+exec 3&gt;&amp;-                              # Теперь закрыть его для оставшейся части сценария.
+
+# Спасибо S.C.
+</pre>
+      <br>
+      <br>
+
+      <p>Дополнительные сведения о перенаправлении ввода/вывода вы
+      найдете в <a
+       href="a14967.html">Приложение D</a>.</p>
+
+      <div
+       class="SECT1">
+        <h1
+         class="SECT1"><a
+         name="AEN11702"></a>16.1. С помощью команды <strong
+         class="COMMAND">exec</strong></h1>
+
+        <p>Команда <strong
+         class="COMMAND">exec &lt;filename</strong> перенаправляет ввод
+        со <tt
+         class="FILENAME">stdin</tt> на файл. С этого момента весь
+        ввод, вместо <tt
+         class="FILENAME">stdin</tt> (обычно это клавиатура), будет
+        производиться из этого файла. Это дает возможность читать
+        содержимое файла, строку за строкой, и анализировать каждую
+        введенную строку с помощью <a
+         href="a14586.html#SEDREF">sed</a> и/или <a
+         href="x14802.html#AWKREF">awk</a>.</p>
+
+        <div
+         class="EXAMPLE">
+          <a
+           name="REDIR1"></a>
+
+          <p><strong>Пример 16-1. Перенаправление <tt
+           class="FILENAME">stdin</tt> с помощью exec</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Перенаправление stdin с помощью &#39;exec&#39;.
+
+
+exec 6&lt;&amp;0          # Связать дескр. #6 со стандартным вводом (stdin).
+                   # Сохраняя stdin.
+
+exec &lt; data-file   # stdin заменяется файлом &quot;data-file&quot;
+
+read a1            # Читается первая строка из &quot;data-file&quot;.
+read a2            # Читается вторая строка из &quot;data-file.&quot;
+
+echo
+echo &quot;Следующие строки были прочитаны из файла.&quot;
+echo &quot;-----------------------------------------&quot;
+echo $a1
+echo $a2
+
+echo; echo; echo
+
+exec 0&lt;&amp;6 6&lt;&amp;-
+#  Восстанавливается stdin из дескр. #6, где он был предварительно сохранен,
+#+ и дескр. #6 закрывается ( 6&lt;&amp;- ) освобождая его для других процессов.
+#
+# &lt;&amp;6 6&lt;&amp;-    дает тот же результат.
+
+echo -n &quot;Введите строку  &quot;
+read b1  # Теперь функция &quot;read&quot;, как и следовало ожидать, принимает данные с обычного stdin.
+echo &quot;Строка, принятая со stdin.&quot;
+echo &quot;--------------------------&quot;
+echo &quot;b1 = $b1&quot;
+
+echo
+
+exit 0
+</pre>
+        </div>
+
+        <p>Аналогично, конструкция <strong
+         class="COMMAND">exec &gt;filename</strong> перенаправляет
+        вывод на <tt
+         class="FILENAME">stdout</tt> в заданный файл. После этого,
+        весь вывод от команд, который обычно направляется на <tt
+         class="FILENAME">stdout</tt>, теперь выводится в этот
+        файл.</p>
+
+        <div
+         class="EXAMPLE">
+          <a
+           name="REASSIGNSTDOUT"></a>
+
+          <p><strong>Пример 16-2. Перенаправление <tt
+           class="FILENAME">stdout</tt> с помощью exec</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# reassign-stdout.sh
+
+LOGFILE=logfile.txt
+
+exec 6&gt;&amp;1           # Связать дескр. #6 со stdout.
+                    # Сохраняя stdout.
+
+exec &gt; $LOGFILE     # stdout замещается файлом &quot;logfile.txt&quot;.
+
+# ----------------------------------------------------------- #
+# Весь вывод от команд, в данном блоке, записывается в файл $LOGFILE.
+
+echo -n &quot;Logfile: &quot;
+date
+echo &quot;-------------------------------------&quot;
+echo
+
+echo &quot;Вывод команды \&quot;ls -al\&quot;&quot;
+echo
+ls -al
+echo; echo
+echo &quot;Вывод команды \&quot;df\&quot;&quot;
+echo
+df
+
+# ----------------------------------------------------------- #
+
+exec 1&gt;&amp;6 6&gt;&amp;-      # Восстановить stdout и закрыть дескр. #6.
+
+echo
+echo &quot;== stdout восстановлено в значение по-умолчанию == &quot;
+echo
+ls -al
+echo
+
+exit 0
+</pre>
+        </div>
+
+        <div
+         class="EXAMPLE">
+          <a
+           name="UPPERCONV"></a>
+
+          <p><strong>Пример 16-3. Одновременное перенаправление
+          устройств, <tt
+           class="FILENAME">stdin</tt> и <tt
+           class="FILENAME">stdout</tt>, с помощью команды
+          exec</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# upperconv.sh
+# Преобразование символов во входном файле в верхний регистр.
+
+E_FILE_ACCESS=70
+E_WRONG_ARGS=71
+
+if [ ! -r &quot;$1&quot; ]     # Файл доступен для чтения?
+then
+  echo &quot;Невозможно прочитать из заданного файла!&quot;
+  echo &quot;Порядок использования: $0 input-file output-file&quot;
+  exit $E_FILE_ACCESS
+fi                   #  В случае, если входной файл ($1) не задан
+                     #+ код завершения будет этим же.
+
+if [ -z &quot;$2&quot; ]
+then
+  echo &quot;Необходимо задать выходной файл.&quot;
+  echo &quot;Порядок использования: $0 input-file output-file&quot;
+  exit $E_WRONG_ARGS
+fi
+
+
+exec 4&lt;&amp;0
+exec &lt; $1            # Назначить ввод из входного файла.
+
+exec 7&gt;&amp;1
+exec &gt; $2            # Назначить вывод в выходной файл.
+                     # Предполагается, что выходной файл доступен для записи
+                     # (добавить проверку?).
+
+# -----------------------------------------------
+    cat - | tr a-z A-Z   # Перевод в верхний регистр
+#   ^^^^^                # Чтение со stdin.
+#           ^^^^^^^^^^   # Запись в stdout.
+# Однако, и stdin и stdout были перенаправлены.
+# -----------------------------------------------
+
+exec 1&gt;&amp;7 7&gt;&amp;-       # Восстановить stdout.
+exec 0&lt;&amp;4 4&lt;&amp;-       # Восстановить stdin.
+
+# После восстановления, следующая строка выводится на stdout, чего и следовало ожидать.
+echo &quot;Символы из \&quot;$1\&quot; преобразованы в верхний регистр, результат записан в \&quot;$2\&quot;.&quot;
+
+exit 0
+</pre>
+        </div>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN11633"
+         href="c11620.html#AEN11633"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p><span
+           class="emphasis"><em
+           class="EMPHASIS">дескриптор файла</em></span> -- это просто
+          число, по которому система идентифицирует открытые файлы.
+          Рассматривайте его как упрощенную версию указателя на
+          файл.</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN11642"
+         href="c11620.html#AEN11642"><span
+         class="footnote">[2]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>При использрвании <tt
+           class="REPLACEABLE"><em>дескриптора с номером 5</em></tt>
+          могут возникать проблемы. Когда Bash порождает дочерний
+          процесс, например командой <a
+           href="c5358.html#EXECREF">exec</a>, то дочерний процесс
+          наследует дескриптор 5 как &quot;открытый&quot; (см. архив
+          почты Чета Рамея (Chet Ramey), <a
+           href=
+          "http://www.geocrawler.com/archives/3/342/1996/1/0/1939805/"
+           target="_top">SUBJECT: RE: File descriptor 5 is held
+          open</a>) Поэтому, лучше не использовать этот дескриптор.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c11565.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x11731.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Арифметические подстановки</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p3268.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Перенаправление для блоков кода</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

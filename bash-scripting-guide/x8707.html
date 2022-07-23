@@ -1,0 +1,781 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Команды для работы с сетью</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Внешние команды, программы и утилиты"
+     href="c6407.html">
+    <link
+     rel="PREVIOUS"
+     title="Команды для работы с файлами и архивами"
+     href="x7794.html">
+    <link
+     rel="NEXT"
+     title="Команды управления терминалом"
+     href="x9117.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x7794.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">Глава 12. Внешние команды, программы и
+          утилиты</td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x9117.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="SECT1">
+      <h1
+       class="SECT1"><a
+       name="COMMUNICATIONS"></a>12.6. Команды для работы с сетью</h1>
+
+      <p>Команды, описываемые в этом разделе, могут найти применение
+      при исследовании и анализе процессов передачи данных по сети, а
+      также могут использоваться в <a
+       href="x15542.html#CSPAMMERS">борьбе со спамерами</a>.</p>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="COMMUNINFO1"></a>Информация и статистика</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">host</strong></dt>
+
+          <dd>
+            <p>Возвращает информацию об узле Интернета, по заданному
+            имени или IP адресу, выполняя поиск с помощью службы
+            DNS.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>host surfacemail.com</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">surfacemail.com. has address 202.92.42.236</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">ipcalc</strong></dt>
+
+          <dd>
+            <p>Производит поиск IP адреса. С ключом <tt
+             class="OPTION">-h</tt>, <strong
+             class="COMMAND">ipcalc</strong> выполняет поиск имени
+            хоста в DNS, по заданному IP адресу.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ipcalc -h 202.92.42.236</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">HOSTNAME=surfacemail.com</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">nslookup</strong></dt>
+
+          <dd>
+            <p>Выполняет <span
+             class="QUOTE">&quot;поиск имени узла&quot;</span>
+            Интернета по заданному IP адресу. По сути, эквивалентна
+            командам <strong
+             class="COMMAND">ipcalc -h</strong> и <strong
+             class="COMMAND">dig -x</strong>. Команда может исполняться
+            как в интерактивном, так и в неинтерактивном режиме, т.е. в
+            пределах сценария.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>nslookup -sil 66.97.104.180</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">nslookup kuhleersparnis.ch
+ Server:         135.116.137.2
+ Address:        135.116.137.2#53
+
+ Non-authoritative answer:
+ Name:   kuhleersparnis.ch</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">dig</strong></dt>
+
+          <dd>
+            <p>Подобно команде <strong
+             class="COMMAND">nslookup</strong>, выполняет <span
+             class="QUOTE">&quot;поиск имени узла&quot;</span> в
+            Интернете.</p>
+
+            <p>Сравните вывод команды <strong
+             class="COMMAND">dig -x</strong> с выводом команд <strong
+             class="COMMAND">ipcalc -h</strong> и <strong
+             class="COMMAND">nslookup</strong>.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>dig -x 81.9.6.2</strong></tt>
+<tt
+ class="COMPUTEROUTPUT">;; Got answer:
+ ;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NXDOMAIN, id: 11649
+ ;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 0
+
+ ;; QUESTION SECTION:
+ ;2.6.9.81.in-addr.arpa.         IN      PTR
+
+ ;; AUTHORITY SECTION:
+ 6.9.81.in-addr.arpa.    3600    IN      SOA     ns.eltel.net. noc.eltel.net.
+ 2002031705 900 600 86400 3600
+
+ ;; Query time: 537 msec
+ ;; SERVER: 135.116.137.2#53(135.116.137.2)
+ ;; WHEN: Wed Jun 26 08:35:24 2002
+ ;; MSG SIZE  rcvd: 91</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">traceroute</strong></dt>
+
+          <dd>
+            <p>Утилита предназначена для исследования топологии сети
+            посредством передачи ICMP пакетов удаленному узлу. Эта
+            программа может работать в LAN, WAN и в Интернет. Удаленный
+            узел может быть указан как по имени, так и по IP адресу.
+            Вывод команды traceroute может быть передан по конвейеру
+            утилитам <a
+             href="x7050.html#GREPREF">grep</a> или <a
+             href="a14586.html#SEDREF">sed</a>, для дальнейшего
+            анализа.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>traceroute 81.9.6.2</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">traceroute to 81.9.6.2 (81.9.6.2), 30 hops max, 38 byte packets
+ 1  tc43.xjbnnbrb.com (136.30.178.8)  191.303 ms  179.400 ms  179.767 ms
+ 2  or0.xjbnnbrb.com (136.30.178.1)  179.536 ms  179.534 ms  169.685 ms
+ 3  192.168.11.101 (192.168.11.101)  189.471 ms  189.556 ms *
+ ...</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">ping</strong></dt>
+
+          <dd>
+            <p>Выполняет передачу пакета <span
+             class="QUOTE">&quot;ICMP ECHO_REQUEST&quot;</span> другой
+            системе в сети. Чаще всего служит в качестве инструмента
+            диагностики соединений, должна использоваться с большой
+            осторожностью.</p>
+
+            <p>В случае успеха, <strong
+             class="COMMAND">ping</strong> возвращает <a
+             href="c2105.html#EXITSTATUSREF">код завершения</a> <span
+             class="ERRORCODE">0</span>, поэтому команда ping может
+            использоваться в условных операторах.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>ping localhost</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">PING localhost.localdomain (127.0.0.1) from 127.0.0.1 : 56(84) bytes of data.
+ Warning: time of day goes back, taking countermeasures.
+ 64 bytes from localhost.localdomain (127.0.0.1): icmp_seq=0 ttl=255 time=709 usec
+ 64 bytes from localhost.localdomain (127.0.0.1): icmp_seq=1 ttl=255 time=286 usec
+
+ --- localhost.localdomain ping statistics ---
+ 2 packets transmitted, 2 packets received, 0% packet loss
+ round-trip min/avg/max/mdev = 0.286/0.497/0.709/0.212 ms</tt>
+             
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><a
+           name="WHOISREF"></a><strong
+           class="COMMAND">whois</strong></dt>
+
+          <dd>
+            <p>Выполняет поиск в DNS (Domain Name System). Ключом <tt
+             class="OPTION">-h</tt> можно указать какой из <span
+             class="emphasis"><em
+             class="EMPHASIS">whois</em></span> серверов будет
+            запрошен. См. <a
+             href="x1716.html#EX18">Пример 4-6</a>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">finger</strong></dt>
+
+          <dd>
+            <p>Возвращает информацию о пользователях в сети. По
+            желанию, эта команда может выводить содержимое файлов <tt
+             class="FILENAME">~/.plan</tt>, <tt
+             class="FILENAME">~/.project</tt> и <tt
+             class="FILENAME">~/.forward</tt>, указанного
+            пользователя.</p>
+<pre
+ class="SCREEN">
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>finger</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">Login  Name           Tty      Idle  Login Time   Office     Office Phone
+ bozo   Bozo Bozeman   tty1        8  Jun 25 16:59
+ bozo   Bozo Bozeman   ttyp0          Jun 25 16:59
+ bozo   Bozo Bozeman   ttyp1          Jun 25 17:07</tt>
+
+
+
+<tt
+ class="PROMPT">bash$</tt> <tt
+ class="USERINPUT"><strong>finger bozo</strong></tt>
+<tt
+ class=
+"COMPUTEROUTPUT">Login: bozo                             Name: Bozo Bozeman
+ Directory: /home/bozo                   Shell: /bin/bash
+ On since Fri Aug 31 20:13 (MST) on tty1    1 hour 38 minutes idle
+ On since Fri Aug 31 20:13 (MST) on pts/0   12 seconds idle
+ On since Fri Aug 31 20:13 (MST) on pts/1
+ On since Fri Aug 31 20:31 (MST) on pts/2   1 hour 16 minutes idle
+ No mail.
+ No Plan.</tt>
+             
+</pre>
+            <br>
+            <br>
+
+            <p>По соображениям безопасности, в большинстве сетей служба
+            <strong
+             class="COMMAND">finger</strong>, и соответствующий демон,
+            отключена. <a
+             name="AEN8859"
+             href="#FTN.AEN8859"><span
+             class="footnote">[1]</span></a></p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">vrfy</strong></dt>
+
+          <dd>
+            <p>Проверка адреса электронной почты.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="COMMREMOTE1"></a>Доступ к удаленным
+        системам</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">sx</strong>, <strong
+           class="COMMAND">rx</strong></dt>
+
+          <dd>
+            <p>Команды <strong
+             class="COMMAND">sx</strong> и <strong
+             class="COMMAND">rx</strong> служат для приема/передачи
+            файлов на/из удаленный узел в сети, по протоколу <span
+             class="emphasis"><em
+             class="EMPHASIS">xmodem</em></span>. Входят в состав
+            пакета <strong
+             class="COMMAND">minicom</strong>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">sz</strong>, <strong
+           class="COMMAND">rz</strong></dt>
+
+          <dd>
+            <p>Команды <strong
+             class="COMMAND">sz</strong> и <strong
+             class="COMMAND">rz</strong> служат для приема/передачи
+            файлов на/из удаленный узел в сети, по протоколу <span
+             class="emphasis"><em
+             class="EMPHASIS">zmodem</em></span>. Протокол <span
+             class="emphasis"><em
+             class="EMPHASIS">zmodem</em></span> имеет некоторые
+            преимущества перед протоколом <span
+             class="emphasis"><em
+             class="EMPHASIS">xmodem</em></span>, в качестве такого
+            преимущества можно назвать более высокую скорость передачи
+            и возможность возобновления передачи, в случае ее разрыва.
+            Входят в состав пакета <strong
+             class="COMMAND">minicom</strong>.</p>
+          </dd>
+
+          <dt><a
+           name="FTPREF"></a><strong
+           class="COMMAND">ftp</strong></dt>
+
+          <dd>
+            <p>Под этим именем подразумевается утилита и протокол
+            передачи файлов. Сеансы ftp могут устанавливаться из
+            сценариев (см. <a
+             href="c11785.html#EX72">Пример 17-7</a>, <a
+             href="a14477.html#ENCRYPTEDPW">Пример A-5</a> и <a
+             href="a14477.html#FTPGET">Пример A-14</a>).</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">uucp</strong></dt>
+
+          <dd>
+            <p><span
+             class="emphasis"><em
+             class="EMPHASIS">UNIX to UNIX copy</em></span>. Это
+            коммуникационный пакет для передачи файлов между UNIX
+            серверами. Сценарий на языке командной оболочки -- один из
+            самых эффективных способов автоматизации такого обмена.</p>
+
+            <p>Похоже, что с появлением Интернет и электронной почты,
+            <strong
+             class="COMMAND">uucp</strong> постепенно уходит в небытие,
+            однако, она с успехом может использоваться в изолированных,
+            не имеющих выхода в Интернет, сетях.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">cu</strong></dt>
+
+          <dd>
+            <p><span
+             class="emphasis"><em
+             class="EMPHASIS">C</em></span>all <span
+             class="emphasis"><em
+             class="EMPHASIS">U</em></span>p -- выполняет соединение с
+            удаленной системой, как простой терминал. Эта команда
+            является частью пакета <strong
+             class="COMMAND">uucp</strong> и, своего рода, упрощенным
+            вариантом команды <a
+             href="x8707.html#TELNETREF">telnet</a>.</p>
+          </dd>
+
+          <dt><a
+           name="TELNETREF"></a><strong
+           class="COMMAND">telnet</strong></dt>
+
+          <dd>
+            <p>Утилита и протокол для подключения к удаленной
+            системе.</p>
+
+            <div
+             class="CAUTION">
+              <table
+               class="CAUTION"
+               width="90%"
+               border="0">
+                <tr>
+                  <td
+                   width="25"
+                   align="center"
+                   valign="top"><img
+                   src="misc/abs-book/images/caution.gif"
+                   hspace="5"
+                   alt="Caution"></td>
+
+                  <td
+                   align="left"
+                   valign="top">
+                    <p>Протокол telnet небезопасен по своей природе,
+                    поэтому следует воздерживаться от его
+                    использования.</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">wget</strong></dt>
+
+          <dd>
+            <p><strong
+             class="COMMAND">wget</strong> -- <span
+             class="emphasis"><em
+             class="EMPHASIS">неинтерактивная</em></span> утилита для
+            скачивания файлов с Web или ftp сайтов.</p>
+<pre
+ class="PROGRAMLISTING">
+wget -p http://www.xyz23.com/file01.html
+wget -r ftp://ftp.xyz24.net/~bozo/project_files/ -o $SAVEFILE
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">lynx</strong></dt>
+
+          <dd>
+            <p><strong
+             class="COMMAND">lynx</strong> -- Web браузер, внутри
+            сценариев (с ключом <tt
+             class="OPTION">-dump</tt>) может использоваться для
+            скачивания файлов с Web или ftp сайтов, в неинтерактивном
+            режиме.</p>
+<pre
+ class="PROGRAMLISTING">
+lynx -dump http://www.xyz23.com/file01.html &gt;$SAVEFILE
+</pre>
+            <br>
+            <br>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">rlogin</strong></dt>
+
+          <dd>
+            <p><tt
+             class="REPLACEABLE"><em>Remote login</em></tt> --
+            инициирует сессию с удаленной системой. Эта команда
+            небезопасна, вместо нее лучше использовать <a
+             href="x8707.html#SSHREF">ssh</a>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">rsh</strong></dt>
+
+          <dd>
+            <p><tt
+             class="REPLACEABLE"><em>Remote shell</em></tt> --
+            исполняет команду на удаленной системе. Эта команда
+            небезопасна, вместо нее лучше использовать <a
+             href="x8707.html#SSHREF">ssh</a>.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">rcp</strong></dt>
+
+          <dd>
+            <p><tt
+             class="REPLACEABLE"><em>Remote copy</em></tt> --
+            копирование файлов между двумя машинами через сеть. Подобно
+            прочим r* утилитам, команда <strong
+             class="COMMAND">rcp</strong> небезопасна и потому,
+            использовать ее в сценариях нежелательно. В качестве замены
+            можно порекомендовать <strong
+             class="COMMAND">ssh</strong> или <strong
+             class="COMMAND">expect</strong>.</p>
+          </dd>
+
+          <dt><a
+           name="SSHREF"></a><strong
+           class="COMMAND">ssh</strong></dt>
+
+          <dd>
+            <p><tt
+             class="REPLACEABLE"><em>Secure shell</em></tt> --
+            устанавливает сеанс связи и выполняет команды на удаленной
+            системе. Выступает в качестве защищенной замены для <strong
+             class="COMMAND">telnet</strong>, <strong
+             class="COMMAND">rlogin</strong>, <strong
+             class="COMMAND">rcp</strong> и <strong
+             class="COMMAND">rsh</strong>. Использует идентификацию,
+            аутентификацию и шифрование информации, передаваемой через
+            сеть. Подробности вы найдете в <span
+             class="emphasis"><em
+             class="EMPHASIS">man ssh</em></span>.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="COMMLOCAL1"></a>Локальная сеть</strong></p>
+
+        <dl>
+          <dt><a
+           name="WRITEREF"></a><strong
+           class="COMMAND">write</strong></dt>
+
+          <dd>
+            <p>Эта утилита позволяет передать текст сообщения на другой
+            терминал (console или xterm). Разрешить или запретить
+            доступ к терминалу можно с помощью команды <a
+             href="c9708.html#MESGREF">mesg</a>.</p>
+
+            <p>Поскольку команда <strong
+             class="COMMAND">write</strong> работает в интерактивном
+            режиме, то, как правило, она не употребляется в
+            сценариях.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div
+       class="VARIABLELIST">
+        <p><strong><a
+         name="COMMMAIL1"></a>Mail</strong></p>
+
+        <dl>
+          <dt><strong
+           class="COMMAND">mail</strong></dt>
+
+          <dd>
+            <p>Чтение или передача электронной почты.</p>
+
+            <p>Этот почтовый клиент командной строки с успехом может
+            использоваться в сценариях.</p>
+
+            <div
+             class="EXAMPLE">
+              <a
+               name="SELFMAILER"></a>
+
+              <p><strong>Пример 12-31. Сценарий, отправляющий себя
+              самого по электронной почте</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/sh
+# self-mailer.sh: Сценарий отправляет себя самого по электронной почте
+
+adr=${1:-`whoami`}     # Если пользователь не указан, то -- себе самому.
+#  Вызов &#39;self-mailer.sh wiseguy@superdupergenius.com&#39;
+#+ приведет к передаче электронного письма по указанному адресу.
+#  Вызов &#39;self-mailer.sh&#39; (без аргументов) -- отправит письмо
+#+ пользователю, запустившему сценарий, например, bozo@localhost.localdomain.
+#
+#  Дополнительно о конструкции ${parameter:-default},
+#+ см. раздел &quot;Подстановка параметров&quot;
+#+ в главе &quot;К вопросу о переменных&quot;.
+
+# ============================================================================
+  cat $0 | mail -s &quot;Сценарий \&quot;`basename $0`\&quot; отправил себя сам.&quot; &quot;$adr&quot;
+# ============================================================================
+
+# --------------------------------------------
+#  Поздравляю!
+#  Этот сценарий запустила какая-то &quot;редиска&quot;,
+#+ и заставила отправить этот текст к Вам.
+#  Очевидно кто-то не знает
+#+ куда девать свое время.
+# --------------------------------------------
+
+echo &quot;`date`, сценарий \&quot;`basename $0`\&quot; отправлен &quot;$adr&quot;.&quot;
+
+exit 0
+</pre>
+            </div>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">mailto</strong></dt>
+
+          <dd>
+            <p>Команда <strong
+             class="COMMAND">mailto</strong>, похожа на <strong
+             class="COMMAND">mail</strong>, она также отправляет
+            сообщения по электронной почте. Однако, кроме этого,
+            <strong
+             class="COMMAND">mailto</strong> позволяет отправлять MIME
+            (multimedia) сообщения.</p>
+          </dd>
+
+          <dt><strong
+           class="COMMAND">vacation</strong></dt>
+
+          <dd>
+            <p>Эта утилита предназначена для автоматической передачи
+            ответов на электронные письма, например для того, чтобы
+            уведомить отправителя о том, что получатель временно
+            отсутствует. Работает совместно с <strong
+             class="COMMAND">sendmail</strong> и не может
+            использоваться для передачи сообщений через коммутируемые
+            линии (по модему).</p>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN8859"
+         href="x8707.html#AEN8859"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p><a
+           name="DAEMONREF"></a></p>
+
+          <p><span
+           class="emphasis"><em
+           class="EMPHASIS">Демон</em></span> -- это некий фоновый
+          процесс, не привязанный ни к одной из терминальных сессий.
+          Демоны предназначены для выполнения определенного круга задач
+          либо через заданные промежутки времени, либо по наступлению
+          какого либо события.</p>
+
+          <p>Слово <span
+           class="QUOTE">&quot;демон&quot;</span> (<span
+           class="QUOTE">&quot;daemon&quot;</span>), в греческой
+          мифологии, употреблялось для обозначения призраков, духов,
+          чего-то мистического, сверхестественного. В мире UNIX -- под
+          словом демон подразумевается процесс, который
+          &quot;тихо&quot; и &quot;незаметно&quot; выполняет свою
+          работу.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x7794.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x9117.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Команды для работы с файлами и архивами</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="c6407.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Команды управления терминалом</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

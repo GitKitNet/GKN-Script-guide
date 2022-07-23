@@ -1,0 +1,456 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Коды завершения, имеющие предопределенный смысл</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="PREVIOUS"
+     title="Awk"
+     href="x14802.html">
+    <link
+     rel="NEXT"
+     title=
+    "Подробное введение в операции ввода-вывода и перенаправление ввода-вывода"
+     href="a14967.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="x14802.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="a14967.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="APPENDIX">
+      <h1><a
+       name="EXITCODES"></a>Приложение C. Коды завершения, имеющие
+      предопределенный смысл</h1>
+
+      <p><a
+       name="EXITCODESREF"></a></p>
+
+      <div
+       class="TABLE">
+        <a
+         name="AEN14880"></a>
+
+        <p><strong>Таблица C-1. <span
+         class="QUOTE">&quot;Зарезервированные&quot;</span> коды
+        завершения</strong></p>
+
+        <table
+         border="1"
+         class="CALSTABLE">
+          <thead>
+            <tr>
+              <th
+               align="left"
+               valign="top">Код завершения</th>
+
+              <th
+               align="left"
+               valign="top">Смысл</th>
+
+              <th
+               align="left"
+               valign="top">Пример</th>
+
+              <th
+               align="left"
+               valign="top">Примечание</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">1</tt></td>
+
+              <td
+               align="left"
+               valign="top">разнообразные ошибки</td>
+
+              <td
+               align="left"
+               valign="top">let &quot;var1 = 1/0&quot;</td>
+
+              <td
+               align="left"
+               valign="top">различные ошибки, такие как <span
+               class="QUOTE">&quot;деление на ноль&quot;</span> и
+              пр.</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">2</tt></td>
+
+              <td
+               align="left"
+               valign="top">согласно документации к Bash -- неверное
+              использование встроенных команд</td>
+
+              <td
+               align="left"
+               valign="top"> </td>
+
+              <td
+               align="left"
+               valign="top">Встречаются довольно редко, обычно код
+              завершения возвращается равным 1</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">126</tt></td>
+
+              <td
+               align="left"
+               valign="top">вызываемая команда не может быть
+              выполнена</td>
+
+              <td
+               align="left"
+               valign="top"> </td>
+
+              <td
+               align="left"
+               valign="top">возникает из-за проблем с правами доступа
+              или когда вызван на исполнение неисполняемый файл</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">127</tt></td>
+
+              <td
+               align="left"
+               valign="top"><span
+               class="QUOTE">&quot;команда не найдена&quot;</span></td>
+
+              <td
+               align="left"
+               valign="top"> </td>
+
+              <td
+               align="left"
+               valign="top">Проблема связана либо с переменной
+              окружения <tt
+               class="VARNAME">$PATH</tt>, либо с неверным написанием
+              имени команды</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">128</tt></td>
+
+              <td
+               align="left"
+               valign="top">неверный аргумент команды <a
+               href="c2105.html#EXITCOMMANDREF">exit</a></td>
+
+              <td
+               align="left"
+               valign="top">exit 3.14159</td>
+
+              <td
+               align="left"
+               valign="top">команда <strong
+               class="COMMAND">exit</strong> может принимать только
+              целочисленные значения, в диапазоне 0 - 255</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">128+n</tt></td>
+
+              <td
+               align="left"
+               valign="top">фатальная ошибка по сигналу <span
+               class="QUOTE">&quot;n&quot;</span></td>
+
+              <td
+               align="left"
+               valign="top"><strong
+               class="COMMAND">kill -9</strong> <tt
+               class="VARNAME">$PPID</tt> сценария</td>
+
+              <td
+               align="left"
+               valign="top"><tt
+               class="USERINPUT"><strong>$?</strong></tt> вернет 137
+              (128 + 9)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">130</tt></td>
+
+              <td
+               align="left"
+               valign="top">завершение по Control-C</td>
+
+              <td
+               align="left"
+               valign="top"> </td>
+
+              <td
+               align="left"
+               valign="top">Control-C -- это выход по сигналу 2, (130 =
+              128 + 2, см. выше)</td>
+            </tr>
+
+            <tr>
+              <td
+               align="left"
+               valign="top"><tt
+               class="OPTION">255*</tt></td>
+
+              <td
+               align="left"
+               valign="top">код завершения вне допустимого
+              диапазона</td>
+
+              <td
+               align="left"
+               valign="top">exit -1</td>
+
+              <td
+               align="left"
+               valign="top"><strong
+               class="COMMAND">exit</strong> может принимать только
+              целочисленные значения, в диапазоне 0 - 255</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Согласно этой таблице, коды завершения 1 - 2, 126 - 165 и 255
+      <a
+       name="AEN14950"
+       href="#FTN.AEN14950"><span
+       class="footnote">[1]</span></a> имеют предопределенное значение,
+      поэтому вам следует избегать употребления этих кодов для своих
+      нужд. Завершение сценария с кодом возврата <strong
+       class="COMMAND">exit 127</strong>, может привести в
+      замешательство при поиске ошибок в сценарии (действительно ли он
+      означает ошибку <span
+       class="QUOTE">&quot;команда не найдена&quot;</span>? Или это
+      предусмотренный программистом код завершения?). В большинстве
+      случаев, программисты вставляют <strong
+       class="COMMAND">exit 1</strong>, в качестве реакции на ошибку.
+      Так как код завершения <span
+       class="RETURNVALUE">1</span> подразумевает целый
+      &quot;букет&quot; ошибок, то в данном случае трудно говорить о
+      какой либо двусмысленности, хотя и об информативности --
+      тоже.</p>
+
+      <p>Не раз предпринимались попытки систематизировать коды
+      завершения (см. <tt
+       class="FILENAME">/usr/include/sysexits.h</tt>), но эта
+      систематизация предназначена для программистов, пишущих на языках
+      C и C++. Автор документа предлагает ограничить коды завершения,
+      определяемые пользователем, диапазоном 64 - 113 (и, само собой
+      разумеется -- 0, для обозначения успешного завершения), в
+      соответствии со стандартом C/C++. Это сделало бы поиск ошибок
+      более простым.</p>
+
+      <p>Все сценарии, прилагаемые к данному документу, приведены в
+      соответствие с этим стандартом, за исключением случаев, когда
+      существуют отменяющие обстоятельства, например в <a
+       href="c3270.html#TMDIN">Пример 9-2</a>.</p>
+
+      <div
+       class="NOTE">
+        <table
+         class="NOTE"
+         width="100%"
+         border="0">
+          <tr>
+            <td
+             width="25"
+             align="center"
+             valign="top"><img
+             src="misc/abs-book/images/note.gif"
+             hspace="5"
+             alt="Note"></td>
+
+            <td
+             align="left"
+             valign="top">
+              <p>Обращение к переменной <a
+               href="c3270.html#XSTATVARREF">$?</a>, из командной
+              строки, после завершения работы сценария, дает результат,
+              в соответствии с таблицей, приведенной выше, но только
+              для Bash или <span
+               class="emphasis"><em
+               class="EMPHASIS">sh</em></span>. Под управлением csh или
+              <span
+               class="emphasis"><em
+               class="EMPHASIS">tcsh</em></span> значения могут в
+              некоторых случаях отличаться.</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN14950"
+         href="a14876.html#AEN14950"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Указание кода завершения за пределами установленного
+          диапазона, приводит к возврату ошибочных кодов. Например,
+          <strong
+           class="COMMAND">exit 3809</strong> вернет код завершения,
+          равный <span
+           class="ERRORCODE">225</span>.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="x14802.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="a14967.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Awk</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"> </td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Подробное введение в операции ввода-вывода и
+          перенаправление ввода-вывода</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+

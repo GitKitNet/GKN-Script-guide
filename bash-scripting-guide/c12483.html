@@ -1,0 +1,1092 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=koi8-r">
+    <meta
+     name="generator"
+     content=
+    "HTML Tidy for Linux/x86 (vers 1st July 2002), see www.w3.org">
+
+    <title>Функции</title>
+    
+    <meta
+     name="GENERATOR"
+     content="Modular DocBook HTML Stylesheet Version 1.7">
+    <link
+     rel="HOME"
+     title="Advanced Bash-Scripting Guide"
+     href="index.html">
+    <link
+     rel="UP"
+     title="Материал повышенной сложности"
+     href="p11889.html">
+    <link
+     rel="PREVIOUS"
+     title="Подстановка процессов"
+     href="c12434.html">
+    <link
+     rel="NEXT"
+     title="Локальные переменные"
+     href="x12644.html">
+  </head>
+
+  <body bgcolor="#DDE1C2"><b><a href="http://www.opennet.ru/docs/">Архив документации OpenNet.ru</a> / 
+Раздел "<a href="http://www.opennet.ru/docs/124.shtml">Программирование, языки</a>" /
+<a href="index.html">Индекс</a>
+</b>
+<hr noshade size=1>
+
+    <div
+     class="NAVHEADER">
+      <table
+       summary="Header navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <th
+           colspan="3"
+           align="center">Advanced Bash-Scripting Guide: Искусство
+          программирования на языке сценариев командной оболочки</th>
+        </tr>
+
+        <tr>
+          <td
+           width="10%"
+           align="left"
+           valign="bottom"><a
+           href="c12434.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="80%"
+           align="center"
+           valign="bottom">
+          </td>
+
+          <td
+           width="10%"
+           align="right"
+           valign="bottom"><a
+           href="x12644.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+      </table>
+      <hr
+       align="left"
+       width="100%">
+    </div>
+
+    <div
+     class="CHAPTER">
+      <h1><a
+       name="FUNCTIONS"></a>Глава 22. Функции</h1>
+
+      <p><a
+       name="FUNCTIONREF"></a></p>
+
+      <p>Подобно <span
+       class="QUOTE">&quot;настоящим&quot;</span> языкам
+      программирования, Bash тоже имеет функции, хотя и в несколько
+      ограниченном варианте. Функция -- это подпрограмма, <a
+       href="c301.html#CODEBLOCKREF">блок кода</a> который реализует
+      набор операций, своего рода <span
+       class="QUOTE">&quot;черный ящик&quot;</span>, предназначенный
+      для выполнения конкретной задачи. Функции могут использоваться
+      везде, где имеются участки повторяющегося кода.</p>
+
+      <p><strong
+       class="COMMAND">function</strong> <tt
+       class="REPLACEABLE"><em>function_name</em></tt> {<br>
+       <tt
+       class="REPLACEABLE"><em>command</em></tt>...<br>
+       }<br>
+      </p>
+      или 
+
+      <p><tt
+       class="REPLACEABLE"><em>function_name</em></tt> () {<br>
+       <tt
+       class="REPLACEABLE"><em>command</em></tt>...<br>
+       }<br>
+      </p>
+      <br>
+      <br>
+
+      <p>Вторая форма записи ближе к сердцу C-программистам (она же
+      более переносимая).</p>
+
+      <p>Как и в языке C, скобка, открывающая тело функции, может
+      помещаться на следующей строке.</p>
+
+      <p><tt
+       class="REPLACEABLE"><em>function_name</em></tt> ()<br>
+       {<br>
+       <tt
+       class="REPLACEABLE"><em>command</em></tt>...<br>
+       }<br>
+      </p>
+      <br>
+      <br>
+
+      <p>Вызов функции осуществляется простым указанием ее имени в
+      тексте сценария.</p>
+
+      <div
+       class="EXAMPLE">
+        <a
+         name="EX59"></a>
+
+        <p><strong>Пример 22-1. Простая функция</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+funky ()
+{
+  echo &quot;Это обычная функция.&quot;
+} # Функция должна быть объявлена раньше, чем ее можно будет использовать.
+
+  # Вызов функции.
+
+funky
+
+exit 0
+</pre>
+      </div>
+
+      <p>Функция должна быть объявлена раньше, чем ее можно будет
+      использовать. К сожалению, в Bash нет возможности <span
+       class="QUOTE">&quot;опережающего объявления&quot;</span>
+      функции, как например в C.</p>
+<pre
+ class="PROGRAMLISTING">
+f1
+# Эта строка вызовет сообщение об ошибке, поскольку функция &quot;f1&quot; еще не определена.
+
+declare -f f1      # Это не поможет.
+f1                 # По прежнему -- сообщение об ошибке.
+
+# Однако...
+
+
+f1 ()
+{
+  echo &quot;Вызов функции \&quot;f2\&quot; из функции \&quot;f1\&quot;.&quot;
+  f2
+}
+
+f2 ()
+{
+  echo &quot;Функция \&quot;f2\&quot;.&quot;
+}
+
+f1  #  Функция &quot;f2&quot;, фактически, не вызывается выше этой строки,
+    #+ хотя ссылка на нее встречается выше, до ее объявления.
+    #  Это допускается.
+
+    # Спасибо S.C.
+</pre>
+      <br>
+      <br>
+
+      <p>Допускается даже создание вложенных функций, хотя пользы от
+      этого немного.</p>
+<pre
+ class="PROGRAMLISTING">
+f1 ()
+{
+
+  f2 () # вложенная
+  {
+    echo &quot;Функция \&quot;f2\&quot;, вложенная в \&quot;f1\&quot;.&quot;
+  }
+
+}
+
+f2  #  Вызывает сообщение об ошибке.
+    #  Даже &quot;declare -f f2&quot; не поможет.
+
+echo
+
+f1  #  Ничего не происходит, простой вызов &quot;f1&quot;, не означает автоматический вызов &quot;f2&quot;.
+f2  #  Теперь все нормально, вызов &quot;f2&quot; не приводит к появлению ошибки,
+    #+ поскольку функция &quot;f2&quot; была определена в процессе вызова &quot;f1&quot;.
+
+    # Спасибо S.C.
+</pre>
+      <br>
+      <br>
+
+      <p>Объявление функции может размещаться в самых неожиданных
+      местах.</p>
+<pre
+ class="PROGRAMLISTING">
+ls -l | foo() { echo &quot;foo&quot;; }  # Допустимо, но бесполезно.
+
+
+
+if [ &quot;$USER&quot; = bozo ]
+then
+  bozo_greet ()   # Объявление функции размещено в условном операторе.
+  {
+    echo &quot;Привет, Bozo!&quot;
+  }
+fi
+
+bozo_greet        # Работает только у пользователя bozo, другие получат сообщение об ошибке.
+
+
+
+# Нечто подобное можно использовать с определеной пользой для себя.
+NO_EXIT=1   # Will enable function definition below.
+
+[[ $NO_EXIT -eq 1 ]] &amp;&amp; exit() { true; }     # Определение функции в последовательности &quot;И-список&quot;.
+# Если $NO_EXIT равна 1, то объявляется &quot;exit ()&quot;.
+# Тем самым, функция &quot;exit&quot; подменяет встроенную команду &quot;exit&quot;.
+
+exit  # Вызывается функция &quot;exit ()&quot;, а не встроенная команда &quot;exit&quot;.
+
+# Спасибо S.C.
+</pre>
+      <br>
+      <br>
+
+      <div
+       class="SECT1">
+        <h1
+         class="SECT1"><a
+         name="COMPLEXFUNCT"></a>22.1. Сложные функции и сложности с
+        функциями</h1>
+
+        <p>Функции могут принимать входные аргументы и возвращать <a
+         href="c2105.html#EXITSTATUSREF">код завершения</a>.</p>
+<pre
+ class="PROGRAMLISTING">
+function_name $arg1 $arg2
+</pre>
+
+        <p>Доступ к входным аргументам, в функциях, производится
+        посредством <a
+         href="c3270.html#POSPARAMREF">позиционных параметров</a>, т.е.
+        <tt
+         class="VARNAME">$1</tt>, <tt
+         class="VARNAME">$2</tt> и так далее.</p>
+
+        <div
+         class="EXAMPLE">
+          <a
+           name="EX60"></a>
+
+          <p><strong>Пример 22-2. Функция с аргументами</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# Функции и аргументы
+
+DEFAULT=default                             # Значение аргумента по-умолчанию.
+
+func2 () {
+   if [ -z &quot;$1&quot; ]                           # Длина аргумента #1 равна нулю?
+   then
+     echo &quot;-Аргумент #1 имеет нулевую длину.-&quot;  # Или аргумент не был передан функции.
+   else
+     echo &quot;-Аргумент #1: \&quot;$1\&quot;.-&quot;
+   fi
+
+   variable=${1-$DEFAULT}                   #  Что делает
+   echo &quot;variable = $variable&quot;              #+ показанная подстановка параметра?
+                                            #  ---------------------------
+                                            #  Она различает отсутствующий аргумент
+                                            #+ от &quot;пустого&quot; аргумента.
+
+   if [ &quot;$2&quot; ]
+   then
+     echo &quot;-Аргумент #2: \&quot;$2\&quot;.-&quot;
+   fi
+
+   return 0
+}
+
+echo
+
+echo &quot;Вызов функции без аргументов.&quot;
+func2
+echo
+
+
+echo &quot;Вызов функции с \&quot;пустым\&quot; аргументом.&quot;
+func2 &quot;&quot;
+echo
+
+echo &quot;Вызов функции с неинициализированным аргументом.&quot;
+func2 &quot;$uninitialized_param&quot;
+echo
+
+echo &quot;Вызов функции с одним аргументом.&quot;
+func2 first
+echo
+
+echo &quot;Вызов функции с двумя аргументами.&quot;
+func2 first second
+echo
+
+echo &quot;Вызов функции с аргументами \&quot;\&quot; \&quot;second\&quot;.&quot;
+func2 &quot;&quot; second       # Первый параметр &quot;пустой&quot;
+echo                  # и второй параметр -- ASCII-строка.
+
+exit 0
+</pre>
+        </div>
+
+        <div
+         class="IMPORTANT">
+          <table
+           class="IMPORTANT"
+           width="100%"
+           border="0">
+            <tr>
+              <td
+               width="25"
+               align="center"
+               valign="top"><img
+               src="misc/abs-book/images/important.gif"
+               hspace="5"
+               alt="Important"></td>
+
+              <td
+               align="left"
+               valign="top">
+                <p>Команда <a
+                 href="x1716.html#SHIFTREF">shift</a> вполне применима
+                и к аргументам функций (см. <a
+                 href="x13753.html#MULTIPLICATION">Пример
+                33-10</a>).</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div
+         class="NOTE">
+          <table
+           class="NOTE"
+           width="100%"
+           border="0">
+            <tr>
+              <td
+               width="25"
+               align="center"
+               valign="top"><img
+               src="misc/abs-book/images/note.gif"
+               hspace="5"
+               alt="Note"></td>
+
+              <td
+               align="left"
+               valign="top">
+                <p>В отличие от других языков программирования, в
+                сценариях на языке командной оболочке, в функции
+                передаются аргументы по значению. <a
+                 name="AEN12558"
+                 href="#FTN.AEN12558"><span
+                 class="footnote">[1]</span></a> Если имена переменных
+                (которые фактически являются указателями) передаются
+                функции в виде аргументов, то они интерпретируются как
+                обычные строки символов и не могут быть разыменованы.
+                <span
+                 class="emphasis"><em
+                 class="EMPHASIS">Функции интерпретируют свои аргументы
+                буквально.</em></span></p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div
+         class="VARIABLELIST">
+          <p><strong><a
+           name="EXITRETURN1"></a>Exit и Return</strong></p>
+
+          <dl>
+            <dt><strong
+             class="COMMAND">код завершения</strong></dt>
+
+            <dd>
+              <p>Функции возвращают значение в виде <em
+               class="FIRSTTERM">кода завершения</em>. Код завершения
+              может быть задан явно, с помощью команды <strong
+               class="COMMAND">return</strong>, в противном случае
+              будет возвращен код завершения последней команды в
+              функции (<span
+               class="RETURNVALUE">0</span> -- в случае успеха, иначе
+              -- ненулевой код ошибки). Код завершения в сценарии может
+              быть получен через переменную <a
+               href="c3270.html#XSTATVARREF">$?</a>.</p>
+            </dd>
+
+            <dt><strong
+             class="COMMAND">return</strong></dt>
+
+            <dd>
+              <p>Завершает исполнение функции. Команда <strong
+               class="COMMAND">return</strong> <a
+               name="AEN12587"
+               href="#FTN.AEN12587"><span
+               class="footnote">[2]</span></a> может иметь
+              необязательный аргумент типа <span
+               class="emphasis"><em
+               class="EMPHASIS">integer</em></span>, который
+              возвращается в вызывающий сценарий как <span
+               class="QUOTE">&quot;код завершения&quot;</span> функции,
+              это значение так же записывается в переменную <a
+               href="c3270.html#XSTATVARREF">$?</a>.</p>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="MAX"></a>
+
+                <p><strong>Пример 22-3. Наибольшее из двух
+                чисел</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# max.sh: Наибольшее из двух целых чисел.
+
+E_PARAM_ERR=-198    # Если функции передано меньше двух параметров.
+EQUAL=-199          # Возвращаемое значение, если числа равны.
+
+max2 ()             # Возвращает наибольшее из двух чисел.
+{                   # Внимание: сравниваемые числа должны быть меньше 257.
+if [ -z &quot;$2&quot; ]
+then
+  return $E_PARAM_ERR
+fi
+
+if [ &quot;$1&quot; -eq &quot;$2&quot; ]
+then
+  return $EQUAL
+else
+  if [ &quot;$1&quot; -gt &quot;$2&quot; ]
+  then
+    return $1
+  else
+    return $2
+  fi
+fi
+}
+
+max2 33 34
+return_val=$?
+
+if [ &quot;$return_val&quot; -eq $E_PARAM_ERR ]
+then
+  echo &quot;Функции должно быть передано два аргумента.&quot;
+elif [ &quot;$return_val&quot; -eq $EQUAL ]
+  then
+    echo &quot;Числа равны.&quot;
+else
+    echo &quot;Наибольшее из двух чисел: $return_val.&quot;
+fi
+
+
+exit 0
+
+#  Упражнение:
+#  ---------------
+#  Сделайте этот сценарий интерактивным,
+#+ т.е. заставьте сценарий запрашивать числа для сравнения у пользователя (два числа).
+</pre>
+              </div>
+
+              <div
+               class="TIP">
+                <table
+                 class="TIP"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/tip.gif"
+                     hspace="5"
+                     alt="Tip"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>Для случаев, когда функция должна возвращать
+                      строку или массив, используйте специальные
+                      переменные.</p>
+<pre
+ class="PROGRAMLISTING">
+count_lines_in_etc_passwd()
+{
+  [[ -r /etc/passwd ]] &amp;&amp; REPLY=$(echo $(wc -l &lt; /etc/passwd))
+  # Если файл /etc/passwd доступен на чтение, то в переменную REPLY заносится число строк.
+  # Возвращаются как количество строк, так и код завершения.
+}
+
+if count_lines_in_etc_passwd
+then
+  echo &quot;В файле /etc/passwd найдено $REPLY строк.&quot;
+else
+  echo &quot;Невозможно подсчитать число строк в файле /etc/passwd.&quot;
+fi
+
+# Спасибо S.C.
+</pre>
+                      <br>
+                      <br>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="EX61"></a>
+
+                <p><strong>Пример 22-4. Преобразование чисел в римскую
+                форму записи</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# Преобразование чисел из арабской формы записи в римскую
+# Диапазон: 0 - 200
+
+# Расширение диапазона представляемых чисел и улучшение сценария
+# оставляю вам, в качестве упражнения.
+
+# Порядок использования: roman number-to-convert
+
+LIMIT=200
+E_ARG_ERR=65
+E_OUT_OF_RANGE=66
+
+if [ -z &quot;$1&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` number-to-convert&quot;
+  exit $E_ARG_ERR
+fi
+
+num=$1
+if [ &quot;$num&quot; -gt $LIMIT ]
+then
+  echo &quot;Выход за границы диапазона!&quot;
+  exit $E_OUT_OF_RANGE
+fi
+
+to_roman ()   # Функция должна быть объявлена до того как она будет вызвана.
+{
+number=$1
+factor=$2
+rchar=$3
+let &quot;remainder = number - factor&quot;
+while [ &quot;$remainder&quot; -ge 0 ]
+do
+  echo -n $rchar
+  let &quot;number -= factor&quot;
+  let &quot;remainder = number - factor&quot;
+done
+
+return $number
+       # Упражнение:
+       # --------
+       # Объясните -- как работает функция.
+       # Подсказка: деление последовательным вычитанием.
+}
+
+
+to_roman $num 100 C
+num=$?
+to_roman $num 90 LXXXX
+num=$?
+to_roman $num 50 L
+num=$?
+to_roman $num 40 XL
+num=$?
+to_roman $num 10 X
+num=$?
+to_roman $num 9 IX
+num=$?
+to_roman $num 5 V
+num=$?
+to_roman $num 4 IV
+num=$?
+to_roman $num 1 I
+
+echo
+
+exit 0
+</pre>
+              </div>
+
+              <p>См. также <a
+               href="x5210.html#ISALPHA">Пример 10-28</a>.</p>
+
+              <div
+               class="IMPORTANT">
+                <table
+                 class="IMPORTANT"
+                 width="90%"
+                 border="0">
+                  <tr>
+                    <td
+                     width="25"
+                     align="center"
+                     valign="top"><img
+                     src="misc/abs-book/images/important.gif"
+                     hspace="5"
+                     alt="Important"></td>
+
+                    <td
+                     align="left"
+                     valign="top">
+                      <p>Наибольшее положительное целое число, которое
+                      может вернуть функция -- 255. Команда <strong
+                       class="COMMAND">return</strong> очень тесно
+                      связана с понятием <a
+                       href="c2105.html#EXITSTATUSREF">код
+                      завершения</a>, что объясняет это специфическое
+                      ограничение. К счастью существуют <a
+                       href="x13753.html#RVT">различные способы</a>
+                      преодоления этого ограничения.</p>
+
+                      <div
+                       class="EXAMPLE">
+                        <a
+                         name="RETURNTEST"></a>
+
+                        <p><strong>Пример 22-5. Проверка возможности
+                        возврата функциями больших
+                        значений</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# return-test.sh
+
+# Наибольшее целое число, которое может вернуть функция, не может превышать 256.
+
+return_test ()         # Просто возвращает то, что ей передали.
+{
+  return $1
+}
+
+return_test 27         # o.k.
+echo $?                # Возвращено число 27.
+
+return_test 255        # o.k.
+echo $?                # Возвращено число 255.
+
+return_test 257        # Ошибка!
+echo $?                # Возвращено число 1.
+
+return_test -151896    # Как бы то ни было, но для больших отрицательных чисел проходит!
+echo $?                # Возвращено число -151896.
+
+exit 0
+</pre>
+                      </div>
+
+                      <p>Как видно из примера, функции могут возвращать
+                      большие отрицательные значения (имеются ввиду --
+                      большие по своему абсолютному значению, прим.
+                      перев.). Используя эту особенность, можно
+                      обыграть возможность получения от функций большие
+                      положительные значения.</p>
+
+                      <p>Еще один способ -- использовать глобальные
+                      переменные для хранения <span
+                       class="QUOTE">&quot;возвращаемого
+                      значения&quot;</span>.</p>
+<pre
+ class="PROGRAMLISTING">
+Return_Val=   # Глобальная переменная, которая хранит значение, возвращаемое функцией.
+
+alt_return_test ()
+{
+  fvar=$1
+  Return_Val=$fvar
+  return   # Возвратить 0 (успешное завершение).
+}
+
+alt_return_test 1
+echo $?                                  # 0
+echo &quot;Функция вернула число $Return_Val&quot; # 1
+
+alt_return_test 255
+echo &quot;Функция вернула число $Return_Val&quot; # 255
+
+alt_return_test 257
+echo &quot;Функция вернула число $Return_Val&quot; # 257
+
+alt_return_test 25701
+echo &quot;Функция вернула число $Return_Val&quot; #25701
+</pre>
+                      <br>
+                      <br>
+
+                      <div
+                       class="EXAMPLE">
+                        <a
+                         name="MAX2"></a>
+
+                        <p><strong>Пример 22-6. Сравнение двух больших
+                        целых чисел</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+# max2.sh: Наибольшее из двух БОЛЬШИХ целых чисел.
+
+# Это модификация предыдущего примера &quot;max.sh&quot;,
+# которая позволяет выполнять сравнение больших целых чисел.
+
+EQUAL=0             # Если числа равны.
+MAXRETVAL=255       # Максимально возможное положительное число, которое может вернуть функция.
+E_PARAM_ERR=-99999  # Код ошибки в параметрах.
+E_NPARAM_ERR=99999  # &quot;Нормализованный&quot; код ошибки в параметрах.
+
+max2 ()             # Возвращает наибольшее из двух больших целых чисел.
+{
+if [ -z &quot;$2&quot; ]
+then
+  return $E_PARAM_ERR
+fi
+
+if [ &quot;$1&quot; -eq &quot;$2&quot; ]
+then
+  return $EQUAL
+else
+  if [ &quot;$1&quot; -gt &quot;$2&quot; ]
+  then
+    retval=$1
+  else
+    retval=$2
+  fi
+fi
+
+# -------------------------------------------------------------- #
+# Следующие строки позволяют &quot;обойти&quot; ограничение
+if [ &quot;$retval&quot; -gt &quot;$MAXRETVAL&quot; ]    # Если больше предельного значения,
+then                                 # то
+  let &quot;retval = (( 0 - $retval ))&quot;   # изменение знака числа.
+  # (( 0 - $VALUE )) изменяет знак числа.
+fi
+# Функции имеют возможность возвращать большие *отрицательные* числа.
+# -------------------------------------------------------------- #
+
+return $retval
+}
+
+max2 33001 33997
+return_val=$?
+
+# -------------------------------------------------------------------------- #
+if [ &quot;$return_val&quot; -lt 0 ]                  # Если число отрицательное,
+then                                        # то
+  let &quot;return_val = (( 0 - $return_val ))&quot;  # опять изменить его знак.
+fi                                          # &quot;Абсолютное значение&quot; переменной $return_val.
+# -------------------------------------------------------------------------- #
+
+
+if [ &quot;$return_val&quot; -eq &quot;$E_NPARAM_ERR&quot; ]
+then                   # Признак ошибки в параметрах, при выходе из функции так же поменял знак.
+  echo &quot;Ошибка: Недостаточно аргументов.&quot;
+elif [ &quot;$return_val&quot; -eq &quot;$EQUAL&quot; ]
+  then
+    echo &quot;Числа равны.&quot;
+else
+    echo &quot;Наиболшее число: $return_val.&quot;
+fi
+
+exit 0
+</pre>
+                      </div>
+
+                      <p>См. также <a
+                       href="a14477.html#DAYSBETWEEN">Пример
+                      A-8</a>.</p>
+
+                      <p><tt
+                       class=
+                      "USERINPUT"><strong>Упражнение:</strong></tt>
+                      Используя только что полученные знания, добавьте
+                      в предыдущий пример, <a
+                       href="c12483.html#EX61">преобразования чисел в
+                      римскую форму записи</a>, возможность
+                      обрабатывать большие числа.</p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </dd>
+          </dl>
+        </div>
+
+        <div
+         class="VARIABLELIST">
+          <p><strong><a
+           name="REDSTDINFUNC1"></a>Перенаправление</strong></p>
+
+          <dl>
+            <dt><tt
+             class="REPLACEABLE"><em>Перенаправление ввода для
+            функций</em></tt></dt>
+
+            <dd>
+              <p>Функции -- суть есть <a
+               href="c301.html#CODEBLOCKREF">блок кода</a>, а это
+              означает, что устройство <tt
+               class="FILENAME">stdin</tt> для функций может быть
+              переопределено (перенаправление stdin) (как в <a
+               href="c301.html#EX8">Пример 3-1</a>).</p>
+
+              <div
+               class="EXAMPLE">
+                <a
+                 name="REALNAME"></a>
+
+                <p><strong>Пример 22-7. Настоящее имя
+                пользователя</strong></p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+# По имени пользователя получить его &quot;настоящее имя&quot; из /etc/passwd.
+
+ARGCOUNT=1  # Ожидается один аргумент.
+E_WRONGARGS=65
+
+file=/etc/passwd
+pattern=$1
+
+if [ $# -ne &quot;$ARGCOUNT&quot; ]
+then
+  echo &quot;Порядок использования: `basename $0` USERNAME&quot;
+  exit $E_WRONGARGS
+fi
+
+file_excerpt ()  # Производит поиск в файле по заданному шаблону, выводит требуемую часть строки.
+{
+while read line
+do
+  echo &quot;$line&quot; | grep $1 | awk -F&quot;:&quot; &#39;{ print $5 }&#39;  # Указывет awk использовать &quot;:&quot; как разделитель полей.
+done
+} &lt;$file  # Подменить stdin для функции.
+
+file_excerpt $pattern
+
+# Да, этот сценарий можно уменьшить до
+#       grep PATTERN /etc/passwd | awk -F&quot;:&quot; &#39;{ print $5 }&#39;
+# или
+#       awk -F: &#39;/PATTERN/ {print $5}&#39;
+# или
+#       awk -F: &#39;($1 == &quot;username&quot;) { print $5 }&#39;
+# Однако, это было бы не так поучительно.
+
+exit 0
+</pre>
+              </div>
+
+              <p>Ниже приводится альтернативный, и возможно менее
+              запутанный, способ перенаправления ввода для функций. Он
+              заключается в использовании перенаправления ввода для
+              блока кода, заключенного в фигурные скобки, в пределах
+              функции.</p>
+<pre
+ class="PROGRAMLISTING">
+# Вместо:
+Function ()
+{
+ ...
+ } &lt; file
+
+# Попробуйте так:
+Function ()
+{
+  {
+    ...
+   } &lt; file
+}
+
+# Похожий вариант,
+
+Function ()  # Тоже работает.
+{
+  {
+   echo $*
+  } | tr a b
+}
+
+Function ()  # Этот вариант не работает.
+{
+  echo $*
+} | tr a b   # Наличие вложенного блока кода -- обязательное условие.
+
+
+# Спасибо S.C.
+</pre>
+              <br>
+              <br>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <h3
+     class="FOOTNOTES">Примечания</h3>
+
+    <table
+     border="0"
+     class="FOOTNOTES"
+     width="100%">
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN12558"
+         href="c12483.html#AEN12558"><span
+         class="footnote">[1]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Механизм <a
+           href="x4788.html#IVRREF">косвенных ссылок</a> на переменные
+          (см. <a
+           href="c13936.html#EX78">Пример 34-2</a>) слишком неудобен
+          для передачи аргументов по ссылке.</p>
+<pre
+ class="PROGRAMLISTING">
+#!/bin/bash
+
+ITERATIONS=3  # Количество вводимых значений.
+icount=1
+
+my_read () {
+  # При вызове my_read varname,
+  # выводит предыдущее значение в квадратных скобках,
+  # затем просит ввести новое значение.
+
+  local local_var
+
+  echo -n &quot;Введите говое значение переменной &quot;
+  eval &#39;echo -n &quot;[$&#39;$1&#39;] &quot;&#39;  # Прежнее значение.
+  read local_var
+  [ -n &quot;$local_var&quot; ] &amp;&amp; eval $1=\$local_var
+
+  # Последовательность &quot;And-list&quot;: если &quot;local_var&quot; не пуста, то ее значение переписывается в &quot;$1&quot;.
+}
+
+echo
+
+while [ &quot;$icount&quot; -le &quot;$ITERATIONS&quot; ]
+do
+  my_read var
+  echo &quot;Значение #$icount = $var&quot;
+  let &quot;icount += 1&quot;
+  echo
+done
+
+
+# Спасибо Stephane Chazelas за этот поучительный пример.
+
+exit 0
+</pre>
+          <br>
+          <br>
+        </td>
+      </tr>
+
+      <tr>
+        <td
+         align="left"
+         valign="top"
+         width="5%"><a
+         name="FTN.AEN12587"
+         href="c12483.html#AEN12587"><span
+         class="footnote">[2]</span></a></td>
+
+        <td
+         align="left"
+         valign="top"
+         width="95%">
+          <p>Команда <strong
+           class="COMMAND">return</strong> -- это <a
+           href="c5358.html#BUILTINREF">встроенная</a> команда
+          Bash.</p>
+        </td>
+      </tr>
+    </table>
+
+    <div
+     class="NAVFOOTER">
+      <hr
+       align="left"
+       width="100%">
+
+      <table
+       summary="Footer navigation table"
+       width="100%"
+       border="0"
+       cellpadding="0"
+       cellspacing="0">
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top"><a
+           href="c12434.html"
+           accesskey="P">Назад</a></td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="index.html"
+           accesskey="H">К началу</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top"><a
+           href="x12644.html"
+           accesskey="N">Вперед</a></td>
+        </tr>
+
+        <tr>
+          <td
+           width="33%"
+           align="left"
+           valign="top">Подстановка процессов</td>
+
+          <td
+           width="34%"
+           align="center"
+           valign="top"><a
+           href="p11889.html"
+           accesskey="U">Наверх</a></td>
+
+          <td
+           width="33%"
+           align="right"
+           valign="top">Локальные переменные</td>
+        </tr>
+      </table>
+    </div>
+  <hr noshade size=1>
+<b><a href="http://www.opennet.ru/docs/">Архив документации на OpenNet.ru</a>
+</body>
+</html>
+
